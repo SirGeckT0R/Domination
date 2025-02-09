@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ public class UnitSelectionManager : MonoBehaviour
 
     [SerializeField] private LayerMask _clickable;
     [SerializeField] private LayerMask _ground;
+    [SerializeField] private LayerMask _attackable;
+    [SerializeField] private bool attackCursorVisible;
     [SerializeField] private GameObject _groundMarker;
 
     private void Awake()
@@ -71,6 +74,49 @@ public class UnitSelectionManager : MonoBehaviour
                 _groundMarker.SetActive(true);
             }
         }
+
+        if (_selectedUnits.Count > 0 && AtLeastOnOffensiveUnit(_selectedUnits))
+        {
+            RaycastHit hit;
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackable))
+            {
+                Debug.Log("Enemy hovered with mouse");
+
+                attackCursorVisible = true;
+
+                if (Input.GetMouseButtonDown(1))
+                {
+                    var target = hit.transform;
+
+                    foreach (var unit in _selectedUnits)
+                    {
+                        if (unit.GetComponent<AttackController>())
+                        {
+                            unit.GetComponent<AttackController>().Attack(target);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                attackCursorVisible = false;
+            }
+        }
+    }
+
+    private bool AtLeastOnOffensiveUnit(ICollection<GameObject> selectedUnits)
+    {
+        foreach(var unit in selectedUnits)
+        {
+            if (unit.GetComponent<AttackController>())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void MultiSelect(GameObject unit)

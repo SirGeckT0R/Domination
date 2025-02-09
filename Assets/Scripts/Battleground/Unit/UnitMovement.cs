@@ -7,6 +7,7 @@ public class UnitMovement : MonoBehaviour
     private NavMeshAgent _agent;
 
     [SerializeField] private LayerMask _ground;
+    public bool IsCommandedToMove { get; private set; }
 
     void Start()
     {
@@ -23,8 +24,14 @@ public class UnitMovement : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
             {
+                IsCommandedToMove = true;
                 _agent.SetDestination(hit.point);
             }
+        }
+
+        if(!_agent.hasPath || _agent.remainingDistance == _agent.stoppingDistance)
+        {
+            IsCommandedToMove = false;
         }
     }
 }
