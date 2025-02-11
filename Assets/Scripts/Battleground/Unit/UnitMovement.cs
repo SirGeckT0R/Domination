@@ -4,15 +4,18 @@ using UnityEngine.AI;
 public class UnitMovement : MonoBehaviour
 {
     private Camera _camera;
-    private NavMeshAgent _agent;
+    private NavMeshAgent _agent; 
+    private DirectionIndicator _directionIndicator;
 
-    [SerializeField] private LayerMask _ground;
+    [SerializeField] private LayerMask _ground;    
     public bool IsCommandedToMove { get; private set; }
 
     void Start()
     {
         _camera = Camera.main;
         _agent = GetComponent<NavMeshAgent>();
+
+        _directionIndicator = GetComponent<DirectionIndicator>();
     }
 
     void Update()
@@ -26,6 +29,8 @@ public class UnitMovement : MonoBehaviour
             {
                 IsCommandedToMove = true;
                 _agent.SetDestination(hit.point);
+
+                _directionIndicator.DrawLine(hit);
             }
         }
 

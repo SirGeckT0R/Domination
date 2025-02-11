@@ -61,6 +61,36 @@ public class UnitSelectionManager : MonoBehaviour
             } 
         }
 
+
+        if (_selectedUnits.Count > 0 && AtLeastOneOffensiveUnit(_selectedUnits))
+        {
+            RaycastHit hit;
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackable))
+            {
+                attackCursorVisible = true;
+
+                if (Input.GetMouseButtonDown(1))
+                {
+                    var target = hit.transform;
+
+                    foreach (var unit in _selectedUnits)
+                    {
+                        if (unit.GetComponent<AttackController>())
+                        {
+                            unit.GetComponent<AttackController>().Attack(target);
+                        }
+                    }
+                    return;
+                }
+            }
+            else
+            {
+                attackCursorVisible = false;
+            }
+        }
+
         if (Input.GetMouseButtonDown(1) && _selectedUnits.Count > 0)
         {
             RaycastHit hit;
@@ -75,38 +105,33 @@ public class UnitSelectionManager : MonoBehaviour
             }
         }
 
-        if (_selectedUnits.Count > 0 && AtLeastOnOffensiveUnit(_selectedUnits))
+        CursorSelector();
+    }
+
+    private void CursorSelector()
+    {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if(Physics.Raycast(ray, out hit, Mathf.Infinity, _clickable))
         {
-            RaycastHit hit;
-            var ray = _camera.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackable))
-            {
-                Debug.Log("Enemy hovered with mouse");
-
-                attackCursorVisible = true;
-
-                if (Input.GetMouseButtonDown(1))
-                {
-                    var target = hit.transform;
-
-                    foreach (var unit in _selectedUnits)
-                    {
-                        if (unit.GetComponent<AttackController>())
-                        {
-                            unit.GetComponent<AttackController>().Attack(target);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                attackCursorVisible = false;
-            }
+            CursorManager.Instance.SetMarkerType(CursorManager.CursorType.Selectable);
+        } 
+        else if(Physics.Raycast(ray, out hit, Mathf.Infinity, _attackable) && _selectedUnits.Count > 0 && AtLeastOneOffensiveUnit(_selectedUnits))
+        {
+            CursorManager.Instance.SetMarkerType(CursorManager.CursorType.Attackable);
+        }
+        else if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground) && _selectedUnits.Count > 0)
+        {
+            CursorManager.Instance.SetMarkerType(CursorManager.CursorType.Walkable);
+        }
+        else
+        {
+            CursorManager.Instance.SetMarkerType(CursorManager.CursorType.None);
         }
     }
 
-    private bool AtLeastOnOffensiveUnit(ICollection<GameObject> selectedUnits)
+    private bool AtLeastOneOffensiveUnit(ICollection<GameObject> selectedUnits)
     {
         foreach(var unit in selectedUnits)
         {
@@ -174,7 +199,7 @@ public class UnitSelectionManager : MonoBehaviour
 
     private void TriggerSelectionIndicator(GameObject unit, bool isVisible)
     {
-        unit.transform.GetChild(0).gameObject.SetActive(isVisible);
+        unit.transform.Find("Indicator").gameObject.SetActive(isVisible);
     }
 
     public void AddUnit(GameObject unit)
