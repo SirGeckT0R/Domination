@@ -630,11 +630,11 @@ GameObject:
   - component: {fileID: 408414509785025332}
   - component: {fileID: 4059766301401513494}
   - component: {fileID: 6380846223278891611}
-  - component: {fileID: 4163553735639167216}
   - component: {fileID: 1924180381867924075}
-  - component: {fileID: 6310314049541723459}
-  - component: {fileID: 7703242726069544263}
   - component: {fileID: 7189415696174027530}
+  - component: {fileID: 4163553735639167216}
+  - component: {fileID: 7703242726069544263}
+  - component: {fileID: 6310314049541723459}
   - component: {fileID: 8094406951868603159}
   - component: {fileID: 2292167950247548250}
   m_Layer: 7
@@ -708,20 +708,6 @@ CapsuleCollider:
   m_Height: 1.7989037
   m_Direction: 1
   m_Center: {x: 0, y: 0.7854532, z: 0}
---- !u!114 &4163553735639167216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880075236130547821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25b0a3007f4579741820bc79fe8b9c0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _unitMaxHealth: 100
-  _healthTracker: {fileID: 3586910369702978068}
 --- !u!195 &1924180381867924075
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -732,10 +718,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 2000
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -744,39 +730,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &6310314049541723459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880075236130547821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93a219463c257c3488ab0a8316b9a2bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _idleStateMaterial: {fileID: 0}
-  _attackStateMaterial: {fileID: 0}
-  _followStateMaterial: {fileID: 0}
-  unitDamage: 15
-  _isControlledByPlayer: 1
-  attackEffect: {fileID: 8621350902091959465}
---- !u!114 &7703242726069544263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880075236130547821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc9b4d74a837bcc4db15f04488df337e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _ground:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!135 &7189415696174027530
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -798,6 +751,53 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 10
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4163553735639167216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880075236130547821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25b0a3007f4579741820bc79fe8b9c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitMaxHealth: 100
+  _healthTracker: {fileID: 3586910369702978068}
+--- !u!114 &7703242726069544263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880075236130547821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc9b4d74a837bcc4db15f04488df337e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ground:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &6310314049541723459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880075236130547821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93a219463c257c3488ab0a8316b9a2bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <UnitDamage>k__BackingField: 15
+  <AttackingDistance>k__BackingField: 1.5
+  <StopAttackingDistance>k__BackingField: 3
+  <AttacksPerSecond>k__BackingField: 2
+  <IsControlledByPlayer>k__BackingField: 1
+  attackEffect: {fileID: 8621350902091959465}
 --- !u!120 &8094406951868603159
 LineRenderer:
   serializedVersion: 2

@@ -197,9 +197,7 @@ public class CameraController : MonoBehaviour
             Plane plane = new Plane(Vector3.up, Vector3.zero);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            float entry;
-
-            if (plane.Raycast(ray, out entry))
+            if (plane.Raycast(ray, out float entry))
             {
                 _dragStartPosition = ray.GetPoint(entry);
             }

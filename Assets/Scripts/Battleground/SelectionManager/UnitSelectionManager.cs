@@ -67,13 +67,19 @@ public class UnitSelectionManager : MonoBehaviour
             RaycastHit hit;
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
 
+            //switch input and raycast beacause rays are cast every frame
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackable))
             {
                 attackCursorVisible = true;
 
                 if (Input.GetMouseButtonDown(1))
                 {
-                    var target = hit.transform;
+                    var target = hit.transform.GetComponent<Unit>();
+
+                    if (target == null)
+                    {
+                        return;
+                    }
 
                     foreach (var unit in _selectedUnits)
                     {

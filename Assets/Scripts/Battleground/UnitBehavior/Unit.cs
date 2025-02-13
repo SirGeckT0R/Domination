@@ -9,6 +9,10 @@ public class Unit : MonoBehaviour
 
     [SerializeField] HealthTracker _healthTracker;
 
+    private IStateMachine _stateMachine;
+    public UnitIdleState IdleState { get; private set; }
+    public UnitFollowingState FollowingState { get; private set; }
+    public UnitAttackingState AttackingState { get; private set; }
 
     private Animator _animator;
     private NavMeshAgent _agent;
@@ -21,12 +25,24 @@ public class Unit : MonoBehaviour
 
         UpdateHealthUI();
 
+
         _animator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
+
+        _stateMachine = new StateMachine();
+
+        IdleState = new UnitIdleState(this, _stateMachine);
+        FollowingState = new UnitFollowingState(this, _stateMachine);
+        AttackingState = new UnitAttackingState(this, _stateMachine);
+
+        _stateMachine.Initialize(IdleState);
     }
 
     private void Update()
     {
+        _stateMachine.CurrentState.HandleInput();
+        _stateMachine.CurrentState.Update();
+
         if (_agent.remainingDistance > _agent.stoppingDistance)
         {
             _animator.SetBool("IsMoving", true);
