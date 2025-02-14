@@ -1,5 +1,6 @@
-using System;
+using Helpers;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UnitSelectionManager : MonoBehaviour
@@ -9,14 +10,14 @@ public class UnitSelectionManager : MonoBehaviour
     private ICollection<GameObject> _allUnits = new List<GameObject>();
     private ICollection<GameObject> _selectedUnits = new List<GameObject>();
 
-    public ICollection<GameObject> AllUnits { get => _allUnits; }
-
     private Camera _camera;
 
+    [Header("Layers")]
     [SerializeField] private LayerMask _clickable;
     [SerializeField] private LayerMask _ground;
     [SerializeField] private LayerMask _attackable;
-    [SerializeField] private bool attackCursorVisible;
+
+    [Header("Visual Effects")]
     [SerializeField] private GameObject _groundMarker;
 
     private void Awake()
@@ -70,8 +71,6 @@ public class UnitSelectionManager : MonoBehaviour
             //switch input and raycast beacause rays are cast every frame
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackable))
             {
-                attackCursorVisible = true;
-
                 if (Input.GetMouseButtonDown(1))
                 {
                     var target = hit.transform.GetComponent<Unit>();
@@ -85,15 +84,11 @@ public class UnitSelectionManager : MonoBehaviour
                     {
                         if (unit.GetComponent<AttackController>())
                         {
-                            unit.GetComponent<AttackController>().Attack(target);
+                            unit.GetComponent<AttackController>().SetAttackTarget(target);
                         }
                     }
                     return;
                 }
-            }
-            else
-            {
-                attackCursorVisible = false;
             }
         }
 
@@ -216,5 +211,10 @@ public class UnitSelectionManager : MonoBehaviour
     public void RemoveUnit(GameObject unit)
     {
         _allUnits.Remove(unit);
+    }
+
+    public IEnumerable<GameObject> GetSelectableUnits()
+    {
+        return _allUnits.Where(unit => LayerMaskHelper.IsInLayerMask(unit.layer, _clickable));
     }
 }

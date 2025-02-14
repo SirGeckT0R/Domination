@@ -1,59 +1,68 @@
+using Helpers;
 using UnityEngine;
 
 public class AttackController : MonoBehaviour
 {
-    public Unit AttackTarget { get; private set; }
+    [field: Header("Target")]
+    [field: SerializeField] public Unit Target { get; private set; }
 
+    [field: Header("Settings")]
     [field: SerializeField] public int UnitDamage { get; private set; } = 5;
     [field: SerializeField] public float AttackingDistance { get; private set; } = 1.5f;
-    [field: SerializeField]  public float StopAttackingDistance { get; private set; } = 3f;
+    [field: SerializeField] public float StopAttackingDistance { get; private set; } = 3f;
     [field: SerializeField] public float AttacksPerSecond { get; private set; } = 2f;
-
     [field: SerializeField] public bool IsControlledByPlayer { get; private set; } = false;
+    [field: SerializeField] public LayerMask HostileMask { get; private set; }
 
-    public GameObject attackEffect;
+    [field: Header("Effects")]
+    [field: SerializeField] public GameObject VisualEffect { get; private set; }
 
-    internal void Attack(Unit target)
+    public void SetAttackTarget(Unit target)
     {
-        AttackTarget = target;
+        Target = target;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        var isHostile = LayerMaskHelper.IsInLayerMask(other.gameObject, HostileMask);
         var unitComponent = other.transform.GetComponent<Unit>();
 
-        if (IsControlledByPlayer && other.CompareTag("Enemy") && AttackTarget == null && unitComponent != null)
+        if (isHostile && unitComponent != null)
         {
-            AttackTarget = unitComponent;
+            SetAttackTarget(unitComponent);
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
+        var isHostile = LayerMaskHelper.IsInLayerMask(other.gameObject, HostileMask);
         var unitComponent = other.transform.GetComponent<Unit>();
 
-        if (IsControlledByPlayer && other.CompareTag("Enemy") && AttackTarget == null && unitComponent != null)
+        if (isHostile && Target == null && unitComponent != null)
         {
-            AttackTarget = unitComponent;
+            SetAttackTarget(unitComponent);
         }
     }
 
+
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Enemy") && AttackTarget != null)
+        var isHostile = LayerMaskHelper.IsInLayerMask(other.gameObject, HostileMask);
+
+        if (isHostile && Target != null)
         {
-            AttackTarget = null;
+            SetAttackTarget(null);
         }
     }
 
     public void PlayEffects()
     {
-        attackEffect.SetActive(true);
+        VisualEffect.SetActive(true);
     }
 
     public void StopEffects()
     {
-        attackEffect.SetActive(false);
+        VisualEffect.SetActive(false);
     }
 
     private void OnDrawGizmos()

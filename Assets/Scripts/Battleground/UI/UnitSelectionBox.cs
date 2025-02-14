@@ -1,3 +1,5 @@
+using Helpers;
+using System.Linq;
 using UnityEngine;
 
 public class UnitSelectionBox : MonoBehaviour
@@ -101,7 +103,9 @@ public class UnitSelectionBox : MonoBehaviour
 
     void SelectUnits()
     {
-        foreach (var unit in UnitSelectionManager.Instance.AllUnits)
+        var selectableUnits = UnitSelectionManager.Instance.GetSelectableUnits();
+
+        foreach (var unit in selectableUnits)
         {
             if (_selectionBox.Contains(_camera.WorldToScreenPoint(unit.transform.position)))
             {

@@ -46,8 +46,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _clickable:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 512
   _ground:
     serializedVersion: 2
     m_Bits: 64
+  _attackable:
+    serializedVersion: 2
+    m_Bits: 256
   _groundMarker: {fileID: 0}

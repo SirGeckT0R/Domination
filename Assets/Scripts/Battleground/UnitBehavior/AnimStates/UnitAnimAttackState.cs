@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public class UnitAnimAttackState : StateMachineBehaviour
 {
     private AttackController _attackController;
@@ -10,7 +11,7 @@ public class UnitAnimAttackState : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        var target = _attackController.AttackTarget; 
+        var target = _attackController.Target; 
 
         if (target == null)
         {
@@ -22,12 +23,12 @@ public class UnitAnimAttackState : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _attackController.attackEffect.SetActive(false);
+        _attackController.VisualEffect.SetActive(false);
     }
 
     private void LookAtTarget()
     {
-        var direction = _attackController.AttackTarget.transform.position - _attackController.transform.position;
+        var direction = _attackController.Target.transform.position - _attackController.transform.position;
         _attackController.transform.rotation = Quaternion.LookRotation(direction);
     }
 }

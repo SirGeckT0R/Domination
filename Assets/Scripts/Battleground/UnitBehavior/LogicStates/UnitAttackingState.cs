@@ -1,10 +1,9 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 public class UnitAttackingState : State
 {
     private AttackController _attackController;
-    private NavMeshAgent _navMeshAgent;
+    private Health _attackTargetHealth;
     private UnitMovement _unitMovement;
     private Animator _animator;
 
@@ -17,7 +16,7 @@ public class UnitAttackingState : State
     public override void Enter()
     {
         _attackController = unit.GetComponent<AttackController>();
-        _navMeshAgent = unit.GetComponent<NavMeshAgent>();
+        _attackTargetHealth = _attackController.Target.GetComponent<Health>();
         _unitMovement = unit.GetComponent<UnitMovement>();
         _animator = unit.GetComponent<Animator>();
 
@@ -35,7 +34,7 @@ public class UnitAttackingState : State
 
     public override void Update()
     {
-        var attackTarget = _attackController.AttackTarget;
+        var attackTarget = _attackController.Target;
 
         var shouldStopAttacking = attackTarget == null || _unitMovement.IsCommandedToMove;
 
@@ -45,9 +44,6 @@ public class UnitAttackingState : State
 
             return;
         }
-
-        //refactor
-        _navMeshAgent.SetDestination(attackTarget.transform.position);
 
         if (_attackTimer <= 0)
         {
@@ -74,9 +70,12 @@ public class UnitAttackingState : State
     private void Attack()
     {
         var damage = _attackController.UnitDamage;
-        _attackController.AttackTarget.TakeDamage(damage);
 
-        //refactor
+        if (_attackTargetHealth != null)
+        {
+            _attackTargetHealth.TakeDamage(damage);
+        }
+
         SoundManager.Instance.PlayInfantryAttackSound();
     }
 }

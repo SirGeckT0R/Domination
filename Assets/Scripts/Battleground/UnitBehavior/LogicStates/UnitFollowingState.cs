@@ -36,7 +36,7 @@ public class UnitFollowingState : State
 
     public override void Update()
     {
-        var attackTarget = _attackController.AttackTarget;
+        var attackTarget = _attackController.Target;
 
         if (attackTarget == null)
         {
@@ -48,8 +48,6 @@ public class UnitFollowingState : State
         if (!_unitMovement.IsCommandedToMove)
         {
             _navMeshAgent.SetDestination(attackTarget.transform.position);
-            //refactor
-            unit.transform.LookAt(attackTarget.transform);
 
             var distanceToTarget = Vector3.Distance(attackTarget.transform.position, unit.transform.position);
 

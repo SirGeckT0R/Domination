@@ -28,7 +28,7 @@ public class UnitIdleState : State
 
     public override void Update()
     {
-        if (_attackController.AttackTarget != null)
+        if (_attackController.Target != null)
         {
             stateMachine.ChangeState(unit.FollowingState);
         }

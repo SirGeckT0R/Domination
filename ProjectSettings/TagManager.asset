@@ -14,9 +14,9 @@ TagManager:
   - UI
   - Ground
   - Clickable
-  - Attackable
-  - 
-  - 
+  - Enemies
+  - Allies
+  - DetectionZone
   - 
   - 
   - 
