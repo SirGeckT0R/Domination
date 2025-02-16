@@ -1,34 +1,48 @@
 using UnityEngine;
+using Zenject;
 
 public class Unit : MonoBehaviour
 {
     private IStateMachine _stateMachine;
+    private UnitSelectionManager _selectionManager;
 
     public UnitIdleState IdleState { get; private set; }
     public UnitFollowingState FollowingState { get; private set; }
     public UnitAttackingState AttackingState { get; private set; }
 
-    private void Start()
-    {
-        UnitSelectionManager.Instance.AddUnit(gameObject);
+    public bool IsSelected { get; set; }
 
-        _stateMachine = new StateMachine();
+    [Inject]
+    public void Construct(IStateMachine stateMachine, UnitSelectionManager unitSelectionManager)
+    {
+        _stateMachine = stateMachine;
+        _selectionManager = unitSelectionManager;
 
         IdleState = new UnitIdleState(this, _stateMachine);
         FollowingState = new UnitFollowingState(this, _stateMachine);
         AttackingState = new UnitAttackingState(this, _stateMachine);
+    }
+
+    private void Start()
+    {
+        _selectionManager.AddUnit(gameObject);
 
         _stateMachine.Initialize(IdleState);
     }
 
     private void Update()
     {
-        _stateMachine.CurrentState.HandleInput();
+        if (IsSelected)
+        {
+            _stateMachine.CurrentState.HandleInput();
+        }
+
         _stateMachine.CurrentState.Update();
     }
 
+
     private void OnDestroy()
     {
-        UnitSelectionManager.Instance.RemoveUnit(gameObject);
+        _selectionManager.RemoveUnit(gameObject);
     }
 }

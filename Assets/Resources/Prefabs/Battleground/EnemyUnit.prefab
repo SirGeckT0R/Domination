@@ -233,6 +233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4509959081964232975}
   - component: {fileID: 553873116646895115}
+  - component: {fileID: 8850736267939847144}
   m_Layer: 10
   m_Name: DetectionZone
   m_TagString: Untagged
@@ -268,7 +269,7 @@ SphereCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 1120
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -276,6 +277,21 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 10
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8850736267939847144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1461149183965086149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9adb094dbd952394e8daaeb967492641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <HostileMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &2059025483389719717
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,7 +604,7 @@ GameObject:
   - component: {fileID: 1912891633588885938}
   - component: {fileID: 5131904274776857410}
   - component: {fileID: 3641930940246249294}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Indicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -827,9 +843,9 @@ GameObject:
   - component: {fileID: 705259406287029615}
   - component: {fileID: 1098622079248339538}
   - component: {fileID: 8731689637213767311}
+  - component: {fileID: 1621751110097595253}
   - component: {fileID: 6126861734253431830}
   - component: {fileID: 1336428755269368959}
-  - component: {fileID: 4705661480929024453}
   m_Layer: 8
   m_Name: EnemyUnit
   m_TagString: Enemy
@@ -963,6 +979,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b0a3007f4579741820bc79fe8b9c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1621751110097595253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5695898062517251063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc9b4d74a837bcc4db15f04488df337e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Ground>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &6126861734253431830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -989,31 +1020,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a219463c257c3488ab0a8316b9a2bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackTarget>k__BackingField: {fileID: 0}
+  <Target>k__BackingField: {fileID: 0}
   <UnitDamage>k__BackingField: 5
   <AttackingDistance>k__BackingField: 1.5
   <StopAttackingDistance>k__BackingField: 3
   <AttacksPerSecond>k__BackingField: 2
   <IsControlledByPlayer>k__BackingField: 0
-  <HostileMask>k__BackingField:
+  <Attackable>k__BackingField:
     serializedVersion: 2
     m_Bits: 512
-  <AttackEffect>k__BackingField: {fileID: 0}
---- !u!114 &4705661480929024453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5695898062517251063}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc9b4d74a837bcc4db15f04488df337e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _ground:
-    serializedVersion: 2
-    m_Bits: 64
+  <VisualEffect>k__BackingField: {fileID: 0}
 --- !u!1 &6140447535979384987
 GameObject:
   m_ObjectHideFlags: 0
@@ -1342,7 +1358,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2268154870278373888, guid: c0fb8fcb57b244e4eb6dbc7b287d77cf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 4.89
       objectReference: {fileID: 0}
     - target: {fileID: 2268154870278373888, guid: c0fb8fcb57b244e4eb6dbc7b287d77cf, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1358,6 +1374,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2268154870278373888, guid: c0fb8fcb57b244e4eb6dbc7b287d77cf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759484735108189432, guid: c0fb8fcb57b244e4eb6dbc7b287d77cf, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759484735108189432, guid: c0fb8fcb57b244e4eb6dbc7b287d77cf, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6171146850500040549, guid: c0fb8fcb57b244e4eb6dbc7b287d77cf, type: 3}

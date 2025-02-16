@@ -1,23 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FaceCamera : MonoBehaviour
 {
     private Transform localTrans;
 
-    public Camera facingCamera;
+    public Camera _camera;
 
     private void Start()
     {
         localTrans = GetComponent<Transform>();
+        _camera = Camera.main;
     }
 
     private void Update()
     {
-        if (facingCamera)
+        if (_camera)
         {
-            localTrans.LookAt(2 * localTrans.position - facingCamera.transform.position);
+            localTrans.LookAt(2 * localTrans.position - _camera.transform.position);
         }
     }
 }

@@ -1,10 +1,10 @@
-using Helpers;
-using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class UnitSelectionBox : MonoBehaviour
 {
     private Camera _camera;
+    private UnitSelectionManager _selectionManager;
 
     [SerializeField] private RectTransform _boxVisual;
 
@@ -12,6 +12,12 @@ public class UnitSelectionBox : MonoBehaviour
 
     private Vector2 _startPosition;
     private Vector2 _endPosition;
+
+    [Inject]
+    public void Construct(UnitSelectionManager unitSelectionManager)
+    {
+        _selectionManager = unitSelectionManager;
+    }
 
     private void Start()
     {
@@ -36,7 +42,7 @@ public class UnitSelectionBox : MonoBehaviour
         {
             if(_boxVisual.rect.width > 0 || _boxVisual.rect.height > 0)
             {
-                UnitSelectionManager.Instance.DeselectAll();
+                _selectionManager.DeselectAll();
                 SelectUnits();
             }
 
@@ -103,13 +109,13 @@ public class UnitSelectionBox : MonoBehaviour
 
     void SelectUnits()
     {
-        var selectableUnits = UnitSelectionManager.Instance.GetSelectableUnits();
+        var selectableUnits = _selectionManager.GetSelectableUnits();
 
         foreach (var unit in selectableUnits)
         {
             if (_selectionBox.Contains(_camera.WorldToScreenPoint(unit.transform.position)))
             {
-                UnitSelectionManager.Instance.DragSelect(unit);
+                _selectionManager.DragSelect(unit);
             }
         }
     }

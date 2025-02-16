@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class UnitAttackingState : State
 {
+    private Camera _camera;
     private AttackController _attackController;
-    private Health _attackTargetHealth;
     private UnitMovement _unitMovement;
     private Animator _animator;
 
@@ -13,10 +13,14 @@ public class UnitAttackingState : State
     {
     }
 
+    public UnitAttackingState(IStateMachine stateMachine) : base(stateMachine)
+    {
+    }
+
     public override void Enter()
     {
+        _camera = Camera.main;
         _attackController = unit.GetComponent<AttackController>();
-        _attackTargetHealth = _attackController.Target.GetComponent<Health>();
         _unitMovement = unit.GetComponent<UnitMovement>();
         _animator = unit.GetComponent<Animator>();
 
@@ -30,6 +34,23 @@ public class UnitAttackingState : State
 
     public override void HandleInput()
     {
+        if (Input.GetMouseButtonDown(1))
+        {
+            RaycastHit hit;
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackController.Attackable))
+            {
+                _unitMovement.StopMovement();
+                var target = hit.transform.GetComponent<Unit>();
+
+                _attackController.SetTarget(target);
+            }
+            else if (Physics.Raycast(ray, out hit, Mathf.Infinity, _unitMovement.Ground))
+            {
+                _unitMovement.CommandUnit(hit);
+            }
+        }
     }
 
     public override void Update()
@@ -47,7 +68,7 @@ public class UnitAttackingState : State
 
         if (_attackTimer <= 0)
         {
-            Attack();
+            _attackController.AttackTarget();
             _attackTimer = 1f / _attackController.AttacksPerSecond;
         }
         else
@@ -65,18 +86,6 @@ public class UnitAttackingState : State
 
             return;
         }
-    }
-
-    private void Attack()
-    {
-        var damage = _attackController.UnitDamage;
-
-        if (_attackTargetHealth != null)
-        {
-            _attackTargetHealth.TakeDamage(damage);
-        }
-
-        SoundManager.Instance.PlayInfantryAttackSound();
     }
 }
 

@@ -9,6 +9,15 @@ public abstract class State
         this.stateMachine = stateMachine;
     }
 
+    protected State(IStateMachine stateMachine)
+    {
+        this.stateMachine = stateMachine;
+    }
+    public void SetUnit(Unit newUnit)
+    {
+        unit = newUnit;
+    }
+
     public abstract void Enter();
 
     public abstract void HandleInput();

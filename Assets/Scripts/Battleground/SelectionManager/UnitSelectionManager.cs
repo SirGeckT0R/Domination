@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class UnitSelectionManager : MonoBehaviour
 {
-    public static UnitSelectionManager Instance { get; private set; }
-
     private ICollection<GameObject> _allUnits = new List<GameObject>();
     private ICollection<GameObject> _selectedUnits = new List<GameObject>();
 
@@ -19,18 +17,6 @@ public class UnitSelectionManager : MonoBehaviour
 
     [Header("Visual Effects")]
     [SerializeField] private GameObject _groundMarker;
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
 
     private void Start()
     {
@@ -49,7 +35,6 @@ public class UnitSelectionManager : MonoBehaviour
                 if(Input.GetKey(KeyCode.LeftShift))
                 {
                     MultiSelect(hit.collider.gameObject);
-                    
                 }
                 else
                 {
@@ -61,37 +46,7 @@ public class UnitSelectionManager : MonoBehaviour
                 DeselectAll();
             } 
         }
-
-
-        if (_selectedUnits.Count > 0 && AtLeastOneOffensiveUnit(_selectedUnits))
-        {
-            RaycastHit hit;
-            var ray = _camera.ScreenPointToRay(Input.mousePosition);
-
-            //switch input and raycast beacause rays are cast every frame
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackable))
-            {
-                if (Input.GetMouseButtonDown(1))
-                {
-                    var target = hit.transform.GetComponent<Unit>();
-
-                    if (target == null)
-                    {
-                        return;
-                    }
-
-                    foreach (var unit in _selectedUnits)
-                    {
-                        if (unit.GetComponent<AttackController>())
-                        {
-                            unit.GetComponent<AttackController>().SetAttackTarget(target);
-                        }
-                    }
-                    return;
-                }
-            }
-        }
-
+        
         if (Input.GetMouseButtonDown(1) && _selectedUnits.Count > 0)
         {
             RaycastHit hit;
@@ -136,7 +91,7 @@ public class UnitSelectionManager : MonoBehaviour
     {
         foreach(var unit in selectedUnits)
         {
-            if (unit.GetComponent<AttackController>())
+            if (unit != null && unit.GetComponent<AttackController>())
             {
                 return true;
             }
@@ -180,12 +135,7 @@ public class UnitSelectionManager : MonoBehaviour
     private void SelectUnit(GameObject unit, bool isSelected)
     {
         TriggerSelectionIndicator(unit, isSelected);
-        EnableUnitMovement(unit, isSelected);
-    }
-
-    private void EnableUnitMovement(GameObject unit, bool shouldMove)
-    {
-        unit.GetComponent<UnitMovement>().enabled = shouldMove;
+        unit.GetComponent<Unit>().IsSelected = isSelected;
     }
 
     public void DeselectAll()

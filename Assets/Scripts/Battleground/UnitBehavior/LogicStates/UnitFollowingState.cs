@@ -1,10 +1,9 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 public class UnitFollowingState : State
 {
+    private Camera _camera;
     private AttackController _attackController;
-    private NavMeshAgent _navMeshAgent;
     private UnitMovement _unitMovement;
     private Animator _animator;
 
@@ -12,10 +11,12 @@ public class UnitFollowingState : State
     {
     }
 
+    public UnitFollowingState(IStateMachine stateMachine): base(stateMachine) { }
+
     public override void Enter()
     {
+        _camera = Camera.main;
         _attackController = unit.GetComponent<AttackController>();
-        _navMeshAgent = unit.GetComponent<NavMeshAgent>();
         _unitMovement = unit.GetComponent<UnitMovement>();
         _animator = unit.GetComponent<Animator>();
 
@@ -24,15 +25,35 @@ public class UnitFollowingState : State
 
     public override void Exit()
     {
-        _navMeshAgent.isStopped = true;
-        _navMeshAgent.ResetPath();
+        if(!_unitMovement.IsCommandedToMove)
+        {
+            _unitMovement.StopMovement();
+        }
 
         _animator.SetBool("IsFollowing", false);
     }
 
     public override void HandleInput()
     {
+        if (Input.GetMouseButtonDown(1))
+        {
+            RaycastHit hit;
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _attackController.Attackable))
+            {
+                _unitMovement.StopMovement();
+                var target = hit.transform.GetComponent<Unit>();
+
+                _attackController.SetTarget(target);
+            }
+            else if (Physics.Raycast(ray, out hit, Mathf.Infinity, _unitMovement.Ground))
+            {
+                _unitMovement.CommandUnit(hit);
+            }
+        }
     }
+
 
     public override void Update()
     {
@@ -47,7 +68,7 @@ public class UnitFollowingState : State
 
         if (!_unitMovement.IsCommandedToMove)
         {
-            _navMeshAgent.SetDestination(attackTarget.transform.position);
+            _unitMovement.MoveUnit(attackTarget.transform);
 
             var distanceToTarget = Vector3.Distance(attackTarget.transform.position, unit.transform.position);
 
