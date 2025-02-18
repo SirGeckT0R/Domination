@@ -7,12 +7,14 @@ public class RelationsCommand : ICommand
 
     public RelationsCommand(Player player,int losses)
     {
+        this.player = player;
         this.losses = losses;
     }
 
     public void Execute()
     {
-        player.Warriors -= losses;
+        player.Warriors += losses;
+        player.Money -= losses;
         Debug.Log($"Executing relations action with parameters {losses}");
     }
 

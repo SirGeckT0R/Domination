@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Map.AI;
+using UnityEngine;
 using Zenject;
 
 public class Player : MonoBehaviour
 {
     [field: SerializeField] public string Name { get; set; }
 
+    public Brain Brain { get; set; }
     public int Money { get; set; } = 10;
     public int Warriors { get; set; } = 15;
 
@@ -14,6 +16,11 @@ public class Player : MonoBehaviour
     public void Construct(TurnManager turnManager)
     {
         this.turnManager = turnManager;
+    }
+
+    private void Awake()
+    {
+        Brain = GetComponent<Brain>();
     }
 
     public void CreateEconomicCommand()
@@ -35,10 +42,12 @@ public class Player : MonoBehaviour
         turnManager.RemoveLastCommand();
     }
 
-    public void StartTurn()
+    public void StartTurn(ContextData data)
     {
-        CreateEconomicCommand();
-        CreateRelationsCommand();
+        Brain.FindAndProduceTheBestAction(data);
+
+        //CreateEconomicCommand();
+        //CreateRelationsCommand();
         turnManager.EndTurn();
     }
 }

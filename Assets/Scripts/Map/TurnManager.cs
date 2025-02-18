@@ -1,4 +1,6 @@
+using Assets.Scripts.Map.AI;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
@@ -7,7 +9,7 @@ public class TurnManager : MonoBehaviour
     private int _currentPlayer = 0;
     private bool _hasTurnStarted = false;
 
-    private float maxAmountOfTurns = 9;
+    private float maxAmountOfTurns = 50;
     private int _turnCount = 0;
 
     [field: SerializeField] public int MaxCommandsPerTurn { get; private set; } = 2;
@@ -18,11 +20,8 @@ public class TurnManager : MonoBehaviour
     }
     public List<ICommand> Commands { get; private set; } = new List<ICommand>();
 
-
-    private void Update()
+    private void StartTurn()
     {
-
-
         if (_turnCount >= maxAmountOfTurns)
         {
             return;
@@ -30,8 +29,13 @@ public class TurnManager : MonoBehaviour
         if (!_hasTurnStarted)
         {
             _hasTurnStarted = true;
-            Players[CurrentPlayer].StartTurn();
+            var remaining = Players.Where(player => player != Players[CurrentPlayer]).ToList();
+            Players[CurrentPlayer].StartTurn(new ContextData(Players[CurrentPlayer], remaining));
         }
+    }
+    private void Start()
+    {
+       StartTurn();
     }
 
     public void EndTurn()
@@ -46,6 +50,7 @@ public class TurnManager : MonoBehaviour
         _hasTurnStarted = false;
         _turnCount++;
         CurrentPlayer += 1;
+        StartTurn();
     }
 
 
