@@ -1,53 +1,59 @@
 ﻿using Assets.Scripts.Map.AI;
+using Assets.Scripts.Map.Managers;
 using UnityEngine;
 using Zenject;
 
-public class Player : MonoBehaviour
+namespace Assets.Scripts.Map.Players
 {
-    [field: SerializeField] public string Name { get; set; }
-
-    public Brain Brain { get; set; }
-    public int Money { get; set; } = 10;
-    public int Warriors { get; set; } = 15;
-
-    private TurnManager turnManager;
-
-    [Inject]
-    public void Construct(TurnManager turnManager)
+    public class Player : MonoBehaviour
     {
-        this.turnManager = turnManager;
-    }
+        [field: SerializeField] public string Name { get; set; }
 
-    private void Awake()
-    {
-        Brain = GetComponent<Brain>();
-    }
+        public Brain Brain { get; set; }
+        [field: SerializeField] public int Money { get; set; } = 10;
+        [field: SerializeField] public int Warriors { get; set; } = 15;
 
-    public void CreateEconomicCommand()
-    {
-        var command = new EconomicCommand(this, 5);
+        private TurnManager turnManager;
 
-        turnManager.AddCommand(command);
-    }
+        [Inject]
+        public void Construct(TurnManager turnManager)
+        {
+            this.turnManager = turnManager;
+        }
 
-    public void CreateRelationsCommand()
-    {
-        var command = new RelationsCommand(this, 4);
+        private void Awake()
+        {
+            Brain = GetComponent<Brain>();
+        }
 
-        turnManager.AddCommand(command);
-    }
+        //public void CreateEconomicCommand()
+        //{
+        //    var command = new EconomicCommand(this, 5);
 
-    public void UndoLastAction()
-    {
-        turnManager.RemoveLastCommand();
-    }
+        //    turnManager.AddCommand(command);
+        //}
 
-    public void StartTurn(ContextData data)
-    {
-        Brain.FindAndProduceTheBestAction(data);
+        //public void CreateRelationsCommand()
+        //{
+        //    var command = new RelationsCommand(this, 4);
 
-        //CreateEconomicCommand();
-        //CreateRelationsCommand();
-        turnManager.EndTurn();
+        //    turnManager.AddCommand(command);
+        //}
+
+        public void UndoLastAction()
+        {
+            turnManager.RemoveLastCommand();
+        }
+
+        public void StartTurn(AI.Contexts.Context data)
+        {
+            var action = Brain.FindAndProduceTheBestAction(data);
+            data = turnManager.AddCommand(action);
+
+            action = Brain.FindAndProduceTheBestAction(data);
+            turnManager.AddCommand(action);
+
+            turnManager.EndTurn();
+        }
     }
 }

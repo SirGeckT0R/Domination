@@ -14,7 +14,7 @@ namespace Assets.Scripts.Map.AI.Considerations
         public OperationType operation = OperationType.Max;
         public List<Consideration> considerations;
 
-        public override float Evaluate(ContextData context)
+        public override float Evaluate(Context context)
         {
             if (considerations == null || considerations.Count == 0) return 0f;
 

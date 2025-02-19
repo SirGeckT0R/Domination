@@ -8,6 +8,6 @@ namespace Assets.Scripts.Map.AI.Considerations
     {
         public float value;
 
-        public override float Evaluate(ContextData context) => value;
+        public override float Evaluate(Context context) => value;
     }
 }

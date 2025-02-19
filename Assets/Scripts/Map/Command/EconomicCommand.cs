@@ -1,25 +1,43 @@
-﻿using UnityEngine;
-
-public class EconomicCommand : ICommand
+﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.Players;
+using UnityEngine;
+namespace Assets.Scripts.Map.Commands
 {
-    private int money;
-    private Player player;
-    public EconomicCommand(Player player, int money)
+    [CreateAssetMenu(menuName = "UtilityAI/Actions/EconomicCommand")]
+    public class EconomicCommand : Command
     {
-        this.player = player;
-        this.money = money;
-    }
+        public int money;
+        private Player player;
 
-    public void Execute()
-    {
-        player.Money += money;
-        player.Warriors -= money;
-        Debug.Log($"Executing an economic action with parameters {money}");
-    }
+        public override void UpdateContext(Context context)
+        {
+            this.player = context.CurrentPlayer;
+        }
 
-    public void Undo()
-    {
-        Debug.Log($"Undoing an economic action with parameters {money}");
+        //public void Execute()
+        //{
+        //    player.Money += money;
+        //    player.Warriors -= money;
+        //    Debug.Log($"Executing an economic action with parameters {money}");
+        //}
+
+        public override void Execute()
+        {
+            player.Money += money;
+            player.Warriors -= 1;
+            Debug.Log($"Executing an economic action with parameters {money}");
+        }
+
+        //public void Undo()
+        //{
+        //    Debug.Log($"Undoing an economic action with parameters {money}");
+        //}
+
+        public override void Undo()
+        {
+            player.Money -= money;
+            player.Warriors += 1;
+            Debug.Log($"Undoing an economic action with parameters {money}");
+        }
     }
 }
-

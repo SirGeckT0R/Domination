@@ -25,8 +25,17 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.49143487
+      value: 0.045065254
+      inSlope: -0.17645387
+      outSlope: -0.17645387
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.5998113
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
-      value: 0
+      value: 0.0018920898
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -37,3 +46,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   contextKey: Warriors
+  keyImportance: 100

@@ -2,20 +2,16 @@
 using Assets.Scripts.Map.AI.Contexts;
 using UnityEngine;
 
-namespace Assets.Scripts.Map.AI.Actions
+namespace Assets.Scripts.Map.Commands
 {
-    public abstract class AIAction : ScriptableObject
+    public abstract class Command : ScriptableObject
     {
         public string targetTag;
         public Consideration consideration;
-
-        public virtual void Initialize(Context context)
-        {
-            // Optional initialization logic
-        }
-
         public float CalculateUtility(Context context) => consideration.Evaluate(context);
 
-        public abstract void Execute(Context context);
+        public abstract void UpdateContext(Context context);
+        public abstract void Execute();
+        public abstract void Undo();
     }
 }

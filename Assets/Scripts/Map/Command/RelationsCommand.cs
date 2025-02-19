@@ -1,25 +1,37 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.Players;
+using UnityEngine;
 
-public class RelationsCommand : ICommand
+namespace Assets.Scripts.Map.Commands
 {
-    public int losses;
-    private Player player;
-
-    public RelationsCommand(Player player,int losses)
+    [CreateAssetMenu(menuName = "UtilityAI/Actions/RelationsCommand")]
+    public class RelationsCommand : Command
     {
-        this.player = player;
-        this.losses = losses;
-    }
+        public int losses;
+        private Player player;
 
-    public void Execute()
-    {
-        player.Warriors += losses;
-        player.Money -= losses;
-        Debug.Log($"Executing relations action with parameters {losses}");
-    }
+        public override void UpdateContext(Context context)
+        {
+            this.player = context.CurrentPlayer;
+        }
 
-    public void Undo()
-    {
-        Debug.Log($"Undoing relations action with parameters {losses}");
+        public override void Execute()
+        {
+            player.Warriors += losses;
+            player.Money -= 1;
+            Debug.Log($"Executing relations action with parameters {losses}");
+        }
+
+        //public void Undo()
+        //{
+        //    Debug.Log($"Undoing relations action with parameters {losses}");
+        //}
+
+        public override void Undo()
+        {
+            player.Warriors -= losses;
+            player.Money += 1;
+            Debug.Log($"Undoing relations action with parameters {losses}");
+        }
     }
 }

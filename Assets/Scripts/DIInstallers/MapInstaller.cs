@@ -1,3 +1,4 @@
+using Assets.Scripts.Map.Managers;
 using UnityEngine;
 using Zenject;
 

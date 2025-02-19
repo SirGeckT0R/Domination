@@ -228,6 +228,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Players:
   - {fileID: 1871593296}
+  - {fileID: 1746330579}
+  - {fileID: 2063650565}
   <MaxCommandsPerTurn>k__BackingField: 2
 --- !u!4 &1178637132
 Transform:
@@ -275,6 +277,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Second
+  <Money>k__BackingField: 40
+  <Warriors>k__BackingField: 110
 --- !u!4 &1746330580
 Transform:
   m_ObjectHideFlags: 0
@@ -303,9 +307,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: e6a98ad1a9012704eb9dcebffbb06a35, type: 2}
-  - {fileID: 11400000, guid: 6595ef3a30c1631469ae3d0fec455ecd, type: 2}
-  player: {fileID: 1746330579}
+  - {fileID: 11400000, guid: 2f502b3f4fc602940a9823dd4f013a0e, type: 2}
+  - {fileID: 11400000, guid: 463e18b5e338981439682eb40f474d7b, type: 2}
+  - {fileID: 11400000, guid: 1d26f31b737c6d343be685f04ad84598, type: 2}
 --- !u!1 &1781918392
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,6 +433,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Name>k__BackingField: First
+  <Money>k__BackingField: 90
+  <Warriors>k__BackingField: 90
 --- !u!4 &1871593297
 Transform:
   m_ObjectHideFlags: 0
@@ -457,9 +463,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: e6a98ad1a9012704eb9dcebffbb06a35, type: 2}
-  - {fileID: 11400000, guid: 6595ef3a30c1631469ae3d0fec455ecd, type: 2}
-  player: {fileID: 1871593296}
+  - {fileID: 11400000, guid: 2f502b3f4fc602940a9823dd4f013a0e, type: 2}
+  - {fileID: 11400000, guid: 463e18b5e338981439682eb40f474d7b, type: 2}
+  - {fileID: 11400000, guid: 1d26f31b737c6d343be685f04ad84598, type: 2}
 --- !u!1 &2063650564
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,6 +497,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Third
+  <Money>k__BackingField: 5
+  <Warriors>k__BackingField: 60
 --- !u!4 &2063650566
 Transform:
   m_ObjectHideFlags: 0
@@ -519,9 +527,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: e6a98ad1a9012704eb9dcebffbb06a35, type: 2}
-  - {fileID: 11400000, guid: 6595ef3a30c1631469ae3d0fec455ecd, type: 2}
-  player: {fileID: 2063650565}
+  - {fileID: 11400000, guid: 2f502b3f4fc602940a9823dd4f013a0e, type: 2}
+  - {fileID: 11400000, guid: 463e18b5e338981439682eb40f474d7b, type: 2}
+  - {fileID: 11400000, guid: 1d26f31b737c6d343be685f04ad84598, type: 2}
 --- !u!1 &2125261321
 GameObject:
   m_ObjectHideFlags: 0

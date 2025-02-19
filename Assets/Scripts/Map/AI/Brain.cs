@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Map.AI.Actions;
 using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.Commands;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,31 +8,24 @@ namespace Assets.Scripts.Map.AI
 {
     public class Brain : MonoBehaviour
     {
-        public List<AIAction> actions;
-        public ContextData context;
-
-        public Player player;
+        public List<Command> actions;
 
         void Awake()
         {
-            player = GetComponent<Player>();
-
             foreach (var action in actions)
             {
-                action.Initialize(context);
+                //action.Initialize(Context);
             }
         }
 
-        public void FindAndProduceTheBestAction(ContextData data)
+        public Command FindAndProduceTheBestAction(Context context)
         {
-            //UpdateContext();
-
-            AIAction bestAction = null;
+            Command bestAction = null;
             float highestUtility = float.MinValue;
 
             foreach (var action in actions)
             {
-                float utility = action.CalculateUtility(data);
+                float utility = action.CalculateUtility(context);
                 if (utility > highestUtility)
                 {
                     highestUtility = utility;
@@ -39,17 +33,11 @@ namespace Assets.Scripts.Map.AI
                 }
             }
 
-            if (bestAction != null)
-            {
-                bestAction.Execute(data);
+            bestAction?.UpdateContext(context);
 
-                Debug.Log("Best action: " + bestAction.GetType().Name + " with utility: " + highestUtility);
-            }
-        }
+            Debug.Log("Best action: " + bestAction.GetType().Name + " with utility: " + highestUtility);
 
-        void UpdateContext()
-        {
-            //context.SetData("health", health.normalizedHealth);
+            return bestAction;
         }
     }
 }
