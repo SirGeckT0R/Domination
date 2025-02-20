@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Map.AI;
+using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Managers;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -14,6 +16,9 @@ namespace Assets.Scripts.Map.Players
         [field: SerializeField] public int Warriors { get; set; } = 15;
 
         private TurnManager turnManager;
+
+        //change to more apropriate data type
+        public List<PactCommand> PactCommands { get; private set; } = new List<PactCommand>();
 
         [Inject]
         public void Construct(TurnManager turnManager)

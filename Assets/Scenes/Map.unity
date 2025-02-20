@@ -310,6 +310,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2f502b3f4fc602940a9823dd4f013a0e, type: 2}
   - {fileID: 11400000, guid: 463e18b5e338981439682eb40f474d7b, type: 2}
   - {fileID: 11400000, guid: 1d26f31b737c6d343be685f04ad84598, type: 2}
+  - {fileID: 11400000, guid: 2bccb6e568bc58747b6af50a60b10983, type: 2}
 --- !u!1 &1781918392
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,6 +467,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2f502b3f4fc602940a9823dd4f013a0e, type: 2}
   - {fileID: 11400000, guid: 463e18b5e338981439682eb40f474d7b, type: 2}
   - {fileID: 11400000, guid: 1d26f31b737c6d343be685f04ad84598, type: 2}
+  - {fileID: 11400000, guid: 2bccb6e568bc58747b6af50a60b10983, type: 2}
 --- !u!1 &2063650564
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Third
-  <Money>k__BackingField: 5
+  <Money>k__BackingField: 110
   <Warriors>k__BackingField: 60
 --- !u!4 &2063650566
 Transform:
@@ -530,6 +532,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2f502b3f4fc602940a9823dd4f013a0e, type: 2}
   - {fileID: 11400000, guid: 463e18b5e338981439682eb40f474d7b, type: 2}
   - {fileID: 11400000, guid: 1d26f31b737c6d343be685f04ad84598, type: 2}
+  - {fileID: 11400000, guid: 2bccb6e568bc58747b6af50a60b10983, type: 2}
 --- !u!1 &2125261321
 GameObject:
   m_ObjectHideFlags: 0

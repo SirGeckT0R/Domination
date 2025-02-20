@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Assets.Scripts.Map.AI.Considerations
 {
-    [CreateAssetMenu(menuName = "UtilityAI/Considerations/HostileCurveConsideration")]
-    public class HostileCurveConsideration: Consideration
+    [CreateAssetMenu(menuName = "UtilityAI/Considerations/PactCurveConsideration")]
+    public class PactCurveConsideration : Consideration
     {
         public AnimationCurve curve;
         public string contextKey;
@@ -16,6 +16,7 @@ namespace Assets.Scripts.Map.AI.Considerations
             var current = context.CurrentPlayer;
             var other = context.OtherPlayers;
             var maxUtility = 0f;
+            //rename
             var nameOfAttackTarget = "";
 
             var utility = -1f;
@@ -28,17 +29,19 @@ namespace Assets.Scripts.Map.AI.Considerations
                     return 0f;
                 }
 
-                var inputValue = Mathf.Clamp01(player.Money / keyImportance) - (float)player.Warriors / current.Warriors;
+                var inputValue = player.Warriors / (current.Warriors * keyImportance);
                 var clamped = Mathf.Clamp01(inputValue);
 
                 utility = curve.Evaluate(clamped);
                 if (utility > maxUtility)
                 {
                     maxUtility = utility;
+                    //rename
                     nameOfAttackTarget = player.Name;
                 }
             }
 
+            //rename
             context.AttackTarget = nameOfAttackTarget;
 
             return maxUtility;

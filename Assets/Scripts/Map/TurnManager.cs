@@ -1,4 +1,6 @@
 using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.AI.Enums;
+using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Players;
 using System.Collections.Generic;
@@ -76,12 +78,32 @@ namespace Assets.Scripts.Map.Managers
             {
                 Commands.Add(command);
                 command.Execute();
+                CreateRelationEvent(command);
                 UpdateContext();
 
                 return _context;
             }
 
             return null;
+        }
+
+        public void CreateRelationEvent(Command command)
+        {
+            var warCommand = command as AttackWeakestAndWealthiestCommand;
+            var pactCommand = command as PactCommand;
+
+            //switch here
+            if (warCommand != null)
+            {
+                var warEvent = new RelationEvent(warCommand.player, warCommand.others.FirstOrDefault(p => p.Name.Equals(warCommand.attack)), RelationEventType.War,5);
+                _context.RelationEvents.Add(warEvent);
+            }
+
+            if(pactCommand != null)
+            {
+                var pactEvent = new RelationEvent(pactCommand.player, pactCommand.others.FirstOrDefault(p => p.Name.Equals(pactCommand.pact)), RelationEventType.Pact, 3);
+                _context.RelationEvents.Add(pactEvent);
+            }
         }
 
         private void UpdateContext()
@@ -92,6 +114,11 @@ namespace Assets.Scripts.Map.Managers
             _context.SetData("Warriors", Players[CurrentPlayerIndex].Warriors);
             _context.SetData("Money", Players[CurrentPlayerIndex].Money);
             _context.OtherPlayers = remaining;
+
+            if (!_hasTurnStarted)
+            {
+                _context.RelationEvents = _context.RelationEvents.Where(relEvent => !relEvent.UpdateDuration()).ToList();
+            }
         }
 
         public void RemoveLastCommand()

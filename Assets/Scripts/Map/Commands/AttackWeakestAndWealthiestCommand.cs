@@ -9,14 +9,19 @@ namespace Assets.Scripts.Map.Commands
     [CreateAssetMenu(menuName = "UtilityAI/Actions/AttackWeakestAndWelthiestCommand")]
     public class AttackWeakestAndWealthiestCommand : Command
     {
-        public int losses;
-        private string attack;
-        private Player player;
-        private Player[] others;
+        public string attack;
+        public Player player;
+        public Player[] others;
 
         public override void Execute()
         {
             Debug.Log("Attacking this player: " + attack);
+            var attackTarget = others.FirstOrDefault(p => p.Name.Equals(attack));
+
+            if(attackTarget == null)
+            {
+                Debug.Log("Not a valid attack target");
+            }
 
             var rand = Random.Range(0,10);
             if (rand > 5)
@@ -24,8 +29,9 @@ namespace Assets.Scripts.Map.Commands
                 player.Warriors -= 20;
                 player.Money -= 30;
 
-                others.Where(p => p.Name.Equals(attack)).First().Warriors -= 5;
-                others.Where(p => p.Name.Equals(attack)).First().Money += 30;
+                attackTarget.Warriors -= 5;
+                attackTarget.Money += 30;
+
                 Debug.Log("Fight was lost");
             }
             else
@@ -33,8 +39,8 @@ namespace Assets.Scripts.Map.Commands
                 player.Warriors -= 5;
                 player.Money += 30;
 
-                others.Where(p => p.Name == attack).First().Warriors -= 20;
-                others.Where(p => p.Name == attack).First().Money -= 30;
+                attackTarget.Warriors -= 20;
+                attackTarget.Money -= 30;
 
                 Debug.Log("Fight was won");
             }
