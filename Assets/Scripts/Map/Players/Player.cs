@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.Map.AI;
+using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Managers;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -10,15 +12,14 @@ namespace Assets.Scripts.Map.Players
     public class Player : MonoBehaviour
     {
         [field: SerializeField] public string Name { get; set; }
-
+        [field: SerializeField] public List<Guid> Counties { get; set; }
         public Brain Brain { get; set; }
         [field: SerializeField] public int Money { get; set; } = 10;
         [field: SerializeField] public int Warriors { get; set; } = 15;
 
         private TurnManager turnManager;
 
-        //change to more apropriate data type
-        public List<PactCommand> PactCommands { get; private set; } = new List<PactCommand>();
+        public List<CreatePactEvent> PactCommands { get; private set; } = new List<CreatePactEvent>();
 
         [Inject]
         public void Construct(TurnManager turnManager)
@@ -31,19 +32,25 @@ namespace Assets.Scripts.Map.Players
             Brain = GetComponent<Brain>();
         }
 
-        //public void CreateEconomicCommand()
-        //{
-        //    var command = new EconomicCommand(this, 5);
+        public void AcceptPact(AcceptPactCommand command, CreatePactEvent pactEvent)
+        {
+            turnManager.AcceptPact(command, pactEvent);
+        }
 
-        //    turnManager.AddCommand(command);
-        //}
+        public void DeclinePact(DeclinePactCommand command, CreatePactEvent pactEvent)
+        {
+            turnManager.DeclinePact(command, pactEvent);
+        }
 
-        //public void CreateRelationsCommand()
-        //{
-        //    var command = new RelationsCommand(this, 4);
+        public void LoseCounty(Guid countyId)
+        {
+            Counties.Remove(countyId);
+        }
 
-        //    turnManager.AddCommand(command);
-        //}
+        public void AcquireCounty(Guid countyId)
+        {
+            Counties.Add(countyId);
+        }
 
         public void UndoLastAction()
         {

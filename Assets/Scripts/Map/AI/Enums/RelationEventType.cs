@@ -4,7 +4,9 @@
     {
         None = 0,
         War = 1,
-        Pact = 2,
-        Trade = 3,
+        SentPact = 2,
+        DeniedPact = 3,
+        AcceptedPact = 4,
+        Trade = 5,
     }
 }

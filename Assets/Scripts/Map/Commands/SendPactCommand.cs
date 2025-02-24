@@ -5,24 +5,21 @@ using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
 {
-    [CreateAssetMenu(menuName = "UtilityAI/Actions/PactCommand")]
-    public class PactCommand : Command
+    [CreateAssetMenu(menuName = "UtilityAI/Actions/SendPactCommand")]
+    public class SendPactCommand : Command
     {
-        public string pact;
+        public Player pactTarget;
         public Player player;
         public Player[] others;
 
         public override void Execute()
         {
-            Debug.Log("Creating a pact with this player: " + pact);
-            var pactTarget = others.FirstOrDefault(p => p.Name.Equals(pact));
-
             if (pactTarget == null)
             {
                 Debug.Log("Not a valid pact target");
             }
 
-            Debug.Log("Here i will send a pact request");
+            Debug.Log("Creating a pact with this player: " + pactTarget.Name);
         }
 
         public override void Undo()
@@ -34,7 +31,7 @@ namespace Assets.Scripts.Map.Commands
         {
             this.player = context.CurrentPlayer;
             this.others = context.OtherPlayers;
-            this.pact = context.AttackTarget;
+            this.pactTarget = context.PactTarget;
         }
     }
 }

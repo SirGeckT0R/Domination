@@ -1,4 +1,7 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.AI.Enums;
+using Assets.Scripts.Map.Players;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,7 +11,7 @@ namespace Assets.Scripts.Map.AI.Considerations
     public class HostileCurveConsideration: Consideration
     {
         public AnimationCurve curve;
-        public string contextKey;
+        public List<RelationEventType> ignoreEvents;
         public float keyImportance;
 
         public override float Evaluate(Context context)
@@ -16,16 +19,17 @@ namespace Assets.Scripts.Map.AI.Considerations
             var current = context.CurrentPlayer;
             var other = context.OtherPlayers;
             var maxUtility = 0f;
-            var nameOfAttackTarget = "";
+            Player attackTarget = null;
 
             var utility = -1f;
             foreach (var player in other)
             {
-                var commonEvent = context.RelationEvents.FirstOrDefault(relEvent => relEvent.ArePlayersInvolved(current, player));
+                var commonEvent = context.RelationEvents.FirstOrDefault(relEvent => relEvent.ArePlayersInvolved(current, player)
+                && !ignoreEvents.Contains(relEvent.EventType));
 
                 if (commonEvent != null)
                 {
-                    return 0f;
+                    continue;
                 }
 
                 var inputValue = Mathf.Clamp01(player.Money / keyImportance) - (float)player.Warriors / current.Warriors;
@@ -35,11 +39,11 @@ namespace Assets.Scripts.Map.AI.Considerations
                 if (utility > maxUtility)
                 {
                     maxUtility = utility;
-                    nameOfAttackTarget = player.Name;
+                    attackTarget = player;
                 }
             }
 
-            context.AttackTarget = nameOfAttackTarget;
+            context.AttackTarget = attackTarget;
 
             return maxUtility;
         }

@@ -1,11 +1,12 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Players;
 using UnityEngine;
 
-namespace Assets.Scripts.Map.Commands
+namespace Assets.Scripts.Map.Managers
 {
-    [CreateAssetMenu(menuName = "UtilityAI/Actions/AcceptPactCommand")]
-    public class AcceptPactCommand : Command
+    [CreateAssetMenu(menuName = "UtilityAI/Actions/DeclinePactCommand")]
+    public class DeclinePactCommand : Command
     {
         public Player pactTarget;
         public Player player;
@@ -18,7 +19,7 @@ namespace Assets.Scripts.Map.Commands
                 Debug.Log("Not a valid pact target");
             }
 
-            Debug.Log("Accepting pact from this player: " + pactTarget);
+            Debug.Log("Declining pact from this player: " + pactTarget);
         }
 
         public override void Undo()

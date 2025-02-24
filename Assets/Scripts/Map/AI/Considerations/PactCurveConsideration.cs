@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.Players;
 using System.Linq;
 using UnityEngine;
 
@@ -16,8 +17,7 @@ namespace Assets.Scripts.Map.AI.Considerations
             var current = context.CurrentPlayer;
             var other = context.OtherPlayers;
             var maxUtility = 0f;
-            //rename
-            var nameOfAttackTarget = "";
+            Player pactTarget = null;
 
             var utility = -1f;
             foreach (var player in other)
@@ -29,20 +29,18 @@ namespace Assets.Scripts.Map.AI.Considerations
                     return 0f;
                 }
 
-                var inputValue = player.Warriors / (current.Warriors * keyImportance);
+                var inputValue = player.Warriors * keyImportance / current.Warriors;
                 var clamped = Mathf.Clamp01(inputValue);
 
                 utility = curve.Evaluate(clamped);
                 if (utility > maxUtility)
                 {
                     maxUtility = utility;
-                    //rename
-                    nameOfAttackTarget = player.Name;
+                    pactTarget = player;
                 }
             }
 
-            //rename
-            context.AttackTarget = nameOfAttackTarget;
+            context.PactTarget = pactTarget;
 
             return maxUtility;
         }

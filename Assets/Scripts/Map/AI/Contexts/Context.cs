@@ -8,7 +8,9 @@ namespace Assets.Scripts.Map.AI.Contexts
     {
         public Player CurrentPlayer { get; set; }
         public Player[] OtherPlayers { get; set; }
-        public string AttackTarget { get; set; }
+        public Player AttackTarget { get; set; }
+        public Player PactTarget { get; set; }
+        public CreatePactEvent CurrentPact{ get; set; }
 
         readonly Dictionary<string, object> data = new();
         public List<RelationEvent> RelationEvents { get; set; } = new List<RelationEvent>();

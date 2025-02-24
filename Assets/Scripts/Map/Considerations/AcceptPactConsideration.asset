@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aeb0be72ca0dcb4aa745bf452234fc3, type: 3}
-  m_Name: PactCurveConsideration
+  m_Script: {fileID: 11500000, guid: cf56479ac30c79841bc53671547e98bc, type: 3}
+  m_Name: AcceptPactConsideration
   m_EditorClassIdentifier: 
   curve:
     serializedVersion: 2
@@ -18,30 +18,12 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: -0.005402823
-      outSlope: -0.005402823
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.5233334
-    - serializedVersion: 3
-      time: 0.50044364
-      value: 0.22325933
-      inSlope: 1.271557
-      outSlope: 1.271557
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.7387581
-      value: 0.6826066
-      inSlope: 2.6682024
-      outSlope: 2.6682024
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.15990916
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
@@ -54,5 +36,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  contextKey: 
-  keyImportance: 0.5
+  pactAcceptance: 1

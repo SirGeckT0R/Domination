@@ -1,6 +1,6 @@
-﻿using Assets.Scripts.Map.AI.Actions;
-using Assets.Scripts.Map.AI.Contexts;
+﻿using Assets.Scripts.Map.AI.Considerations;
 using Assets.Scripts.Map.Commands;
+using Assets.Scripts.Map.Managers;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +9,8 @@ namespace Assets.Scripts.Map.AI
     public class Brain : MonoBehaviour
     {
         public List<Command> actions;
+        public CompositePactConsideration pactConsideration;
+        public List<Command> reactions;
 
         void Awake()
         {
@@ -18,14 +20,43 @@ namespace Assets.Scripts.Map.AI
             }
         }
 
-        public Command FindAndProduceTheBestAction(Context context)
+        public Command FindAndProduceTheBestAction(Contexts.Context context)
         {
+            var pacts = context.CurrentPlayer.PactCommands;
+            float utility;
+            foreach (var createPact in pacts)
+            {
+                context.CurrentPact = createPact;
+                utility = pactConsideration.Evaluate(context);
+
+                if (utility > 0.5)
+                {
+                    (reactions[0] as AcceptPactCommand).player = context.CurrentPlayer;
+                    (reactions[0] as AcceptPactCommand).pactTarget = createPact.Sender;
+                    reactions[0].Execute();
+                    context.CurrentPlayer.AcceptPact(reactions[0] as AcceptPactCommand, createPact);
+                }
+                else
+                {
+                    (reactions[1] as DeclinePactCommand).player = context.CurrentPlayer;
+                    (reactions[1] as DeclinePactCommand).pactTarget = createPact.Sender;
+                    reactions[1].Execute();
+                    context.CurrentPlayer.DeclinePact(reactions[1] as DeclinePactCommand, createPact);
+                }
+
+                context.AttackTarget = null;
+                context.PactTarget = null;
+            }
+
+            pacts.Clear();
+
             Command bestAction = null;
             float highestUtility = float.MinValue;
 
+            utility = 0;
             foreach (var action in actions)
             {
-                float utility = action.CalculateUtility(context);
+                utility = action.CalculateUtility(context);
                 if (utility > highestUtility)
                 {
                     highestUtility = utility;

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8098e06149cae134bb2a1038d2cce93e, type: 3}
-  m_Name: PactCommand
+  m_Name: SendPactCommand
   m_EditorClassIdentifier: 
   targetTag: 
   consideration: {fileID: 11400000, guid: 00d4e9c4abe2cb54d94e1ec72aef9378, type: 2}

@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.AI.Considerations
@@ -8,44 +7,22 @@ namespace Assets.Scripts.Map.AI.Considerations
     public class AcceptPactConsideration : Consideration
     {
         public AnimationCurve curve;
-        public string contextKey;
-        public float keyValue;
         public float pactAcceptance;
 
         public override float Evaluate(Context context)
         {
-            var current = context.CurrentPlayer;
-            var pacts = current.PactCommands;
-
-            var areOnlyTwoPlayersLeft = context.OtherPlayers.Count() < 2;
-            if (areOnlyTwoPlayersLeft)
+            var pact = context.CurrentPact;
+            if (pact == null)
             {
-                Debug.Log("Only two players left, no pacts accepted");
-
                 return 0f;
             }
 
-            foreach (var pact in pacts)
-            {
-                var other = pact.others.FirstOrDefault(p => p.Name.Equals(pact.pact));
-                var inputValue = other.Warriors * keyValue / current.Warriors;
-                var clamped = Mathf.Clamp01(inputValue);
+            float result = pact.Sender.Warriors * pactAcceptance / context.CurrentPlayer.Warriors;
+            float clamped = Mathf.Clamp01(result);
 
-                var utility = curve.Evaluate(clamped);
+            context.PactTarget = pact.Sender;
 
-                var doesHaveLessWarriors = other.Warriors - current.Warriors < -20;
-                if (doesHaveLessWarriors)
-                {
-                    Debug.Log("Decline pact");
-                }else
-                {
-                    //add some more conditions
-
-                    Debug.Log("Accept pact");
-                }
-            }
-
-            return 0f;
+            return curve.Evaluate(clamped);
         }
 
         void Reset()

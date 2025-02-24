@@ -34,6 +34,16 @@ namespace Assets.Scripts.Map.Managers
         {
             _context = new Context();
 
+
+            //var pactEvent2 = new CreatePactEvent(Players[1], Players[0], 3);
+            //_context.RelationEvents.Add(pactEvent2);
+            //Players[0].PactCommands.Add(pactEvent2);
+
+
+            //var pactEvent1 = new CreatePactEvent(Players[2], Players[0], 3);
+            //_context.RelationEvents.Add(pactEvent1);
+            //Players[0].PactCommands.Add(pactEvent1);
+
             StartTurn();
         }
 
@@ -54,6 +64,12 @@ namespace Assets.Scripts.Map.Managers
                 _hasTurnStarted = true;
 
                 UpdateContext();
+                
+                //var pactEvent = new RelationEvent(Players[CurrentPlayerIndex],
+                //    Players[2],
+                //    RelationEventType.SentPact, 3);
+                //_context.RelationEvents.Add(pactEvent);
+
 
                 Players[CurrentPlayerIndex].StartTurn(_context);
             }
@@ -90,20 +106,35 @@ namespace Assets.Scripts.Map.Managers
         public void CreateRelationEvent(Command command)
         {
             var warCommand = command as AttackWeakestAndWealthiestCommand;
-            var pactCommand = command as PactCommand;
+            var pactCommand = command as SendPactCommand;
 
             //switch here
             if (warCommand != null)
             {
-                var warEvent = new RelationEvent(warCommand.player, warCommand.others.FirstOrDefault(p => p.Name.Equals(warCommand.attack)), RelationEventType.War,5);
+                var warEvent = new RelationEvent(warCommand.player, warCommand.attackTarget, RelationEventType.War,5);
                 _context.RelationEvents.Add(warEvent);
             }
 
             if(pactCommand != null)
             {
-                var pactEvent = new RelationEvent(pactCommand.player, pactCommand.others.FirstOrDefault(p => p.Name.Equals(pactCommand.pact)), RelationEventType.Pact, 3);
+                var pactEvent = new CreatePactEvent(pactCommand.player, pactCommand.pactTarget, 3);
+                pactCommand.pactTarget.PactCommands.Add(pactEvent);
                 _context.RelationEvents.Add(pactEvent);
             }
+        }
+
+        public void AcceptPact(AcceptPactCommand command, RelationEvent relEvent)
+        {
+            _context.RelationEvents.Remove(relEvent);
+            var acceptPact = new RelationEvent(command.player, command.pactTarget, RelationEventType.AcceptedPact, 3);
+            _context.RelationEvents.Add(acceptPact);
+        }
+
+        public void DeclinePact(DeclinePactCommand command, RelationEvent relEvent)
+        {
+            _context.RelationEvents.Remove(relEvent);
+            var declinePact = new RelationEvent(command.player, command.pactTarget, RelationEventType.DeniedPact, 3);
+            _context.RelationEvents.Add(declinePact);
         }
 
         private void UpdateContext()
