@@ -2,38 +2,47 @@ using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.AI.Enums;
 using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
+using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Managers
 {
     public class TurnManager : MonoBehaviour
     {
-        [SerializeField] public Player[] Players;
+        [SerializeField] public List<Player> Players;
 
-        private float maxAmountOfTurns = 50;
-        private int _turnCount = 0;
+        private float maxAmountOfTurns = 20;
+        private int _globalTurnCount = 0;
         private bool _hasTurnStarted = false;
+        private bool _hasGlobalTurnStarted = false;
 
         [field: SerializeField] public int MaxCommandsPerTurn { get; private set; } = 2;
+        [field: SerializeField] public int MoneyPerLevel { get; private set; } = 1;
+        [field: SerializeField] public int WarriorsPerLevel { get; private set; } = 1;
 
-        private int _currentPlayerIndex = 0;
-        public int CurrentPlayerIndex
-        {
-            get => _currentPlayerIndex;
-            private set => _currentPlayerIndex = value % Players.Length;
-        }
+        public int CurrentPlayerIndex { get; private set;}
 
         public List<Command> Commands { get; private set; } = new List<Command>();
 
         private Context _context;
 
+        private CountyManager _countyManager;
+
+        [Zenject.Inject]
+        public void Construct(CountyManager countyManager)
+        {
+            _countyManager = countyManager;
+        }
+
         private void Start()
         {
             _context = new Context();
-
+            _context.CountyManager = _countyManager;
 
             //var pactEvent2 = new CreatePactEvent(Players[1], Players[0], 3);
             //_context.RelationEvents.Add(pactEvent2);
@@ -49,7 +58,7 @@ namespace Assets.Scripts.Map.Managers
 
         private void StartTurn()
         {
-            if (_turnCount >= maxAmountOfTurns)
+            if (_globalTurnCount >= maxAmountOfTurns)
             {
                 foreach (var player in Players)
                 {
@@ -59,17 +68,31 @@ namespace Assets.Scripts.Map.Managers
                 return;
             }
 
+            if (!_hasGlobalTurnStarted)
+            {
+                _context.RelationEvents = _context.RelationEvents.Where(relEvent => !relEvent.UpdateDuration()).ToList();
+                _hasGlobalTurnStarted = true;
+            }
+
+
             if (!_hasTurnStarted)
             {
+                var isLost = _countyManager.CountyOwners[Players[CurrentPlayerIndex].Id].Count <= 0;
+                if (isLost)
+                {
+                    EndTurn();
+                    return;
+                }
+
                 _hasTurnStarted = true;
 
                 UpdateContext();
-                
+
                 //var pactEvent = new RelationEvent(Players[CurrentPlayerIndex],
                 //    Players[2],
                 //    RelationEventType.SentPact, 3);
                 //_context.RelationEvents.Add(pactEvent);
-
+                
 
                 Players[CurrentPlayerIndex].StartTurn(_context);
             }
@@ -78,14 +101,50 @@ namespace Assets.Scripts.Map.Managers
         public void EndTurn()
         {
             Commands.Clear();
+            var currentPlayer = Players[CurrentPlayerIndex];
+            var playerCounties = _countyManager.CountyOwners[currentPlayer.Id];
+            Debug.Log(currentPlayer.Name + " " + currentPlayer.Warriors + " " + currentPlayer.Money + " " + playerCounties.ToCommaSeparatedString());
 
-            Debug.Log(Players[CurrentPlayerIndex].Name + " " + Players[CurrentPlayerIndex].Warriors + " " + Players[CurrentPlayerIndex].Money);
+            UpdateStats(currentPlayer, playerCounties);
 
             _hasTurnStarted = false;
-            _turnCount++;
-            CurrentPlayerIndex += 1;
+            if (CurrentPlayerIndex >= Players.Count - 1)
+            {
+                RemoveLostPlayers();
+
+                _globalTurnCount++;
+                CurrentPlayerIndex = 0;
+                _hasGlobalTurnStarted = false;
+            }
+            else
+            {
+                CurrentPlayerIndex++;
+            }
 
             StartTurn();
+        }
+
+        private void UpdateStats(Player currentPlayer, List<County> playerCounties)
+        {
+            var totalEconomicLevel = 0;
+            var totalMilitaryLevel = 0;
+            foreach (var county in playerCounties)
+            {
+                totalEconomicLevel += county.EconomicLevel;
+                totalMilitaryLevel += county.MilitaryLevel;
+            }
+
+            currentPlayer.Money += MoneyPerLevel * totalEconomicLevel;
+            currentPlayer.Warriors += WarriorsPerLevel * totalMilitaryLevel;
+        }
+
+        private void RemoveLostPlayers()
+        {
+            var playersWhoLostIds = _countyManager.PlayersWhoLost();
+            if (playersWhoLostIds.Count > 0)
+            {
+                Players.RemoveAll(player => playersWhoLostIds.Contains(player.Id));
+            }
         }
 
         public Context AddCommand(Command command)
@@ -111,11 +170,11 @@ namespace Assets.Scripts.Map.Managers
             //switch here
             if (warCommand != null)
             {
-                var warEvent = new RelationEvent(warCommand.player, warCommand.attackTarget, RelationEventType.War,5);
+                var warEvent = new RelationEvent(warCommand.player, warCommand.attackTarget, RelationEventType.War, 3);
                 _context.RelationEvents.Add(warEvent);
             }
 
-            if(pactCommand != null)
+            if (pactCommand != null)
             {
                 var pactEvent = new CreatePactEvent(pactCommand.player, pactCommand.pactTarget, 3);
                 pactCommand.pactTarget.PactCommands.Add(pactEvent);
@@ -139,17 +198,15 @@ namespace Assets.Scripts.Map.Managers
 
         private void UpdateContext()
         {
-            var remaining = Players.Where(player => player != Players[CurrentPlayerIndex]).ToArray();
+            var remaining = Players.Where(
+                player => player != Players[CurrentPlayerIndex] 
+                && _countyManager.CountyOwners[player.Id].Count > 0
+                ).ToList();
 
             _context.CurrentPlayer = Players[CurrentPlayerIndex];
             _context.SetData("Warriors", Players[CurrentPlayerIndex].Warriors);
             _context.SetData("Money", Players[CurrentPlayerIndex].Money);
             _context.OtherPlayers = remaining;
-
-            if (!_hasTurnStarted)
-            {
-                _context.RelationEvents = _context.RelationEvents.Where(relEvent => !relEvent.UpdateDuration()).ToList();
-            }
         }
 
         public void RemoveLastCommand()

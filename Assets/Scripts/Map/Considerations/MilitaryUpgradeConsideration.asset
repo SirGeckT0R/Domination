@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a24a6fdfcfcab21448793c5a5c3c29f8, type: 3}
-  m_Name: HostileCurveConsideration
+  m_Script: {fileID: 11500000, guid: 0d761edc6169ee24b8b14fb3b66abe34, type: 3}
+  m_Name: MilitaryUpgradeConsideration
   m_EditorClassIdentifier: 
   curve:
     serializedVersion: 2
@@ -25,8 +25,17 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.6426599
+      value: 0.2171123
+      inSlope: -1.4990385
+      outSlope: -1.4990385
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
-      value: 0.1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -36,6 +45,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  ignoreEvents: 0200000003000000
-  keyImportance: 30
-  warriorRatioThreshold: 0
+  contextKey: 
+  keyImportance: 0
+  priceForMilitaryUpgrade: 20
+  optimalMilitaryLevel: 10

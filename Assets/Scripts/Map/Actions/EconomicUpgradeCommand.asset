@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45c2644f799647a4c9f0a75abe1f738f, type: 3}
-  m_Name: EconomicCommand
+  m_Script: {fileID: 11500000, guid: f4f0b45ecfe741540997246aff2f886f, type: 3}
+  m_Name: EconomicUpgradeCommand
   m_EditorClassIdentifier: 
   targetTag: 
-  consideration: {fileID: 11400000, guid: facd1eeff13920c4ab2d88efe194a929, type: 2}
-  money: 5
+  consideration: {fileID: 11400000, guid: ffabdb2ba4c5f8745972270bc050f860, type: 2}
+  money: 0

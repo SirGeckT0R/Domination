@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Players;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Managers
@@ -10,7 +11,7 @@ namespace Assets.Scripts.Map.Managers
     {
         public Player pactTarget;
         public Player player;
-        public Player[] others;
+        public List<Player> others;
 
         public override void Execute()
         {

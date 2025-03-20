@@ -21,7 +21,6 @@ namespace Assets.Scripts.Map.AI.Considerations
             float result = considerations[0].Evaluate(context);
             if (result == 0f && allMustBeNonZero) return 0f;
 
-            // Suggestion: Only 2 Considerations per Composite
             for (int i = 1; i < considerations.Count; i++)
             {
                 float value = considerations[i].Evaluate(context);

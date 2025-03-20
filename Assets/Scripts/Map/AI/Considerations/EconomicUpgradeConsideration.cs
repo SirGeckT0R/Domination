@@ -3,16 +3,24 @@ using UnityEngine;
 
 namespace Assets.Scripts.Map.AI.Considerations
 {
-    [CreateAssetMenu(menuName = "UtilityAI/Considerations/CurveConsideration")]
-    public class CurveConsideration : Consideration
+    [CreateAssetMenu(menuName = "UtilityAI/Considerations/EconomicUpgradeConsideration")]
+    public class EconomicUpgradeConsideration : Consideration
     {
         public AnimationCurve curve;
         public string contextKey;
         public float keyImportance;
+        public float priceForMilitaryUpgrade;
 
         public override float Evaluate(Context context)
         {
-            var inputValue = context.GetData<int>(contextKey) / keyImportance;
+            var stats = context.CountyManager.GetCountiesTotalStats(context.CurrentPlayer.Id);
+
+            if (!stats.CanUpgradeEconomy)
+            {
+                return 0f;
+            }
+
+            var inputValue = stats.TotalEconomicLevel * keyImportance / priceForMilitaryUpgrade;
 
             var utility = curve.Evaluate(inputValue);
 
@@ -28,3 +36,4 @@ namespace Assets.Scripts.Map.AI.Considerations
         }
     }
 }
+
