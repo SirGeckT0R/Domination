@@ -1,50 +1,58 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
-using Assets.Scripts.Map.Managers;
+using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Players;
 using UnityEngine;
+
 namespace Assets.Scripts.Map.Commands
 {
     [CreateAssetMenu(menuName = "UtilityAI/Actions/EconomicUpgradeCommand")]
     public class EconomicUpgradeCommand : Command
     {
-        public int money;
-        private Player player;
-        private CountyManager countyManager;
+        private Player _player { get; set; }
+        private County _county { get; set; }
+
+        private byte _prevEconomicLevel = 0;
+
         public override void UpdateContext(Context context)
         {
-            this.player = context.CurrentPlayer;
-            this.countyManager = context.CountyManager;
+            _player = context.CurrentPlayer;
+            _county = context.CountyManager.ChooseCountyForEconomicUpgrade(_player.Id);
         }
 
-        //public void Execute()
-        //{
-        //    player.Money += money;
-        //    player.Warriors -= money;
-        //    Debug.Log($"Executing an economic action with parameters {money}");
-        //}
+        public void UpdateContext(County county, Player player)
+        {
+            _player = player;
+            _county = county;
+        }
 
         public override void Execute()
         {
-            var county = countyManager.ChooseCountyForEconomicUpgrade(player.Id);
-            if (county == null)
+            if (!IsValidCountyForUpgrade())
             {
                 return;
             }
 
-            county.IncrementBuildingLevel(Counties.BuildingType.Economic);
-            Debug.Log($"Executing an economic upgrade action with parameters");
-        }
+            _prevEconomicLevel = _county.EconomicLevel;
+            _county.EconomicLevel++;
 
-        //public void Undo()
-        //{
-        //    Debug.Log($"Undoing an economic action with parameters {money}");
-        //}
+            Debug.Log("Executing an economic upgrade action");
+        }
 
         public override void Undo()
         {
-            //player.Money -= money;
-            //player.Warriors += 1;
-            //Debug.Log($"Undoing an economic action with parameters {money}");
+            if(_county == null)
+            {
+                return;
+            }
+
+            _county.EconomicLevel = _prevEconomicLevel;
+            _prevEconomicLevel = 0;
+            Debug.Log("Undoing an economic action");
+        }
+
+        private bool IsValidCountyForUpgrade()
+        {
+            return _county != null && _player.Id == _county.BelongsTo;
         }
     }
 }

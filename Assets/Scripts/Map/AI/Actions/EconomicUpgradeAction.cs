@@ -8,13 +8,13 @@ namespace Assets.Scripts.Map.AI.Actions
     {
         public override void Execute(Context context)
         {
-            var county = context.CountyManager.ChooseCountyForEconomicUpgrade(context.CurrentPlayer.Id);
-            if(county == null)
-            {
-                return;
-            }
+            //var county = context.CountyManager.ChooseCountyForEconomicUpgrade(context.CurrentPlayer.Id);
+            //if(county == null)
+            //{
+            //    return;
+            //}
 
-            county.IncrementBuildingLevel(Counties.BuildingType.Economic);
+            //county.IncrementBuildingLevel(Counties.BuildingType.Economic);
         }
     }
 }

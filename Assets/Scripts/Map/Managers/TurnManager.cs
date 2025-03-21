@@ -101,6 +101,7 @@ namespace Assets.Scripts.Map.Managers
         public void EndTurn()
         {
             Commands.Clear();
+
             var currentPlayer = Players[CurrentPlayerIndex];
             var playerCounties = _countyManager.CountyOwners[currentPlayer.Id];
             Debug.Log(currentPlayer.Name + " " + currentPlayer.Warriors + " " + currentPlayer.Money + " " + playerCounties.ToCommaSeparatedString());
@@ -152,6 +153,7 @@ namespace Assets.Scripts.Map.Managers
             if (Commands.Count < MaxCommandsPerTurn)
             {
                 Commands.Add(command);
+
                 command.Execute();
                 CreateRelationEvent(command);
                 UpdateContext();
@@ -164,21 +166,19 @@ namespace Assets.Scripts.Map.Managers
 
         public void CreateRelationEvent(Command command)
         {
-            var warCommand = command as AttackWeakestAndWealthiestCommand;
-            var pactCommand = command as SendPactCommand;
-
-            //switch here
-            if (warCommand != null)
+            switch (command)
             {
-                var warEvent = new RelationEvent(warCommand.player, warCommand.attackTarget, RelationEventType.War, 3);
-                _context.RelationEvents.Add(warEvent);
-            }
+                case AttackWeakestAndWealthiestCommand warCommand:
+                    var warEvent = new RelationEvent(warCommand.player, warCommand.attackTarget, RelationEventType.War, 3);
+                    _context.RelationEvents.Add(warEvent);
 
-            if (pactCommand != null)
-            {
-                var pactEvent = new CreatePactEvent(pactCommand.player, pactCommand.pactTarget, 3);
-                pactCommand.pactTarget.PactCommands.Add(pactEvent);
-                _context.RelationEvents.Add(pactEvent);
+                    break;
+                case SendPactCommand pactCommand:
+                    var pactEvent = new CreatePactEvent(pactCommand.player, pactCommand.pactTarget, 3);
+                    pactCommand.pactTarget.PactCommands.Add(pactEvent);
+                    _context.RelationEvents.Add(pactEvent);
+
+                    break;
             }
         }
 
@@ -211,6 +211,11 @@ namespace Assets.Scripts.Map.Managers
 
         public void RemoveLastCommand()
         {
+            if(Commands.Count < 1)
+            {
+                return;
+            }
+
             var last = Commands.Count - 1;
             Commands[last].Undo();
 

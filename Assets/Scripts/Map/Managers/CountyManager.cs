@@ -14,8 +14,9 @@ namespace Assets.Scripts.Map.Managers
 
         [field: SerializeField] public Dictionary<ushort, List<County>> CountyOwners { get; private set; } = new Dictionary<ushort, List<County>>();
 
-        [field: SerializeField] public static byte MaxEconomicLevel { get; private set; } = 5;
-        [field: SerializeField] public static byte MaxMilitaryLevel { get; private set; } = 5;
+        [field: SerializeField] public byte MaxEconomicLevel { get; } = 5;
+        [field: SerializeField] public byte MaxMilitaryLevel { get; } = 5;
+        [field: SerializeField] public int PriceForMilitaryUpgrade { get; } = 15;
 
         private void Start()
         {

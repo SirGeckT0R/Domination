@@ -49,16 +49,6 @@ namespace Assets.Scripts.Map.Players
             turnManager.DeclinePact(command, pactEvent);
         }
 
-        //public void LoseCounty(Guid countyId)
-        //{
-        //    Counties.Remove(countyId);
-        //}
-
-        //public void AcquireCounty(Guid countyId)
-        //{
-        //    Counties.Add(countyId);
-        //}
-
         public void UndoLastAction()
         {
             turnManager.RemoveLastCommand();

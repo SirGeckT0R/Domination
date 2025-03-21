@@ -8,14 +8,14 @@ namespace Assets.Scripts.Map.AI.Actions
     {
         public override void Execute(Context context)
         {
-            var county = context.CountyManager.ChooseCountyForMilitaryUpgrade(context.CurrentPlayer.Id);
-            if (county == null)
-            {
-                return;
-            }
+            //var county = context.CountyManager.ChooseCountyForMilitaryUpgrade(context.CurrentPlayer.Id);
+            //if (county == null)
+            //{
+            //    return;
+            //}
 
-            county.IncrementBuildingLevel(Counties.BuildingType.Military);
-            context.CurrentPlayer.Money -= 15;
+            //county.IncrementBuildingLevel(Counties.BuildingType.Military);
+            //context.CurrentPlayer.Money -= 15;
         }
     }
 }

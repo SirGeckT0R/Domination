@@ -1,5 +1,5 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
-using Assets.Scripts.Map.Managers;
+using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Players;
 using UnityEngine;
 
@@ -9,37 +9,59 @@ namespace Assets.Scripts.Map.Commands
     public class MilitaryUpgradeCommand : Command
     {
         public int militaryUpgradePrice = 15;
-        private Player player;
-        private CountyManager countyManager;
+        private Player _player { get; set; }
+        private County _county { get; set; }
+
+        private byte _prevMilitaryLevel = 0;
+        private int _prevMoney = 0;
+
         public override void UpdateContext(Context context)
         {
-            this.player = context.CurrentPlayer;
-            this.countyManager = context.CountyManager;
+            _player = context.CurrentPlayer;
+            _county = context.CountyManager.ChooseCountyForMilitaryUpgrade(_player.Id);
+        }
+
+        public void UpdateContext(County county, Player player)
+        {
+            _player = player;
+            _county = county;
         }
 
         public override void Execute()
         {
-            var county = countyManager.ChooseCountyForMilitaryUpgrade(player.Id);
-            if (county == null)
+            if (!IsValidForUpgrade())
             {
                 return;
             }
 
-            county.IncrementBuildingLevel(Counties.BuildingType.Military);
-            player.Money -= militaryUpgradePrice;
-            Debug.Log($"Executing military upgrade action with parameters");
-        }
+            _prevMilitaryLevel = _county.MilitaryLevel;
+            _prevMoney = _player.Money;
 
-        //public void Undo()
-        //{
-        //    Debug.Log($"Undoing relations action with parameters {losses}");
-        //}
+            _county.MilitaryLevel++;
+            _player.Money -= militaryUpgradePrice;
+
+            Debug.Log($"Executing military upgrade action");
+        }
 
         public override void Undo()
         {
-            //player.Warriors -= losses;
-            //player.Money += 1;
-            //Debug.Log($"Undoing relations action with parameters {losses}");
+            if (_county == null)
+            {
+                return;
+            }
+
+            _county.MilitaryLevel = _prevMilitaryLevel;
+            _player.Money = _prevMoney;
+
+            _prevMilitaryLevel = 0;
+            _prevMoney = 0;
+
+            Debug.Log("Undoing an military action");
+        }
+
+        private bool IsValidForUpgrade()
+        {
+            return _county != null && _player.Id == _county.BelongsTo && _player.Money >= militaryUpgradePrice;
         }
     }
 }

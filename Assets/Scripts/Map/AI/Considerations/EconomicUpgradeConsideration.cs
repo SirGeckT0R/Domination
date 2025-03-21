@@ -13,6 +13,7 @@ namespace Assets.Scripts.Map.AI.Considerations
 
         public override float Evaluate(Context context)
         {
+            var priceForMilitaryUpgrade = context.CountyManager.PriceForMilitaryUpgrade;
             var stats = context.CountyManager.GetCountiesTotalStats(context.CurrentPlayer.Id);
 
             if (!stats.CanUpgradeEconomy)
