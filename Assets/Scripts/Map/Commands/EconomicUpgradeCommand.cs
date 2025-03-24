@@ -8,21 +8,21 @@ namespace Assets.Scripts.Map.Commands
     [CreateAssetMenu(menuName = "UtilityAI/Actions/EconomicUpgradeCommand")]
     public class EconomicUpgradeCommand : Command
     {
-        private Player _player { get; set; }
-        private County _county { get; set; }
+        public Player Player { get; private set; }
+        public County County { get; private set; }
 
         private byte _prevEconomicLevel = 0;
 
         public override void UpdateContext(Context context)
         {
-            _player = context.CurrentPlayer;
-            _county = context.CountyManager.ChooseCountyForEconomicUpgrade(_player.Id);
+            Player = context.CurrentPlayer;
+            County = context.CountyManager.ChooseCountyForEconomicUpgrade(Player.Id);
         }
 
         public void UpdateContext(County county, Player player)
         {
-            _player = player;
-            _county = county;
+            Player = player;
+            County = county;
         }
 
         public override void Execute()
@@ -32,27 +32,27 @@ namespace Assets.Scripts.Map.Commands
                 return;
             }
 
-            _prevEconomicLevel = _county.EconomicLevel;
-            _county.EconomicLevel++;
+            _prevEconomicLevel = County.EconomicLevel;
+            County.EconomicLevel++;
 
             Debug.Log("Executing an economic upgrade action");
         }
 
         public override void Undo()
         {
-            if(_county == null)
+            if(County == null)
             {
                 return;
             }
 
-            _county.EconomicLevel = _prevEconomicLevel;
+            County.EconomicLevel = _prevEconomicLevel;
             _prevEconomicLevel = 0;
             Debug.Log("Undoing an economic action");
         }
 
         private bool IsValidCountyForUpgrade()
         {
-            return _county != null && _player.Id == _county.BelongsTo;
+            return County != null && Player.Id == County.BelongsTo;
         }
     }
 }

@@ -2,58 +2,76 @@
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Managers;
 using Assets.Scripts.Map.Players;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
 {
     [CreateAssetMenu(menuName = "UtilityAI/Actions/AttackWeakestAndWelthiestCommand")]
-    public class AttackWeakestAndWealthiestCommand : Command
+    public class AttackWeakestAndWealthiestCommand : Command, IUndoable
     {
-        public Player attackTarget;
-        public Player player;
-        public List<Player> others;
-        public County county;
+        public Player AttackTarget { get; private set; }
+        public Player Player { get; private set; }
+        public County County { get; private set; }
 
         private CountyManager _countyManager;
 
         public override void Execute()
         {
-            if (attackTarget == null)
+            if (AttackTarget == null)
             {
                 Debug.Log("Not a valid attack target");
             }
 
-            Debug.Log("Attacking this player: " + attackTarget);
+            Debug.Log("Attacking this player: " + AttackTarget);
 
             var rand = Random.Range(0, 10);
             if (rand > 5)
             {
-                player.Warriors -= 5;
-                player.Money -= 10;
+                Player.Warriors -= 5;
+                Player.Money -= 10;
 
-                attackTarget.Warriors -= 10;
-                attackTarget.Money += 10;
+                AttackTarget.Warriors -= 10;
+                AttackTarget.Money += 10;
 
                 Debug.Log("Fight was lost");
             }
             else
             {
-                if (player is AIPlayer)
+                if (Player is AIPlayer)
                 {
-                    county = _countyManager.ChooseCounty(player, attackTarget);
+                    County = _countyManager.ChooseCounty(Player, AttackTarget);
                 }
 
-                player.Warriors -= 5;
-                player.Money += 10;
+                Player.Warriors -= 5;
+                Player.Money += 10;
 
-                attackTarget.Warriors -= 10;
-                attackTarget.Money -= 10;
+                AttackTarget.Warriors -= 10;
+                AttackTarget.Money -= 10;
 
-                _countyManager.TryChangeOwners(player.Id, county);
                 Debug.Log("Fight was won");
+                _countyManager.TryChangeOwners(Player.Id, County);
+                //HandleCountySwap();
             }
         }
+
+        //private void HandleCountySwap()
+        //{
+        //    var isSuccessful = _countyManager.TryChangeOwners(player.Id, county);
+        //    if (!isSuccessful)
+        //    {
+        //        return;
+        //    }
+
+        //    if (player is HumanPlayer newOwner)
+        //    {
+        //        newOwner.AddCountyListener(county);
+        //    }
+
+        //    if (attackTarget is HumanPlayer oldOwner)
+        //    {
+        //        oldOwner.RemoveCountyListener(county);
+        //    }
+        //}
 
         public override void Undo()
         {
@@ -62,11 +80,18 @@ namespace Assets.Scripts.Map.Commands
 
         public override void UpdateContext(Context context)
         {
-            this.player = context.CurrentPlayer;
-            this.others = context.OtherPlayers;
-            this.attackTarget = context.WarTargetInfo.AttackTarget;
-            this.county = context.WarTargetInfo.County;
-            this._countyManager = context.CountyManager;
+            Player = context.CurrentPlayer;
+            AttackTarget = context.WarTargetInfo.AttackTarget;
+            County = context.WarTargetInfo.County;
+            _countyManager = context.CountyManager;
+        }
+
+        public void UpdateContext(County county, Player player, CountyManager countyManager, Player attackTarget)
+        {
+            Player = player;
+            County = county;
+            AttackTarget = attackTarget;
+            _countyManager = countyManager;
         }
     }
 }

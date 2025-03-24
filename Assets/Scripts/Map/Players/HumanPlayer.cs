@@ -3,18 +3,18 @@ using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Managers;
 using Assets.Scripts.Map.UI;
+using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Players
 {
-    public class HumanPlayer : Player
+    public class HumanPlayer : Player, IInteractable
     {
-        [field: SerializeField] public Command EconomicCommand { get; private set; }
+        public bool IsHisTurn { get; private set; } = false;
 
-        private bool _isHisTurn = false;
-        private Context context;
-
+        private Context _context;
         private CountyManager _countyManager;
 
         [Zenject.Inject]
@@ -23,36 +23,29 @@ namespace Assets.Scripts.Map.Players
             _countyManager = countyManager;
         }
 
-        private IEnumerator Start()
-        {
-            yield return new WaitUntil(() => _countyManager.didStart);
+        //private IEnumerator Start()
+        //{
+        //    yield return new WaitUntil(() => _countyManager.didStart);
 
-            var playerCounties = _countyManager.CountyOwners[Id];
-            foreach (var county in playerCounties)
-            {
-                county.OnCountyInteractionEvent.AddListener((interactionInfo) => HandleCountyInteraction(interactionInfo));
-            }
-        }
+        //    var playerCounties = _countyManager.CountyOwners[Id];
+        //    foreach (var county in playerCounties)
+        //    {
+        //        county.OnCountyInteraction.AddListener(HandleCountyInteraction);
+        //    }
+        //}
 
         private void Update()
         {
-            if (!_isHisTurn)
+            if (!IsHisTurn)
             {
                 return;
-            }
-
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                EconomicCommand.UpdateContext(context);
-                Debug.Log("Added economic command for human");
-                context = turnManager.AddCommand(EconomicCommand);
             }
 
             if (Input.GetKeyDown(KeyCode.F))
             {
 
                 Debug.Log("Ended turn for human");
-                _isHisTurn = false;
+                IsHisTurn = false;
                 turnManager.EndTurn();
             }
 
@@ -63,13 +56,15 @@ namespace Assets.Scripts.Map.Players
             }
         }
 
-        public override void StartTurn(Context data)
+        public override IEnumerator StartTurn(Context data)
         {
-            context = data;
-            _isHisTurn = true;
+            IsHisTurn = true;
+            _context = data;
+
+            yield break; 
         }
 
-        private void HandleCountyInteraction(CountyInteractionInfo interactionInfo)
+        public void HandleCountyInteraction(CountyInteractionInfo interactionInfo)
         {
             switch (interactionInfo)
             {
@@ -85,6 +80,8 @@ namespace Assets.Scripts.Map.Players
                     break;
                 case { InteractionType: CountyInteractionType.Attack }:
                     Debug.Log("Attacking enemy county" + interactionInfo);
+                    AttackCounty(interactionInfo.County);
+
                     break;
             }
         }
@@ -110,5 +107,30 @@ namespace Assets.Scripts.Map.Players
 
             turnManager.AddCommand(command);
         }
+        private void AttackCounty(County county)
+        {
+            var attackTarget = turnManager.Players.FirstOrDefault(player => player.Id == county.BelongsTo);
+            var wereInvolvedInRelations = _context.RelationEvents.Any(relEvent => relEvent.ArePlayersInvolved(this, attackTarget));
+            if (wereInvolvedInRelations)
+            {
+                Debug.Log("Can't declare war");
+                return;
+            }
+
+            var command = ScriptableObject.CreateInstance<AttackWeakestAndWealthiestCommand>();
+            command.UpdateContext(county, this, _countyManager, attackTarget);
+
+            turnManager.AddCommand(command);
+        }
+
+        //public void AddCountyListener(County county)
+        //{
+        //    county.OnCountyInteraction.AddListener(HandleCountyInteraction);
+        //}
+
+        //public void RemoveCountyListener(County county)
+        //{
+        //    county.OnCountyInteraction.RemoveListener(HandleCountyInteraction);
+        //}
     }
 }

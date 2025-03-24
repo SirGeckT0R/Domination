@@ -1,4 +1,4 @@
-﻿    using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Map.PlayerInput
 {
@@ -6,6 +6,7 @@ namespace Assets.Scripts.Map.PlayerInput
     {
         private Camera _camera;
         private CountyUI _currentlyActiveCountyUI;
+
         [SerializeField] private LayerMask _countyMask;
         [SerializeField] private LayerMask _uiMask;
 
@@ -33,27 +34,27 @@ namespace Assets.Scripts.Map.PlayerInput
                     return;
                 }
 
-                ActivateCountyCanvas(hit);
+                ActivateCountyUI(hit);
 
                 return;
             }
 
             if (_currentlyActiveCountyUI != null)
             {
-                _currentlyActiveCountyUI.DeactivateUICanvas();
+                _currentlyActiveCountyUI.Activate(false);
             }
         }
 
-        private void ActivateCountyCanvas(RaycastHit hit)
-        {
-            var detectedCanvas = hit.collider.GetComponent<CountyUI>();
-            if (_currentlyActiveCountyUI != null && _currentlyActiveCountyUI != detectedCanvas)
+        private void ActivateCountyUI(RaycastHit hit)
+        {   
+            var detectedCountyUI = hit.collider.GetComponent<CountyUI>();
+            if (_currentlyActiveCountyUI != null && _currentlyActiveCountyUI != detectedCountyUI)
             {
-                _currentlyActiveCountyUI.DeactivateUICanvas();
+                _currentlyActiveCountyUI.Activate(false);
             }
 
-            _currentlyActiveCountyUI = detectedCanvas;
-            _currentlyActiveCountyUI.ActivateUICanvas();
+            _currentlyActiveCountyUI = detectedCountyUI;
+            _currentlyActiveCountyUI.Activate(true);
         }
     }
 }

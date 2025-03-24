@@ -8,23 +8,24 @@ namespace Assets.Scripts.Map.Commands
     [CreateAssetMenu(menuName = "UtilityAI/Actions/MilitaryUpgradeCommand")]
     public class MilitaryUpgradeCommand : Command
     {
+        //Change to ScriptableObject
         public int militaryUpgradePrice = 15;
-        private Player _player { get; set; }
-        private County _county { get; set; }
+        public Player Player { get; private set; }
+        public County County { get; private set; }
 
         private byte _prevMilitaryLevel = 0;
         private int _prevMoney = 0;
 
         public override void UpdateContext(Context context)
         {
-            _player = context.CurrentPlayer;
-            _county = context.CountyManager.ChooseCountyForMilitaryUpgrade(_player.Id);
+            Player = context.CurrentPlayer;
+            County = context.CountyManager.ChooseCountyForMilitaryUpgrade(Player.Id);
         }
 
         public void UpdateContext(County county, Player player)
         {
-            _player = player;
-            _county = county;
+            Player = player;
+            County = county;
         }
 
         public override void Execute()
@@ -34,24 +35,24 @@ namespace Assets.Scripts.Map.Commands
                 return;
             }
 
-            _prevMilitaryLevel = _county.MilitaryLevel;
-            _prevMoney = _player.Money;
+            _prevMilitaryLevel = County.MilitaryLevel;
+            _prevMoney = Player.Money;
 
-            _county.MilitaryLevel++;
-            _player.Money -= militaryUpgradePrice;
+            County.MilitaryLevel++;
+            Player.Money -= militaryUpgradePrice;
 
             Debug.Log($"Executing military upgrade action");
         }
 
         public override void Undo()
         {
-            if (_county == null)
+            if (County == null)
             {
                 return;
             }
 
-            _county.MilitaryLevel = _prevMilitaryLevel;
-            _player.Money = _prevMoney;
+            County.MilitaryLevel = _prevMilitaryLevel;
+            Player.Money = _prevMoney;
 
             _prevMilitaryLevel = 0;
             _prevMoney = 0;
@@ -61,7 +62,7 @@ namespace Assets.Scripts.Map.Commands
 
         private bool IsValidForUpgrade()
         {
-            return _county != null && _player.Id == _county.BelongsTo && _player.Money >= militaryUpgradePrice;
+            return County != null && Player.Id == County.BelongsTo && Player.Money >= militaryUpgradePrice;
         }
     }
 }

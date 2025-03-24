@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Managers;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -54,6 +55,6 @@ namespace Assets.Scripts.Map.Players
             turnManager.RemoveLastCommand();
         }
 
-        public abstract void StartTurn(AI.Contexts.Context data);
+        public abstract IEnumerator StartTurn(AI.Contexts.Context data);
     }
 }

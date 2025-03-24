@@ -28,7 +28,8 @@ namespace Assets.Scripts.Map.Counties
         private byte _maxEconomicLevel;
         private byte _maxMilitaryLevel;
 
-        public UnityEvent<CountyInteractionInfo> OnCountyInteractionEvent;
+
+        public UnityEvent<CountyInteractionInfo> OnCountyInteraction;
 
         [Inject]
         public void  Construct(CountyManager countyManager)
@@ -36,6 +37,12 @@ namespace Assets.Scripts.Map.Counties
             _maxEconomicLevel = countyManager.MaxEconomicLevel;
             _maxMilitaryLevel = countyManager.MaxMilitaryLevel;
         }
+
+        //private void HandleInteractionUI(CountyInteractionType interactionType)
+        //{
+        //    var countyInteractionInfo = new CountyInteractionInfo(this, interactionType);
+        //    OnCountyInteraction?.Invoke(countyInteractionInfo);
+        //}
 
         //public void IncrementBuildingLevel(BuildingType buildingType)
         //{
@@ -63,17 +70,5 @@ namespace Assets.Scripts.Map.Counties
         //    var newLevel = MilitaryLevel + 1;
         //    MilitaryLevel = (byte)Mathf.Clamp(newLevel, 0, _maxMilitaryLevel);
         //}
-
-        public void OnEconomicUpgradeClick()
-        {
-            var interactionInfo = new CountyInteractionInfo(this, CountyInteractionType.EconomicUpgrade);
-            OnCountyInteractionEvent?.Invoke(interactionInfo);
-        }
-
-        public void OnMilitaryUpgradeClick()
-        {
-            var interactionInfo = new CountyInteractionInfo(this, CountyInteractionType.MilitaryUpgrade);
-            OnCountyInteractionEvent?.Invoke(interactionInfo);
-        }
     }
 }
