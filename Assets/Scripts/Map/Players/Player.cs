@@ -4,6 +4,7 @@ using Assets.Scripts.Map.Managers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Zenject;
 
 namespace Assets.Scripts.Map.Players
@@ -32,6 +33,10 @@ namespace Assets.Scripts.Map.Players
 
         protected TurnManager turnManager;
 
+        public UnityEvent<Command> OnCommandAdded;
+        public UnityEvent OnCommandRemoved;
+        public UnityEvent OnTurnEnded;
+
         public List<CreatePactEvent> PactCommands { get; private set; } = new List<CreatePactEvent>();
 
         [Inject]
@@ -55,6 +60,6 @@ namespace Assets.Scripts.Map.Players
             turnManager.RemoveLastCommand();
         }
 
-        public abstract IEnumerator StartTurn(AI.Contexts.Context data);
+        public abstract IEnumerator ProduceCommand(AI.Contexts.Context data);
     }
 }

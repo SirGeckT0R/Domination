@@ -13,19 +13,11 @@ namespace Assets.Scripts.Map.Players
             Brain = GetComponent<Brain>();
         } 
 
-        public override IEnumerator StartTurn(AI.Contexts.Context data)
+        public override IEnumerator ProduceCommand(AI.Contexts.Context data)
         {
             var action = Brain.FindAndProduceTheBestAction(data);
-            data = turnManager.AddCommand(action);
-
             yield return new WaitForSeconds(1f);
-
-            action = Brain.FindAndProduceTheBestAction(data);
-
-            yield return new WaitForSeconds(1f);
-
-            turnManager.AddCommand(action);
-            turnManager.EndTurn();
+            OnCommandAdded?.Invoke(action);
         }
     }
 }

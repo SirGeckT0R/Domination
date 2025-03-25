@@ -1,25 +1,29 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
-using Assets.Scripts.Map.Players;
+using Assets.Scripts.Map.AI.Enums;
+using Assets.Scripts.Map.AI.Events;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
 {
     [CreateAssetMenu(menuName = "UtilityAI/Actions/AcceptPactCommand")]
-    public class AcceptPactCommand : Command
+    public class AcceptPactCommand : Command, IUndoable
     {
-        public Player pactTarget;
-        public Player player;
-        public List<Player> others;
+        public CreatePactEvent PactEvent { get; private set; }
+        public List<RelationEvent> RelationEvents{ get; private set; }
 
         public override void Execute()
         {
-            if (pactTarget == null)
+            if (PactEvent == null)
             {
-                Debug.Log("Not a valid pact target");
+                Debug.Log("Not a valid pact event");
             }
 
-            Debug.Log("Accepting pact from this player: " + pactTarget);
+            RelationEvents.Remove(PactEvent);
+            var acceptPact = new RelationEvent(PactEvent.Sender, PactEvent.Reciever, RelationEventType.AcceptedPact, 3);
+            RelationEvents.Add(acceptPact);
+
+            Debug.Log("Accepting this pact: " + PactEvent);
         }
 
         public override void Undo()
@@ -29,9 +33,12 @@ namespace Assets.Scripts.Map.Commands
 
         public override void UpdateContext(Context context)
         {
-            this.player = context.CurrentPlayer;
-            this.others = context.OtherPlayers;
-            this.pactTarget = context.PactTarget;
+        }
+
+        public void UpdateContext(CreatePactEvent pactEvent, List<RelationEvent> relationEvents)
+        {
+            RelationEvents = relationEvents;
+            PactEvent = pactEvent;
         }
     }
 }

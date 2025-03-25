@@ -48,6 +48,14 @@ namespace Assets.Scripts.Map.Managers
         {
             _context = new Context();
             _context.CountyManager = _countyManager;
+
+            foreach (var player in Players)
+            {
+                player.OnCommandAdded.AddListener(AddCommand);
+                player.OnCommandRemoved.AddListener(RemoveLastCommand);
+                player.OnTurnEnded.AddListener(EndTurn);
+            }
+
             CurrentPlayer = Players[CurrentPlayerIndex];
 
             //var pactEvent2 = new CreatePactEvent(Players[1], Players[0], 3);
@@ -87,6 +95,7 @@ namespace Assets.Scripts.Map.Managers
                 if (isLost)
                 {
                     EndTurn();
+
                     return;
                 }
 
@@ -104,7 +113,7 @@ namespace Assets.Scripts.Map.Managers
                 //    RelationEventType.SentPact, 3);
                 //_context.RelationEvents.Add(pactEvent);
 
-                StartCoroutine(CurrentPlayer.StartTurn(_context));
+                StartCoroutine(CurrentPlayer.ProduceCommand(_context));
             }
         }
 
@@ -161,7 +170,7 @@ namespace Assets.Scripts.Map.Managers
             }
         }
 
-        public Context AddCommand(Command command)
+        public void AddCommand(Command command)
         {
             if (Commands.Count < MaxCommandsPerTurn)
             {
@@ -170,11 +179,20 @@ namespace Assets.Scripts.Map.Managers
                 command.Execute();
                 CreateRelationEvent(command);
                 UpdateContext();
+                if (CurrentPlayer is AIPlayer aiPlayer && Commands.Count == MaxCommandsPerTurn)
+                {
+                    EndTurn();
 
-                return _context;
+                    return;
+                }
+
+
+                StartCoroutine(CurrentPlayer.ProduceCommand(_context));
+                //return _context;
             }
 
-            return null;
+
+            //return null;
         }
 
         public void CreateRelationEvent(Command command)
@@ -186,27 +204,27 @@ namespace Assets.Scripts.Map.Managers
                     _context.RelationEvents.Add(warEvent);
 
                     break;
-                case SendPactCommand pactCommand:
-                    var pactEvent = new CreatePactEvent(pactCommand.player, pactCommand.pactTarget, 3);
-                    pactCommand.pactTarget.PactCommands.Add(pactEvent);
-                    _context.RelationEvents.Add(pactEvent);
+                //case SendPactCommand pactCommand:
+                //    var pactEvent = new CreatePactEvent(pactCommand.Player, pactCommand.PactTarget, 3);
+                //    pactCommand.PactTarget.PactCommands.Add(pactEvent);
+                //    _context.RelationEvents.Add(pactEvent);
 
-                    break;
+                //    break;
             }
         }
 
         public void AcceptPact(AcceptPactCommand command, RelationEvent relEvent)
         {
-            _context.RelationEvents.Remove(relEvent);
-            var acceptPact = new RelationEvent(command.player, command.pactTarget, RelationEventType.AcceptedPact, 3);
-            _context.RelationEvents.Add(acceptPact);
+        //    _context.RelationEvents.Remove(relEvent);
+        //    var acceptPact = new RelationEvent(command.Player, command.pactTarget, RelationEventType.AcceptedPact, 3);
+        //    _context.RelationEvents.Add(acceptPact);
         }
 
         public void DeclinePact(DeclinePactCommand command, RelationEvent relEvent)
         {
-            _context.RelationEvents.Remove(relEvent);
-            var declinePact = new RelationEvent(command.player, command.pactTarget, RelationEventType.DeniedPact, 3);
-            _context.RelationEvents.Add(declinePact);
+            //_context.RelationEvents.Remove(relEvent);
+            //var declinePact = new RelationEvent(command.player, command.pactTarget, RelationEventType.DeniedPact, 3);
+            //_context.RelationEvents.Add(declinePact);
         }
 
         private void UpdateContext()

@@ -1,26 +1,30 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.AI.Enums;
+using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
-using Assets.Scripts.Map.Players;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Managers
 {
     [CreateAssetMenu(menuName = "UtilityAI/Actions/DeclinePactCommand")]
-    public class DeclinePactCommand : Command
+    public class DeclinePactCommand : Command, IUndoable
     {
-        public Player pactTarget;
-        public Player player;
-        public List<Player> others;
+        public CreatePactEvent PactEvent { get; private set; }
+        public List<RelationEvent> RelationEvents { get; private set; }
 
         public override void Execute()
         {
-            if (pactTarget == null)
+            if (PactEvent == null)
             {
-                Debug.Log("Not a valid pact target");
+                Debug.Log("Not a valid pact event");
             }
 
-            Debug.Log("Declining pact from this player: " + pactTarget);
+            RelationEvents.Remove(PactEvent);
+            var acceptPact = new RelationEvent(PactEvent.Sender, PactEvent.Reciever, RelationEventType.DeniedPact, 3);
+            RelationEvents.Add(acceptPact);
+
+            Debug.Log("Decliining this pact: " + PactEvent);
         }
 
         public override void Undo()
@@ -30,9 +34,12 @@ namespace Assets.Scripts.Map.Managers
 
         public override void UpdateContext(Context context)
         {
-            this.player = context.CurrentPlayer;
-            this.others = context.OtherPlayers;
-            this.pactTarget = context.PactTarget;
+        }
+
+        public void UpdateContext(CreatePactEvent pactEvent, List<RelationEvent> relationEvents)
+        {
+            RelationEvents = relationEvents;
+            PactEvent = pactEvent;
         }
     }
 }

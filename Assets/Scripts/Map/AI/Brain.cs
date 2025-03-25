@@ -67,17 +67,15 @@ namespace Assets.Scripts.Map.AI
 
                 if (utility > 0.5)
                 {
-                    (reactions[0] as AcceptPactCommand).player = context.CurrentPlayer;
-                    (reactions[0] as AcceptPactCommand).pactTarget = createPact.Sender;
-                    reactions[0].Execute();
-                    context.CurrentPlayer.AcceptPact(reactions[0] as AcceptPactCommand, createPact);
+                    var acceptPact = reactions[0] as AcceptPactCommand;
+                    acceptPact.UpdateContext(createPact, context.RelationEvents);
+                    acceptPact.Execute();
                 }
                 else
                 {
-                    (reactions[1] as DeclinePactCommand).player = context.CurrentPlayer;
-                    (reactions[1] as DeclinePactCommand).pactTarget = createPact.Sender;
-                    reactions[1].Execute();
-                    context.CurrentPlayer.DeclinePact(reactions[1] as DeclinePactCommand, createPact);
+                    var declinePact = reactions[1] as DeclinePactCommand;
+                    declinePact.UpdateContext(createPact, context.RelationEvents);
+                    declinePact.Execute();
                 }
 
                 context.WarTargetInfo = null;

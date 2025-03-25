@@ -54,7 +54,7 @@ namespace Assets.Scripts.Map.PlayerInput
             }
 
             _currentlyActiveCountyUI = detectedCountyUI;
-            _currentlyActiveCountyUI.Activate(true);
+            _currentlyActiveCountyUI?.Activate(true);
         }
     }
 }

@@ -1,17 +1,21 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Managers;
 using Assets.Scripts.Map.UI;
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Players
 {
-    public class HumanPlayer : Player, IInteractable
+    public class HumanPlayer : Player
+        //, IInteractable
     {
+        //rework
+        public List<Command> reactions;
         public bool IsHisTurn { get; private set; } = false;
 
         private Context _context;
@@ -22,17 +26,6 @@ namespace Assets.Scripts.Map.Players
         {
             _countyManager = countyManager;
         }
-
-        //private IEnumerator Start()
-        //{
-        //    yield return new WaitUntil(() => _countyManager.didStart);
-
-        //    var playerCounties = _countyManager.CountyOwners[Id];
-        //    foreach (var county in playerCounties)
-        //    {
-        //        county.OnCountyInteraction.AddListener(HandleCountyInteraction);
-        //    }
-        //}
 
         private void Update()
         {
@@ -46,17 +39,17 @@ namespace Assets.Scripts.Map.Players
 
                 Debug.Log("Ended turn for human");
                 IsHisTurn = false;
-                turnManager.EndTurn();
+                OnTurnEnded?.Invoke();
             }
 
             if (Input.GetKeyDown(KeyCode.S))
             {
                 Debug.Log("Removed economic command for human");
-                turnManager.RemoveLastCommand();
+                OnCommandRemoved?.Invoke();
             }
         }
 
-        public override IEnumerator StartTurn(Context data)
+        public override IEnumerator ProduceCommand(Context data)
         {
             IsHisTurn = true;
             _context = data;
@@ -86,12 +79,38 @@ namespace Assets.Scripts.Map.Players
             }
         }
 
+        public void SendPactToPlayer(Player player)
+        {
+            var command = ScriptableObject.CreateInstance<SendPactCommand>();
+            command.UpdateContext(this, player, _context.RelationEvents);
+
+            OnCommandAdded?.Invoke(command);
+        }
+
+        public void AcceptPact(CreatePactEvent pactEvent)
+        {
+            var acceptPact = reactions[0] as AcceptPactCommand;
+            acceptPact.UpdateContext(pactEvent, _context.RelationEvents);
+            acceptPact.Execute();
+
+            PactCommands.Remove(pactEvent);
+        }
+
+        public void DeclinePact(CreatePactEvent pactEvent)
+        {
+            var declinePact = reactions[1] as DeclinePactCommand;
+            declinePact.UpdateContext(pactEvent, _context.RelationEvents);
+            declinePact.Execute();
+
+            PactCommands.Remove(pactEvent);
+        }
+
         private void AddEconomicUpgrade(County county)
         {
             var command = ScriptableObject.CreateInstance<EconomicUpgradeCommand>();
             command.UpdateContext(county, this);
 
-            turnManager.AddCommand(command);
+            OnCommandAdded?.Invoke(command);
         }
 
         private void AddMilitaryUpgrade(County county)
@@ -105,8 +124,9 @@ namespace Assets.Scripts.Map.Players
             var command = ScriptableObject.CreateInstance<MilitaryUpgradeCommand>();
             command.UpdateContext(county, this);
 
-            turnManager.AddCommand(command);
+            OnCommandAdded?.Invoke(command);
         }
+
         private void AttackCounty(County county)
         {
             var attackTarget = turnManager.Players.FirstOrDefault(player => player.Id == county.BelongsTo);
@@ -120,17 +140,8 @@ namespace Assets.Scripts.Map.Players
             var command = ScriptableObject.CreateInstance<AttackWeakestAndWealthiestCommand>();
             command.UpdateContext(county, this, _countyManager, attackTarget);
 
-            turnManager.AddCommand(command);
+
+            OnCommandAdded?.Invoke(command);
         }
-
-        //public void AddCountyListener(County county)
-        //{
-        //    county.OnCountyInteraction.AddListener(HandleCountyInteraction);
-        //}
-
-        //public void RemoveCountyListener(County county)
-        //{
-        //    county.OnCountyInteraction.RemoveListener(HandleCountyInteraction);
-        //}
     }
 }

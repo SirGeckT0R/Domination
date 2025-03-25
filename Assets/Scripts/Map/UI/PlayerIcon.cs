@@ -1,7 +1,9 @@
+using Assets.Scripts.Map.Managers;
 using Assets.Scripts.Map.Players;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 public class PlayerIcon : MonoBehaviour, IPointerClickHandler
 {
@@ -10,14 +12,20 @@ public class PlayerIcon : MonoBehaviour, IPointerClickHandler
 
     public Player Player { get; set; }
 
-    private void Awake()
-    { 
-        _createPactButton.onClick.AddListener(() => HandleHUDInteraction(Player));
+    private UIManager _uiManager;
+
+    [Inject]
+    public void Construct(UIManager uiManager)
+    {
+        _uiManager = uiManager;
     }
 
-    private void HandleHUDInteraction(Player player)
+    private void Awake()
     {
+        _createPactButton.onClick.AddListener(HandleHUDInteraction);
     }
+
+    private void HandleHUDInteraction() => _uiManager.HandleSendPactInteraction(Player);
 
     public void OnPointerClick(PointerEventData eventData)
     {
