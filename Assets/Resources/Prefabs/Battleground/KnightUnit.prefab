@@ -702,7 +702,7 @@ GameObject:
   - component: {fileID: 1924180381867924075}
   - component: {fileID: 699169480747684911}
   - component: {fileID: 8094406951868603159}
-  - component: {fileID: 4163553735639167216}
+  - component: {fileID: 5037687805008019879}
   - component: {fileID: 3888090150750767840}
   - component: {fileID: 7531662288476522195}
   - component: {fileID: 6310314049541723459}
@@ -793,7 +793,7 @@ NavMeshAgent:
   m_Acceleration: 2000
   avoidancePriority: 50
   m_AngularSpeed: 2000
-  m_StoppingDistance: 1
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -935,7 +935,7 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &4163553735639167216
+--- !u!114 &5037687805008019879
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -944,7 +944,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6880075236130547821}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25b0a3007f4579741820bc79fe8b9c0e, type: 3}
+  m_Script: {fileID: 11500000, guid: 50c45693f01fbfe4cb3213ca78c1d021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3888090150750767840
@@ -962,6 +962,8 @@ MonoBehaviour:
   <Ground>k__BackingField:
     serializedVersion: 2
     m_Bits: 64
+  _numberOfUnitsInRow: 4
+  _spacing: 3
 --- !u!114 &7531662288476522195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -976,6 +978,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxHealth>k__BackingField: 100
   _healthTracker: {fileID: 3586910369702978068}
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6310314049541723459
 MonoBehaviour:
   m_ObjectHideFlags: 0

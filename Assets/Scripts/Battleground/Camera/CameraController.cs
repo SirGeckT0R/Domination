@@ -72,6 +72,14 @@ public class CameraController : MonoBehaviour
         {
             followTransform = null;
         }
+
+        if (Input.GetMouseButton(2))
+        {
+            transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * _fastSpeed, -Input.GetAxis("Mouse X") * _fastSpeed, 0));
+            var X = transform.rotation.eulerAngles.x;
+            var Y = transform.rotation.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(X, Y, 0);
+        }
     }
 
     private void HandleCameraMovement()

@@ -9,11 +9,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Map.Managers
 {
     public class TurnManager : MonoBehaviour
     {
+        [SerializeField] private WarInfo _warInfo;
         [SerializeField] public List<Player> Players;
 
         private float maxAmountOfTurns = 20;
@@ -202,6 +204,7 @@ namespace Assets.Scripts.Map.Managers
                 case AttackWeakestAndWealthiestCommand warCommand:
                     var warEvent = new RelationEvent(warCommand.Player, warCommand.AttackTarget, RelationEventType.War, 3);
                     _context.RelationEvents.Add(warEvent);
+                    SwitchScene();
 
                     break;
                 //case SendPactCommand pactCommand:
@@ -255,6 +258,12 @@ namespace Assets.Scripts.Map.Managers
 
             Commands[last].Undo();
             Commands.RemoveAt(last);
+        }
+
+        public void SwitchScene()
+        {
+            _warInfo.BattleType = BattleType.Attack;
+            SceneManager.LoadScene("Battleground");
         }
     }
 }

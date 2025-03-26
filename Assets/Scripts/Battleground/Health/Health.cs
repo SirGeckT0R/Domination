@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class Health : MonoBehaviour
 
     [field: Header("UI")]
     [SerializeField] private HealthTracker _healthTracker;
+
+    public UnityEvent OnDeath;
 
     private void Start()
     {
@@ -23,6 +26,7 @@ public class Health : MonoBehaviour
 
         if (CurrentHealth <= 0)
         {
+            OnDeath?.Invoke();
             Destroy(gameObject);
         }
 

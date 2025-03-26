@@ -1,30 +1,37 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Patrol : MonoBehaviour
 {
-    [SerializeField] private float speed = 5.0f; // Adjust the speed of movement
+    [SerializeField] private PatrolRoute _route;
 
-    private bool _movingForward = true;
-    private float _timer = 0.0f;
-    private float _switchDirectionTime = 5.0f; // Time to switch direction
+    private List<Transform> _points;
+    private int destPoint = 0;
+    private UnitMovement _unitMovement;
+
+    private void Start()
+    {
+        _unitMovement = GetComponent<UnitMovement>();
+        _points = _route.Nodes;
+    }
+
+    void GotoNextPoint()
+    {
+        if (_points.Count == 0)
+        {
+            return;
+        }
+
+        _unitMovement.MoveUnit(_points[destPoint]);
+
+        destPoint = (destPoint + 1) % _points.Count;
+    }
 
     void Update()
     {
-        _timer += Time.deltaTime;
-
-        if (_timer >= _switchDirectionTime)
+        if (!_unitMovement.IsMoving())
         {
-            _movingForward = !_movingForward;
-            _timer = 0.0f;
-        }
-
-        if (_movingForward)
-        {
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
-        }
-        else
-        {
-            transform.Translate(Vector3.back * speed * Time.deltaTime);
+            GotoNextPoint();
         }
     }
 }

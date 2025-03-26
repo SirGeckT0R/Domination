@@ -1,26 +1,21 @@
+using Assets.Scripts.Battleground.UnitBehavior.LogicStates;
 using UnityEngine;
-using Zenject;
 
 public class Unit : MonoBehaviour
 {
-    private IStateMachine _stateMachine;
-    private UnitSelectionManager _selectionManager;
+    protected IStateMachine _stateMachine;
+    protected UnitSelectionManager _selectionManager;
 
-    public UnitIdleState IdleState { get; private set; }
-    public UnitFollowingState FollowingState { get; private set; }
-    public UnitAttackingState AttackingState { get; private set; }
+    public UnitIdleState IdleState { get; protected set; }
+    public UnitAttackingState AttackingState { get; protected set; }
 
     public bool IsSelected { get; set; }
+    public int OrderOfSelection { get; set; }
 
-    [Inject]
     public void Construct(IStateMachine stateMachine, UnitSelectionManager unitSelectionManager)
     {
         _stateMachine = stateMachine;
         _selectionManager = unitSelectionManager;
-
-        IdleState = new UnitIdleState(this, _stateMachine);
-        FollowingState = new UnitFollowingState(this, _stateMachine);
-        AttackingState = new UnitAttackingState(this, _stateMachine);
     }
 
     private void Start()
@@ -39,7 +34,6 @@ public class Unit : MonoBehaviour
 
         _stateMachine.CurrentState.Update();
     }
-
 
     private void OnDestroy()
     {

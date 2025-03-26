@@ -1083,6 +1083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e25412e3afc8854faa6c70e1b69061b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _warInfo: {fileID: 11400000, guid: 9d17f27e6b7d5db42b6f07892e6b8752, type: 2}
   Players:
   - {fileID: 246501138}
   - {fileID: 1746330582}

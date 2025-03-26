@@ -23,7 +23,7 @@ public class UnitAnimAttackState : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _attackController.VisualEffect.SetActive(false);
+        _attackController.VisualEffect?.SetActive(false);
     }
 
     private void LookAtTarget()

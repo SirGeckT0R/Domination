@@ -136,6 +136,7 @@ public class UnitSelectionManager : MonoBehaviour
     {
         TriggerSelectionIndicator(unit, isSelected);
         unit.GetComponent<Unit>().IsSelected = isSelected;
+        unit.GetComponent<Unit>().OrderOfSelection = _selectedUnits.Count - 1;
     }
 
     public void DeselectAll()
@@ -161,6 +162,7 @@ public class UnitSelectionManager : MonoBehaviour
     public void RemoveUnit(GameObject unit)
     {
         _allUnits.Remove(unit);
+        _selectedUnits.Remove(unit);
     }
 
     public IEnumerable<GameObject> GetSelectableUnits()
