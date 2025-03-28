@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
 {
-    [CreateAssetMenu(menuName = "UtilityAI/Actions/AttackWeakestAndWelthiestCommand")]
-    public class AttackWeakestAndWealthiestCommand : Command, IUndoable
+    [CreateAssetMenu(menuName = "UtilityAI/Actions/AttackCommand")]
+    public class AttackCommand : Command, IUndoable
     {
         public Player AttackTarget { get; private set; }
         public Player Player { get; private set; }

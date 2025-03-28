@@ -15,7 +15,7 @@ namespace Assets.Scripts.Map.AI.Contexts
         public CreatePactEvent CurrentPact{ get; set; }
 
         readonly Dictionary<string, object> data = new();
-        public List<RelationEvent> RelationEvents { get; set; } = new List<RelationEvent>();
+        public List<RelationEvent> RelationEvents { get; set; }
         public CountyManager CountyManager { get;  set; }
 
         public T GetData<T>(string key) => data.TryGetValue(key, out var value) ? (T)value : default;

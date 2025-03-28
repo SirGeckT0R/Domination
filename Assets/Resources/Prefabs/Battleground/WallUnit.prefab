@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1063131686318374849}
   - component: {fileID: 4271139307482142566}
   - component: {fileID: 6750386054578683347}
+  - component: {fileID: -522632898051101974}
   m_Layer: 9
   m_Name: WallUnit
   m_TagString: Untagged
@@ -138,8 +139,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33064c303b4b57f429c82850337d5097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MaxHealth>k__BackingField: 100
+  <MaxHealth>k__BackingField: 1000
   _healthTracker: {fileID: 3119464655855238987}
+  OnTakingDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6750386054578683347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,6 +169,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   <VisualEffect>k__BackingField: {fileID: 7019058989933135268}
+--- !u!114 &-522632898051101974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658578675262702759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a5eb9dfe61d4e04bbd7514e24bf2b58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnGoalAchieved:
+    m_PersistentCalls:
+      m_Calls: []
+  <AchievedBy>k__BackingField: 2
 --- !u!1 &783199932166739174
 GameObject:
   m_ObjectHideFlags: 0

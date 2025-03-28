@@ -20,7 +20,7 @@ namespace Assets.Scripts.Map.Commands
         public override void Execute()
         {
             var isTargetNull = PactTarget == null;
-            var arePlayersInvolved = RelationEvents.Any(relEvent => relEvent.ArePlayersInvolved(Player, PactTarget));
+            var arePlayersInvolved = RelationEvents.Any(relEvent => relEvent.ArePlayersInvolved(Player.Id, PactTarget.Id));
             if (isTargetNull || arePlayersInvolved)
             {
                 Debug.Log("Not a valid pact target");
@@ -29,7 +29,7 @@ namespace Assets.Scripts.Map.Commands
             _prevRelationEvents = new List<RelationEvent>(RelationEvents);
             _prevTargetPactCommands = new List<CreatePactEvent>(PactTarget.PactCommands);
 
-            var pactEvent = new CreatePactEvent(Player, PactTarget, 3);
+            var pactEvent = new CreatePactEvent(Player.Id, PactTarget.Id, 3);
             PactTarget.PactCommands.Add(pactEvent);
             RelationEvents.Add(pactEvent);
 

@@ -15,7 +15,9 @@ namespace Assets.Scripts.Map.Managers
 {
     public class TurnManager : MonoBehaviour
     {
-        [SerializeField] private WarInfo _warInfo;
+        //public static TurnManager Instance { get; private set; }
+        private DataHolder _dataHolder;
+
         [SerializeField] public List<Player> Players;
 
         private float maxAmountOfTurns = 20;
@@ -31,6 +33,7 @@ namespace Assets.Scripts.Map.Managers
         public Player CurrentPlayer { get; private set; }
 
         public List<Command> Commands { get; private set; } = new List<Command>();
+        public List<RelationEvent> RelationEvents { get; private set; } = new List<RelationEvent>();
 
         private Context _context;
 
@@ -44,12 +47,41 @@ namespace Assets.Scripts.Map.Managers
             _countyManager = countyManager;
             _inputManager = inputManager;
             _uiManager = uiManager;
+            _dataHolder = DataHolder.Instance;
         }
+
+        //private void Awake()
+        //{
+        //    if (Instance != null && Instance != this)
+        //    {
+        //        Destroy(gameObject);
+        //        _dataHolder = DataHolder.Instance;
+        //        Initialize();
+        //        Instance.StartTurn();
+
+        //        return;
+        //    }
+
+        //    //Instance = this;
+        //    _dataHolder = DataHolder.Instance;
+        //    //DontDestroyOnLoad(gameObject);
+        //}
 
         private void Start()
         {
-            _context = new Context();
-            _context.CountyManager = _countyManager;
+            Initialize();
+            StartTurn();
+        }
+
+        private void Initialize()
+        {
+            _globalTurnCount = _dataHolder.TurnManagerState.GlobalTurnCount;
+            CurrentPlayerIndex = _dataHolder.TurnManagerState.CurrentPlayerIndex;
+            _hasGlobalTurnStarted = _dataHolder.TurnManagerState.HasGlobalTurnStarted;
+            _hasTurnStarted = false;
+            Commands = _dataHolder.TurnManagerState.Commands;
+            RelationEvents = _dataHolder.TurnManagerState.RelationEvents;
+            _context = _dataHolder.TurnManagerState.Context ?? new Context();
 
             foreach (var player in Players)
             {
@@ -59,17 +91,40 @@ namespace Assets.Scripts.Map.Managers
             }
 
             CurrentPlayer = Players[CurrentPlayerIndex];
+            _context.RelationEvents = RelationEvents;
+            _context.CountyManager = _countyManager;
 
-            //var pactEvent2 = new CreatePactEvent(Players[1], Players[0], 3);
-            //_context.RelationEvents.Add(pactEvent2);
-            //Players[0].PactCommands.Add(pactEvent2);
+            if (_dataHolder.CurrentWarResult != null)
+            {
+                var realtionEvent = RelationEvents[RelationEvents.Count - 1];
+                var warCommand = Commands[Commands.Count - 1] as AttackCommand;
+                switch (_dataHolder.CurrentWarResult.Winner)
+                {
+                    case Battleground.Enums.BattleOpponent.Player when _dataHolder.CurrentWarInfo.BattleType == BattleType.Attack:
+                        warCommand.Player.Warriors = _dataHolder.CurrentWarResult.RemainingPlayerWarriorsCount;
+                        warCommand.AttackTarget.Warriors = _dataHolder.CurrentWarResult.RemainingEnemyWarriorsCount;
 
+                        break;
+                }
+                _dataHolder.CurrentWarResult = null;
+            }
+            //Instance._globalTurnCount = _dataHolder.TurnManagerState.GlobalTurnCount;
+            //Instance.CurrentPlayerIndex = _dataHolder.TurnManagerState.CurrentPlayerIndex;
+            //Instance._hasGlobalTurnStarted = _dataHolder.TurnManagerState.HasGlobalTurnStarted;
+            //Instance._hasTurnStarted = false;
+            //Instance._context = _dataHolder.TurnManagerState.Context ?? new Context();
 
-            //var pactEvent1 = new CreatePactEvent(Players[2], Players[0], 3);
-            //_context.RelationEvents.Add(pactEvent1);
-            //Players[0].PactCommands.Add(pactEvent1);
+            //Instance.Players = Players;
 
-            StartTurn();
+            //foreach (var player in Instance.Players)
+            //{
+            //    player.OnCommandAdded.AddListener(AddCommand);
+            //    player.OnCommandRemoved.AddListener(RemoveLastCommand);
+            //    player.OnTurnEnded.AddListener(EndTurn);
+            //}
+
+            //Instance.CurrentPlayer = Instance.Players[CurrentPlayerIndex];
+            //Instance._context.CountyManager = Instance._countyManager;
         }
 
         private void StartTurn()
@@ -86,7 +141,7 @@ namespace Assets.Scripts.Map.Managers
 
             if (!_hasGlobalTurnStarted)
             {
-                _context.RelationEvents = _context.RelationEvents.Where(relEvent => !relEvent.UpdateDuration()).ToList();
+                RelationEvents = RelationEvents.Where(relEvent => !relEvent.UpdateDuration()).ToList();
                 _hasGlobalTurnStarted = true;
             }
 
@@ -102,18 +157,13 @@ namespace Assets.Scripts.Map.Managers
                 }
 
                 _hasTurnStarted = true;
-                if(CurrentPlayer is HumanPlayer humanPlayer)
+                if (CurrentPlayer is HumanPlayer humanPlayer)
                 {
                     _inputManager.gameObject.SetActive(true);
                     _uiManager.DisplayPlayerHUD(humanPlayer, GetOtherRemainingPlayers());
                 }
 
                 UpdateContext();
-
-                //var pactEvent = new RelationEvent(Players[CurrentPlayerIndex],
-                //    Players[2],
-                //    RelationEventType.SentPact, 3);
-                //_context.RelationEvents.Add(pactEvent);
 
                 StartCoroutine(CurrentPlayer.ProduceCommand(_context));
             }
@@ -174,60 +224,43 @@ namespace Assets.Scripts.Map.Managers
 
         public void AddCommand(Command command)
         {
-            if (Commands.Count < MaxCommandsPerTurn)
+            Debug.Log(FindObjectsByType<Player>(FindObjectsSortMode.None).Length);
+
+            if (Commands.Count >= MaxCommandsPerTurn)
             {
-                Commands.Add(command);
-
-                command.Execute();
-                CreateRelationEvent(command);
-                UpdateContext();
-                if (CurrentPlayer is AIPlayer aiPlayer && Commands.Count == MaxCommandsPerTurn)
-                {
-                    EndTurn();
-
-                    return;
-                }
-
-
-                StartCoroutine(CurrentPlayer.ProduceCommand(_context));
-                //return _context;
+                return;
             }
 
+            Commands.Add(command);
 
-            //return null;
+            if(command is not AttackCommand)
+            {
+
+                command.Execute();
+            }
+            CreateRelationEvent(command);
+            UpdateContext();
+            if (CurrentPlayer is AIPlayer aiPlayer && Commands.Count == MaxCommandsPerTurn)
+            {
+                EndTurn();
+
+                return;
+            }
+
+            StartCoroutine(CurrentPlayer.ProduceCommand(_context));
         }
 
         public void CreateRelationEvent(Command command)
         {
             switch (command)
             {
-                case AttackWeakestAndWealthiestCommand warCommand:
-                    var warEvent = new RelationEvent(warCommand.Player, warCommand.AttackTarget, RelationEventType.War, 3);
-                    _context.RelationEvents.Add(warEvent);
-                    SwitchScene();
+                case AttackCommand warCommand:
+                    var warEvent = new RelationEvent(warCommand.Player.Id, warCommand.AttackTarget.Id, RelationEventType.War, 3);
+                    RelationEvents.Add(warEvent);
+                    HandleWar(warCommand);
 
                     break;
-                //case SendPactCommand pactCommand:
-                //    var pactEvent = new CreatePactEvent(pactCommand.Player, pactCommand.PactTarget, 3);
-                //    pactCommand.PactTarget.PactCommands.Add(pactEvent);
-                //    _context.RelationEvents.Add(pactEvent);
-
-                //    break;
             }
-        }
-
-        public void AcceptPact(AcceptPactCommand command, RelationEvent relEvent)
-        {
-        //    _context.RelationEvents.Remove(relEvent);
-        //    var acceptPact = new RelationEvent(command.Player, command.pactTarget, RelationEventType.AcceptedPact, 3);
-        //    _context.RelationEvents.Add(acceptPact);
-        }
-
-        public void DeclinePact(DeclinePactCommand command, RelationEvent relEvent)
-        {
-            //_context.RelationEvents.Remove(relEvent);
-            //var declinePact = new RelationEvent(command.player, command.pactTarget, RelationEventType.DeniedPact, 3);
-            //_context.RelationEvents.Add(declinePact);
         }
 
         private void UpdateContext()
@@ -238,6 +271,7 @@ namespace Assets.Scripts.Map.Managers
             _context.SetData("Warriors", CurrentPlayer.Warriors);
             _context.SetData("Money", CurrentPlayer.Money);
             _context.OtherPlayers = remaining;
+            _context.RelationEvents = RelationEvents;
         }
 
         private List<Player> GetOtherRemainingPlayers()
@@ -253,16 +287,40 @@ namespace Assets.Scripts.Map.Managers
             var last = Commands.Count - 1;
             if (Commands.Count < 1 || Commands[last] is IUndoable)
             {
-                 return;
+                return;
             }
 
             Commands[last].Undo();
             Commands.RemoveAt(last);
         }
 
-        public void SwitchScene()
+        public void HandleWar(AttackCommand warCommand)
         {
-            _warInfo.BattleType = BattleType.Attack;
+            WarInfo warInfo = ScriptableObject.CreateInstance<WarInfo>();
+            switch (warCommand.Player)
+            {
+                case AIPlayer:
+                    warInfo.Initialize(
+                        BattleType.Defend,
+                        playerWarriorsCount: warCommand.AttackTarget.Warriors,
+                        enemyWarriorsCount: warCommand.Player.Warriors
+                    );
+
+                    break;
+                case HumanPlayer:
+                    warInfo.Initialize(
+                        BattleType.Attack,
+                        playerWarriorsCount: warCommand.Player.Warriors,
+                        enemyWarriorsCount: warCommand.AttackTarget.Warriors
+                    );
+
+                    break;
+            }
+
+            _dataHolder.CurrentWarInfo = warInfo;
+
+            _dataHolder.TurnManagerState.Initialize(_globalTurnCount, _hasTurnStarted, _hasGlobalTurnStarted, CurrentPlayerIndex, Commands, RelationEvents, _context);
+
             SceneManager.LoadScene("Battleground");
         }
     }

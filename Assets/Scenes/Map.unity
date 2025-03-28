@@ -422,9 +422,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 1
-  <Name>k__BackingField: Human
-  <Money>k__BackingField: 15
-  warriors: 50
+  <Name>k__BackingField: 
+  <Money>k__BackingField: 0
+  warriors: 0
   OnCommandAdded:
     m_PersistentCalls:
       m_Calls: []
@@ -437,6 +437,7 @@ MonoBehaviour:
   reactions:
   - {fileID: 11400000, guid: 04ad753fb789d014e93727f902495451, type: 2}
   - {fileID: 11400000, guid: a113495d48230664c9cdad77df7e1e1b, type: 2}
+  ignoreEvents: 0200000003000000
 --- !u!4 &246501139
 Transform:
   m_ObjectHideFlags: 0
@@ -744,6 +745,7 @@ MonoBehaviour:
   _countyManager: {fileID: 262380346}
   _inputManager: {fileID: 14216224}
   _uiManager: {fileID: 31516093}
+  _currentWar: {fileID: 11400000, guid: 2b72fde35ff7f434e92d5e6dfa6e125b, type: 2}
 --- !u!114 &799858499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1054,6 +1056,80 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022981565}
   m_CullTransparentMesh: 1
+--- !u!1 &1036469209
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1036469211}
+  - component: {fileID: 1036469210}
+  m_Layer: 0
+  m_Name: DataHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1036469210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036469209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5d7570578461f458806b131f8c6e4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <OriginalTurnManagerState>k__BackingField: {fileID: 11400000, guid: f068a6665b71dd84cb9ed26f13c8dc35, type: 2}
+  <TurnManagerState>k__BackingField: {fileID: 0}
+  <CurrentWarInfo>k__BackingField: {fileID: 0}
+  <CurrentWarResult>k__BackingField: {fileID: 0}
+  <OriginalPlayerInfos>k__BackingField:
+    _Buckets: ffffffffffffffffffffffff
+    _HashCodes: 000000000000000000000000
+    _Next: 000000000000000000000000
+    _Count: 3
+    _Version: 0
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys: 010002000300
+    _Values:
+    - {fileID: 11400000, guid: e85f6629e8bc79d4788113d1cb2eed0a, type: 2}
+    - {fileID: 11400000, guid: b29ab3f7dad1c0b47a49f45de8bd2636, type: 2}
+    - {fileID: 11400000, guid: 8c6107e875cfaa14b82d2bc33592f253, type: 2}
+  <PlayerInfos>k__BackingField:
+    _Buckets: ffffffffffffffffffffffff
+    _HashCodes: 000000000000000000000000
+    _Next: 000000000000000000000000
+    _Count: 0
+    _Version: 0
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys: 000000000000
+    _Values:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+--- !u!4 &1036469211
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036469209}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1178637130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,7 +1159,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e25412e3afc8854faa6c70e1b69061b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _warInfo: {fileID: 11400000, guid: 9d17f27e6b7d5db42b6f07892e6b8752, type: 2}
   Players:
   - {fileID: 246501138}
   - {fileID: 1746330582}
@@ -1645,9 +1720,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 2
-  <Name>k__BackingField: Second
-  <Money>k__BackingField: 10
-  warriors: 4
+  <Name>k__BackingField: 
+  <Money>k__BackingField: 0
+  warriors: 0
   OnCommandAdded:
     m_PersistentCalls:
       m_Calls: []
@@ -2008,9 +2083,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 1
-  <Name>k__BackingField: First
-  <Money>k__BackingField: 10
-  warriors: 3
+  <Name>k__BackingField: 
+  <Money>k__BackingField: 0
+  warriors: 0
   OnCommandAdded:
     m_PersistentCalls:
       m_Calls: []
@@ -2329,9 +2404,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 3
-  <Name>k__BackingField: Third
-  <Money>k__BackingField: 10
-  warriors: 4
+  <Name>k__BackingField: 
+  <Money>k__BackingField: 0
+  warriors: 0
   OnCommandAdded:
     m_PersistentCalls:
       m_Calls: []
@@ -2606,3 +2681,4 @@ SceneRoots:
   - {fileID: 1667647774}
   - {fileID: 14216226}
   - {fileID: 31516092}
+  - {fileID: 1036469211}

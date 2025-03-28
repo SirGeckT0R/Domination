@@ -21,7 +21,7 @@ namespace Assets.Scripts.Map.Managers
             }
 
             RelationEvents.Remove(PactEvent);
-            var acceptPact = new RelationEvent(PactEvent.Sender, PactEvent.Reciever, RelationEventType.DeniedPact, 3);
+            var acceptPact = new RelationEvent(PactEvent.SenderId, PactEvent.RecieverId, RelationEventType.DeniedPact, 3);
             RelationEvents.Add(acceptPact);
 
             Debug.Log("Decliining this pact: " + PactEvent);

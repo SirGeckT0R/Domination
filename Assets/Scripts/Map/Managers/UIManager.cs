@@ -33,7 +33,7 @@ namespace Assets.Scripts.Map.Managers
             OtherPlayers = others;
 
             //CurrentPlayer.OnPactResolved.AddListener(HandlePactResolved);
-
+            _playerIcons.ForEach(icon => Destroy(icon.gameObject));
             _playerIcons.Clear();
             foreach (var player in OtherPlayers)
             {

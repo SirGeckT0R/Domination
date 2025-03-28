@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.AI.Considerations
@@ -16,11 +17,11 @@ namespace Assets.Scripts.Map.AI.Considerations
             {
                 return 0f;
             }
-
-            float result = pact.Sender.Warriors * pactAcceptance / context.CurrentPlayer.Warriors;
+            var sender = context.OtherPlayers.FirstOrDefault(player => pact.SenderId == player.Id);
+            float result = sender.Warriors * pactAcceptance / context.CurrentPlayer.Warriors;
             float clamped = Mathf.Clamp01(result);
 
-            context.PactTarget = pact.Sender;
+            context.PactTarget = sender;
 
             return curve.Evaluate(clamped);
         }

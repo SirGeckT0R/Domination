@@ -5,6 +5,7 @@ public class Unit : MonoBehaviour
 {
     protected IStateMachine _stateMachine;
     protected UnitSelectionManager _selectionManager;
+    protected Health _health;
 
     public UnitIdleState IdleState { get; protected set; }
     public UnitAttackingState AttackingState { get; protected set; }
@@ -16,6 +17,8 @@ public class Unit : MonoBehaviour
     {
         _stateMachine = stateMachine;
         _selectionManager = unitSelectionManager;
+        _health = GetComponent<Health>();
+        _health.OnDeath.AddListener(HandleDeath);
     }
 
     private void Start()
@@ -35,8 +38,9 @@ public class Unit : MonoBehaviour
         _stateMachine.CurrentState.Update();
     }
 
-    private void OnDestroy()
+    private void HandleDeath()
     {
+        _stateMachine.CurrentState.Exit();
         _selectionManager.RemoveUnit(gameObject);
     }
 }

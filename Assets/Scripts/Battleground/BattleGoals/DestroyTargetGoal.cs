@@ -11,6 +11,6 @@ namespace Assets.Scripts.Battleground.BattleGoals
             unitHealth.OnDeath.AddListener(HandleTargetDeath);
         }
 
-        private void HandleTargetDeath() => OnGoalAchieved?.Invoke();
+        private void HandleTargetDeath() => OnGoalAchieved?.Invoke(new GoalAchievedInfo(this, AchievedBy));
     }
 }

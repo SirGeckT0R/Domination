@@ -36,7 +36,7 @@ public class UnitMovement : MonoBehaviour
         var distance = Mathf.Ceil((offset % _numberOfUnitsInRow) / 2f);
         var depth = offset / _numberOfUnitsInRow;
         var destination = hit.point + perpendicular * _spacing * side * distance;
-        destination -= depth * _spacing * destination.normalized;
+        destination -= depth * _spacing * cameraForward.normalized;
 
         _agent.SetDestination(destination);
         _directionIndicator.DrawLine(hit);

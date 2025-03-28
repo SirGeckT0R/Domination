@@ -8,11 +8,16 @@ namespace Assets.Scripts.Map.Players
     {
         public Brain Brain { get; set; }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Brain = GetComponent<Brain>();
-        } 
+        }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
         public override IEnumerator ProduceCommand(AI.Contexts.Context data)
         {
             var action = Brain.FindAndProduceTheBestAction(data);

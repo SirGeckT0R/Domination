@@ -23,7 +23,7 @@ namespace Assets.Scripts.Map.AI.Considerations
             foreach (var player in other)
             {
                 var commonEvent = context.RelationEvents
-                    .FirstOrDefault(relEvent => relEvent.ArePlayersInvolved(current, player));
+                    .FirstOrDefault(relEvent => relEvent.ArePlayersInvolved(current.Id, player.Id));
 
                 if (commonEvent != null)
                 {

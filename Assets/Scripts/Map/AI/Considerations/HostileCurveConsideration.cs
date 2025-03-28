@@ -29,7 +29,7 @@ namespace Assets.Scripts.Map.AI.Considerations
             {
                 var commonEvent = context.RelationEvents
                     .FirstOrDefault(
-                                    relEvent => relEvent.ArePlayersInvolved(current, player)
+                                    relEvent => relEvent.ArePlayersInvolved(current.Id, player.Id)
                                     && !ignoreEvents.Contains(relEvent.EventType)
                                     );
 

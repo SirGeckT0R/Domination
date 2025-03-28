@@ -8,5 +8,12 @@ namespace Assets.Scripts
         [field: SerializeField] public BattleType BattleType { get; set; }
         [field: SerializeField] public int PlayerWarriorsCount { get; set; }
         [field: SerializeField] public int EnemyWarriorsCount { get; set; }
+
+        public void Initialize(BattleType battleType, int playerWarriorsCount, int enemyWarriorsCount)
+        {
+            BattleType = battleType;
+            PlayerWarriorsCount = playerWarriorsCount;
+            EnemyWarriorsCount = enemyWarriorsCount;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.AI.Enums;
 using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Counties;
@@ -16,10 +17,21 @@ namespace Assets.Scripts.Map.Players
     {
         //rework
         public List<Command> reactions;
+        public List<RelationEventType> ignoreEvents;
         public bool IsHisTurn { get; private set; } = false;
 
         private Context _context;
         private CountyManager _countyManager;
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
 
         [Zenject.Inject]
         public void Construct(CountyManager countyManager)
@@ -130,14 +142,15 @@ namespace Assets.Scripts.Map.Players
         private void AttackCounty(County county)
         {
             var attackTarget = turnManager.Players.FirstOrDefault(player => player.Id == county.BelongsTo);
-            var wereInvolvedInRelations = _context.RelationEvents.Any(relEvent => relEvent.ArePlayersInvolved(this, attackTarget));
+            var wereInvolvedInRelations = _context.RelationEvents.Any(relEvent => relEvent.ArePlayersInvolved(Id, attackTarget.Id)
+                && !ignoreEvents.Contains(relEvent.EventType));
             if (wereInvolvedInRelations)
             {
                 Debug.Log("Can't declare war");
                 return;
             }
 
-            var command = ScriptableObject.CreateInstance<AttackWeakestAndWealthiestCommand>();
+            var command = ScriptableObject.CreateInstance<AttackCommand>();
             command.UpdateContext(county, this, _countyManager, attackTarget);
 
 

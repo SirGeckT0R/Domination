@@ -962,7 +962,7 @@ MonoBehaviour:
   <Ground>k__BackingField:
     serializedVersion: 2
     m_Bits: 64
-  _numberOfUnitsInRow: 4
+  _numberOfUnitsInRow: 5
   _spacing: 3
 --- !u!114 &7531662288476522195
 MonoBehaviour:

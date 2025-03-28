@@ -18,6 +18,11 @@ namespace Assets.Scripts.Map.Managers
         [field: SerializeField] public byte MaxMilitaryLevel { get; } = 5;
         [field: SerializeField] public int PriceForMilitaryUpgrade { get; } = 15;
 
+        private void Awake()
+        {
+            DontDestroyOnLoad(this);
+        }
+
         private void Start()
         {
             var countiesObjects = FindObjectsByType<County>(FindObjectsSortMode.None);

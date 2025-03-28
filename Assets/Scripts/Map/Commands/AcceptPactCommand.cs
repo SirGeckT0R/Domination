@@ -20,7 +20,7 @@ namespace Assets.Scripts.Map.Commands
             }
 
             RelationEvents.Remove(PactEvent);
-            var acceptPact = new RelationEvent(PactEvent.Sender, PactEvent.Reciever, RelationEventType.AcceptedPact, 3);
+            var acceptPact = new RelationEvent(PactEvent.SenderId, PactEvent.RecieverId, RelationEventType.AcceptedPact, 3);
             RelationEvents.Add(acceptPact);
 
             Debug.Log("Accepting this pact: " + PactEvent);

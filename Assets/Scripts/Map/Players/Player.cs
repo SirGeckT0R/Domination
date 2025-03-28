@@ -31,6 +31,7 @@ namespace Assets.Scripts.Map.Players
             }
         }
 
+        protected DataHolder _dataHolder;
         protected TurnManager turnManager;
 
         public UnityEvent<Command> OnCommandAdded;
@@ -39,25 +40,21 @@ namespace Assets.Scripts.Map.Players
 
         public List<CreatePactEvent> PactCommands { get; private set; } = new List<CreatePactEvent>();
 
+        protected virtual void Awake()
+        {
+            _dataHolder = DataHolder.Instance;
+            (Name, Money, Warriors, PactCommands) = _dataHolder.PlayerInfos[Id];
+        }
+
+        protected virtual void OnDestroy()
+        {
+            _dataHolder.PlayerInfos[Id].Initialize(Money, Warriors, PactCommands);
+        }
+
         [Inject]
         public void Construct(TurnManager turnManager)
         {
             this.turnManager = turnManager;
-        }
-
-        public void AcceptPact(AcceptPactCommand command, CreatePactEvent pactEvent)
-        {
-            turnManager.AcceptPact(command, pactEvent);
-        }
-
-        public void DeclinePact(DeclinePactCommand command, CreatePactEvent pactEvent)
-        {
-            turnManager.DeclinePact(command, pactEvent);
-        }
-
-        public void UndoLastAction()
-        {
-            turnManager.RemoveLastCommand();
         }
 
         public abstract IEnumerator ProduceCommand(AI.Contexts.Context data);

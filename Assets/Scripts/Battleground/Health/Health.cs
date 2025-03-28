@@ -1,9 +1,11 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
     public float CurrentHealth { get; private set; }
+    public bool IsDead => CurrentHealth <= 0;
 
     [field: Header("Settings")]
     [field: SerializeField] public float MaxHealth { get; private set; }
@@ -11,6 +13,7 @@ public class Health : MonoBehaviour
     [field: Header("UI")]
     [SerializeField] private HealthTracker _healthTracker;
 
+    public UnityEvent OnTakingDamage;
     public UnityEvent OnDeath;
 
     private void Start()
@@ -22,13 +25,20 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (IsDead)
+        {
+            return;
+        }
+
         CurrentHealth -= damage;
 
         if (CurrentHealth <= 0)
         {
             OnDeath?.Invoke();
-            Destroy(gameObject);
+            StartCoroutine(DestroyGameObject());
         }
+
+        OnTakingDamage?.Invoke();
 
         UpdateHealthUI();
     }
@@ -36,5 +46,12 @@ public class Health : MonoBehaviour
     private void UpdateHealthUI()
     {
         _healthTracker.UpdateSliderValue(CurrentHealth, MaxHealth);
+    }
+
+    private IEnumerator DestroyGameObject()
+    {
+        yield return new WaitForSeconds(2f);
+        //gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 }
