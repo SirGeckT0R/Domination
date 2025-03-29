@@ -153,7 +153,6 @@ namespace Assets.Scripts.Map.Players
             var command = ScriptableObject.CreateInstance<AttackCommand>();
             command.UpdateContext(county, this, _countyManager, attackTarget);
 
-
             OnCommandAdded?.Invoke(command);
         }
     }

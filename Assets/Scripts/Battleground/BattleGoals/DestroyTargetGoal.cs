@@ -7,6 +7,12 @@ namespace Assets.Scripts.Battleground.BattleGoals
     {
         private void Awake()
         {
+            Initialize();
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
             var unitHealth = GetComponent<Health>();
             unitHealth.OnDeath.AddListener(HandleTargetDeath);
         }

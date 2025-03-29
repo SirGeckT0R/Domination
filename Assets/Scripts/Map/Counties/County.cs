@@ -11,7 +11,7 @@ namespace Assets.Scripts.Map.Counties
         [SerializeField] private byte _economicLevel;
         [SerializeField] private byte _militaryLevel;
 
-        public ushort Id { get; set; }
+        [field: SerializeField] public ushort Id { get; set; }
         [field: SerializeField] public string Name { get; set; }
         public byte EconomicLevel { 
             get => _economicLevel; 
@@ -28,47 +28,27 @@ namespace Assets.Scripts.Map.Counties
         private byte _maxEconomicLevel;
         private byte _maxMilitaryLevel;
 
+        private DataHolder _dataHolder;
 
         public UnityEvent<CountyInteractionInfo> OnCountyInteraction;
 
         [Inject]
-        public void  Construct(CountyManager countyManager)
+        public void Construct(CountyManager countyManager)
         {
             _maxEconomicLevel = countyManager.MaxEconomicLevel;
             _maxMilitaryLevel = countyManager.MaxMilitaryLevel;
+            _dataHolder = DataHolder.Instance;
         }
 
-        //private void HandleInteractionUI(CountyInteractionType interactionType)
-        //{
-        //    var countyInteractionInfo = new CountyInteractionInfo(this, interactionType);
-        //    OnCountyInteraction?.Invoke(countyInteractionInfo);
-        //}
+        protected virtual void Awake()
+        {
+            _dataHolder = DataHolder.Instance;
+            (Name, EconomicLevel, MilitaryLevel, BelongsTo) = _dataHolder.CountyInfos[Id];
+        }
 
-        //public void IncrementBuildingLevel(BuildingType buildingType)
-        //{
-        //    switch (buildingType)
-        //    {
-        //        case BuildingType.Economic:
-        //            IncrementEconomicLevel();
-
-        //            break;
-        //        case BuildingType.Military:
-        //            IncrementMilitaryLevel();
-
-        //            break;
-        //    }
-        //}
-
-        //private void IncrementEconomicLevel()
-        //{
-        //    var newLevel = EconomicLevel + 1;
-        //    EconomicLevel = (byte)Mathf.Clamp(newLevel, 0, _maxEconomicLevel);
-        //}
-
-        //private void IncrementMilitaryLevel()
-        //{
-        //    var newLevel = MilitaryLevel + 1;
-        //    MilitaryLevel = (byte)Mathf.Clamp(newLevel, 0, _maxMilitaryLevel);
-        //}
+        protected virtual void OnDestroy()
+        {
+            _dataHolder.CountyInfos[Id].Initialize(EconomicLevel, MilitaryLevel, BelongsTo);
+        }
     }
 }

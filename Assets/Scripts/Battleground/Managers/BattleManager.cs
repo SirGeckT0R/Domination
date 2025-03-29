@@ -4,6 +4,7 @@ using Assets.Scripts.Battleground.BattleGoals;
 using Assets.Scripts.Battleground.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -37,7 +38,7 @@ public class BattleManager : MonoBehaviour
         _diContainer = diContainer;
         _dataHolder = DataHolder.Instance;
 
-        if(_dataHolder.CurrentWarInfo != null)
+        if(_dataHolder != null && _dataHolder.CurrentWarInfo != null)
         {
             _warInfo = _dataHolder.CurrentWarInfo;
         }
@@ -56,14 +57,21 @@ public class BattleManager : MonoBehaviour
 
     private void SpawnWall()
     {
+        ArmyDefeatedGoal goal;
         switch (_warInfo.BattleType)
         {
             case BattleType.Defend:
                 _diContainer.InstantiatePrefab(_wallUnitPrefab, _playerWallSpawnPoint.position, _playerWallSpawnPoint.rotation, _playerArmy.transform);
+                goal = _enemyArmy.AddComponent<ArmyDefeatedGoal>();
+                goal.AchievedBy = BattleOpponent.Player;
+                goal.Initialize();
 
                 break;
             case BattleType.Attack:
                 _diContainer.InstantiatePrefab(_enemyWallUnitPrefab, _enemyWallSpawnPoint.position, _enemyWallSpawnPoint.rotation, _enemyArmy.transform);
+                goal = _playerArmy.AddComponent<ArmyDefeatedGoal>();
+                goal.AchievedBy = BattleOpponent.Enemy;
+                goal.Initialize();
 
                 break;
         }
@@ -154,7 +162,11 @@ public class BattleManager : MonoBehaviour
                         remainingPlayerWarriorsCount: _playerArmy.WarriorsCount,
                         remainingEnemyWarriorsCount: _enemyArmy.WarriorsCount
                     );
-                    _dataHolder.CurrentWarResult = warResult;
+                    if(_dataHolder != null)
+                    {
+                        _dataHolder.CurrentWarResult = warResult;
+
+                    }
 
                     SceneManager.LoadScene("Map");
                 }

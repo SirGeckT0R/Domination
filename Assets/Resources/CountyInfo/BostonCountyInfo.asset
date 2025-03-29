@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bd43dc85cc60274abcd7da43af8f409, type: 3}
-  m_Name: TurnManagerState
+  m_Script: {fileID: 11500000, guid: fa60577c1bd761041a858182063f0155, type: 3}
+  m_Name: BostonCountyInfo
   m_EditorClassIdentifier: 
-  <GlobalTurnCount>k__BackingField: 0
-  <HasTurnStarted>k__BackingField: 0
-  <HasGlobalTurnStarted>k__BackingField: 0
-  <CurrentPlayerIndex>k__BackingField: 0
-  <Commands>k__BackingField: []
+  <Id>k__BackingField: 4
+  <Name>k__BackingField: Boston
+  <EconomicLevel>k__BackingField: 1
+  <MilitaryLevel>k__BackingField: 1
+  <BelongsTo>k__BackingField: 1

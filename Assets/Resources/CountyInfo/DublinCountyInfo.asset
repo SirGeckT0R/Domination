@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a862d34c57faf474d82060920cfe5e2d, type: 3}
-  m_Name: FirstPlayerInfo
+  m_Script: {fileID: 11500000, guid: fa60577c1bd761041a858182063f0155, type: 3}
+  m_Name: DublinCountyInfo
   m_EditorClassIdentifier: 
-  <Id>k__BackingField: 1
-  <Name>k__BackingField: Human
-  <Money>k__BackingField: 15
-  <Warriors>k__BackingField: 10
+  <Id>k__BackingField: 3
+  <Name>k__BackingField: Dublin
+  <EconomicLevel>k__BackingField: 1
+  <MilitaryLevel>k__BackingField: 2
+  <BelongsTo>k__BackingField: 3

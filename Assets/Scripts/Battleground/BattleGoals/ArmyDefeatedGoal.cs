@@ -7,6 +7,13 @@ namespace Assets.Scripts.Battleground.BattleGoals
     {
         private void Awake()
         {
+            Initialize();
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
             var army = GetComponent<Army>();
             army.OnArmyDefeated.AddListener(HandleArmyDefeat);
         }

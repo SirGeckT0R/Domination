@@ -1,3 +1,4 @@
+using Assets.Scripts.Battleground.Enums;
 using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.AI.Enums;
 using Assets.Scripts.Map.AI.Events;
@@ -98,14 +99,14 @@ namespace Assets.Scripts.Map.Managers
             {
                 var realtionEvent = RelationEvents[RelationEvents.Count - 1];
                 var warCommand = Commands[Commands.Count - 1] as AttackCommand;
-                switch (_dataHolder.CurrentWarResult.Winner)
-                {
-                    case Battleground.Enums.BattleOpponent.Player when _dataHolder.CurrentWarInfo.BattleType == BattleType.Attack:
-                        warCommand.Player.Warriors = _dataHolder.CurrentWarResult.RemainingPlayerWarriorsCount;
-                        warCommand.AttackTarget.Warriors = _dataHolder.CurrentWarResult.RemainingEnemyWarriorsCount;
+                var sender = Players.FirstOrDefault(player => player.Id == warCommand.PlayerId);
+                var receiver = Players.FirstOrDefault(player => player.Id == warCommand.AttackTargetId);
+                var county = _countyManager.AllCounties.FirstOrDefault(county => county.Id == warCommand.CountyId);
+                warCommand.BattleType = _dataHolder.CurrentWarInfo.BattleType;
+                warCommand.UpdateContext(county, sender, _countyManager, receiver, _dataHolder.CurrentWarResult);
 
-                        break;
-                }
+                warCommand.HasWon = _dataHolder.CurrentWarResult.Winner == BattleOpponent.Player;
+                warCommand.Execute();
                 _dataHolder.CurrentWarResult = null;
             }
             //Instance._globalTurnCount = _dataHolder.TurnManagerState.GlobalTurnCount;
@@ -257,7 +258,10 @@ namespace Assets.Scripts.Map.Managers
                 case AttackCommand warCommand:
                     var warEvent = new RelationEvent(warCommand.Player.Id, warCommand.AttackTarget.Id, RelationEventType.War, 3);
                     RelationEvents.Add(warEvent);
-                    HandleWar(warCommand);
+                    if(warCommand.Player is HumanPlayer || warCommand.AttackTarget is HumanPlayer)
+                    {
+                        HandleWar(warCommand);
+                    }
 
                     break;
             }

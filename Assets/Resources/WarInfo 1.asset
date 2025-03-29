@@ -9,6 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2804e10904429e847b385262bde62b10, type: 3}
-  m_Name: CurrentWar
+  m_Script: {fileID: 11500000, guid: 2f9b3d27034b88943bc41f7255cf155f, type: 3}
+  m_Name: WarInfo 1
   m_EditorClassIdentifier: 
+  <BattleType>k__BackingField: 2
+  <PlayerWarriorsCount>k__BackingField: 3
+  <EnemyWarriorsCount>k__BackingField: 10
