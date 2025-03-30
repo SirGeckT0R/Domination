@@ -50,5 +50,11 @@ namespace Assets.Scripts.Map.Counties
         {
             _dataHolder.CountyInfos[Id].Initialize(EconomicLevel, MilitaryLevel, BelongsTo);
         }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawMesh(GetComponent<MeshFilter>().sharedMesh, transform.position, transform.rotation, transform.localScale);
+        }
     }
 }
