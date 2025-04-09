@@ -827,7 +827,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!120 &8094406951868603159
 LineRenderer:
   serializedVersion: 2
@@ -978,6 +978,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxHealth>k__BackingField: 100
   _healthTracker: {fileID: 3586910369702978068}
+  OnTakingDamage:
+    m_PersistentCalls:
+      m_Calls: []
   OnDeath:
     m_PersistentCalls:
       m_Calls: []
@@ -995,8 +998,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Target>k__BackingField: {fileID: 0}
   <UnitDamage>k__BackingField: 15
-  <AttackingDistance>k__BackingField: 1.5
-  <StopAttackingDistance>k__BackingField: 3
+  <AttackingDistance>k__BackingField: 3
+  <StopAttackingDistance>k__BackingField: 4.5
   <AttacksPerSecond>k__BackingField: 2
   <IsControlledByPlayer>k__BackingField: 1
   <Attackable>k__BackingField:

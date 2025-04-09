@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Players;
+using Assets.Scripts.Map.UI.GameLog;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
@@ -25,17 +26,20 @@ namespace Assets.Scripts.Map.Commands
             County = county;
         }
 
-        public override void Execute()
+        public override MessageDto Execute()
         {
             if (!IsValidCountyForUpgrade())
             {
-                return;
+                return null;
             }
 
             _prevEconomicLevel = County.EconomicLevel;
             County.EconomicLevel++;
 
+            var message = new MessageDto { Player = Player.Name, Message = $"Upgraded economic building in {County.Name} to level {County.EconomicLevel}" };
             Debug.Log("Executing an economic upgrade action");
+
+            return message;
         }
 
         public override void Undo()

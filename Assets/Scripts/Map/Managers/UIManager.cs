@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Players;
 using Assets.Scripts.Map.UI;
+using Assets.Scripts.Map.UI.GameLog;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -13,6 +14,8 @@ namespace Assets.Scripts.Map.Managers
         [SerializeField] private GameObject _playerIconPrefab;
         [SerializeField] private GameObject _iconsView;
         [SerializeField] private PactView _pactView;
+        [SerializeField] private GameLogView _gameLogView;
+        [SerializeField] private GameObject _gameEndView;
         public HumanPlayer CurrentPlayer { get; private set; }
         public CreatePactEvent CurrentPact { get; private set; }
         public List<Player> OtherPlayers { get; private set; }
@@ -51,6 +54,8 @@ namespace Assets.Scripts.Map.Managers
             }
         }
 
+        public void AddLogMessage(MessageDto message) => _gameLogView.AddLogMessage(message);
+
         public void HandleSendPactInteraction(Player player) => CurrentPlayer?.SendPactToPlayer(player);
 
         public void HandlePactResolved(bool isAccepted)
@@ -75,6 +80,14 @@ namespace Assets.Scripts.Map.Managers
             }
             
             _pactView.gameObject.SetActive(false);
+        }
+
+        public void HandleEndTurn() => CurrentPlayer?.EndTurn();
+        public void HandleUndoAction() => CurrentPlayer?.UndoAction();
+
+        public void DisplayGameEndScreen()
+        {
+            _gameEndView.SetActive(true);
         }
     }
 }

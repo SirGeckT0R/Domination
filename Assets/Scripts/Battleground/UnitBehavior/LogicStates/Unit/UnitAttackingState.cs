@@ -58,7 +58,7 @@ namespace Assets.Scripts.Battleground.UnitBehavior.LogicStates
 
         protected virtual bool ShouldStopAttacking()
         {
-            return _attackController.Target == null;
+            return _attackController.Target == null || _attackController.Target.IsDead || unit.IsDead;
         }
     }
 }

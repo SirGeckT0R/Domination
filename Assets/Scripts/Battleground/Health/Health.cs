@@ -35,7 +35,9 @@ public class Health : MonoBehaviour
         if (CurrentHealth <= 0)
         {
             OnDeath?.Invoke();
-            StartCoroutine(DestroyGameObject());
+
+            return;
+            //StartCoroutine(DestroyGameObject());
         }
 
         OnTakingDamage?.Invoke();
@@ -48,10 +50,10 @@ public class Health : MonoBehaviour
         _healthTracker.UpdateSliderValue(CurrentHealth, MaxHealth);
     }
 
-    private IEnumerator DestroyGameObject()
-    {
-        yield return new WaitForSeconds(2f);
-        //gameObject.SetActive(false);
-        Destroy(gameObject);
-    }
+    //private IEnumerator DestroyGameObject()
+    //{
+    //    yield return new WaitForSeconds(2f);
+    //    //gameObject.SetActive(false);
+    //    Destroy(gameObject);
+    //}
 }

@@ -1,45 +1,54 @@
+using Assets.Scripts.Map.Counties;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
-[RequireComponent(typeof(PolyShape))]
+[RequireComponent(typeof(LineRenderer))]
 public class BordersVisualization : MonoBehaviour
 {
-    public Color boundsColor = Color.red;
-    public float lineWidth = 0.05f;
+    //[SerializeField] private Color _boundsColor = Color.red;
+    [SerializeField] private float _lineWidth = 0.05f;
 
-    public Texture dashTexture;
-    public float dashSize = 0.1f;
-    public float gapSize = 0.1f;
+    [SerializeField] private Material _lineMaterial;
+    [SerializeField] private float _dashSize = 0.001f;
+    [SerializeField] private float _gapSize = 0.01f;
 
-    private LineRenderer lineRenderer;
-    private PolyShape polyshape;
+    private LineRenderer _lineRenderer;
+    private County _county;
+    private PolyShape _polyshape;
 
     void Start()
     {
-        polyshape = GetComponent<PolyShape>();
-        lineRenderer = GetComponent<LineRenderer>();
+        _county = GetComponent<County>();
+        _polyshape = GetComponent<PolyShape>();
+        _lineRenderer = GetComponent<LineRenderer>();
 
-        Material lineMaterial = new Material(Shader.Find("Unlit/Transparent")) { color = boundsColor };
-        lineMaterial.mainTexture = dashTexture;
-        lineRenderer.material = lineMaterial;
-
-        lineRenderer.material.mainTextureScale = new Vector2(1f / (dashSize + gapSize), 1);
-        lineRenderer.startWidth = lineWidth;
-        lineRenderer.endWidth = lineWidth;
-        lineRenderer.loop = true;
-        lineRenderer.useWorldSpace = false;
+        ConfigureLineRenderer();
 
         UpdateBoundsVisual();
     }
 
-    void UpdateBoundsVisual()
+    private void ConfigureLineRenderer()
     {
-        lineRenderer.positionCount = polyshape.controlPoints.Count;
-        lineRenderer.SetPositions(polyshape.controlPoints.ToArray());
-        lineRenderer.material.mainTextureScale = new Vector2(1f / (dashSize + gapSize), 1);
+        _lineRenderer.material = _lineMaterial;
+        _lineRenderer.material.color = BorderColors.colors[_county.BelongsTo - 1];
+        _lineRenderer.material.mainTextureScale = new Vector2(1f / (_dashSize + _gapSize), 1);
+
+        _lineRenderer.startWidth = _lineWidth;
+        _lineRenderer.endWidth = _lineWidth;
+        _lineRenderer.loop = true;
+        _lineRenderer.useWorldSpace = false;
     }
 
+    void UpdateBoundsVisual()
+    {
+        _lineRenderer.positionCount = _polyshape.controlPoints.Count;
+        _lineRenderer.SetPositions(_polyshape.controlPoints.ToArray());
+        _lineRenderer.material.mainTextureScale = new Vector2(1f / (_dashSize + _gapSize), 1);
+        _lineRenderer.material.color = BorderColors.colors[_county.BelongsTo - 1];
+    }
+
+    //DebugOnly
     private void Update()
     {
         UpdateBoundsVisual();

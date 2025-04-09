@@ -2,6 +2,8 @@ using Assets.Scripts;
 using Assets.Scripts.Battleground;
 using Assets.Scripts.Battleground.BattleGoals;
 using Assets.Scripts.Battleground.Enums;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -22,7 +24,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Transform _enemyWallSpawnPoint;
 
     [SerializeField] private Army _playerArmy;
-    [SerializeField] private Army _enemyArmy;
+    [SerializeField] private EnemyArmy _enemyArmy;
 
     [field: SerializeField] private DataHolder _dataHolder;
     [field: SerializeField] private WarInfo _warInfo;
@@ -62,6 +64,7 @@ public class BattleManager : MonoBehaviour
         {
             case BattleType.Defend:
                 _diContainer.InstantiatePrefab(_wallUnitPrefab, _playerWallSpawnPoint.position, _playerWallSpawnPoint.rotation, _playerArmy.transform);
+                StartCoroutine(EnemyArmyAttack());
                 goal = _enemyArmy.AddComponent<ArmyDefeatedGoal>();
                 goal.AchievedBy = BattleOpponent.Player;
                 goal.Initialize();
@@ -69,12 +72,25 @@ public class BattleManager : MonoBehaviour
                 break;
             case BattleType.Attack:
                 _diContainer.InstantiatePrefab(_enemyWallUnitPrefab, _enemyWallSpawnPoint.position, _enemyWallSpawnPoint.rotation, _enemyArmy.transform);
+                StartCoroutine(EnemyArmyPatrol());
                 goal = _playerArmy.AddComponent<ArmyDefeatedGoal>();
                 goal.AchievedBy = BattleOpponent.Enemy;
                 goal.Initialize();
 
                 break;
         }
+    }
+
+    private IEnumerator EnemyArmyAttack()
+    {
+        yield return new WaitForSeconds(3f);
+        _enemyArmy.SetTarget(_playerWallSpawnPoint);
+    }
+
+    private IEnumerator EnemyArmyPatrol()
+    {
+        yield return new WaitForSeconds(3f);
+        _enemyArmy.StartPatrolling();
     }
 
     private void ListenToBattleGoals()
@@ -135,7 +151,7 @@ public class BattleManager : MonoBehaviour
             case BattleOpponent.Player:
                 goalInfo.Goal.OnGoalAchieved.RemoveListener(HandleGoalAchieved);
                 _playerGoals.Remove(goalInfo.Goal);
-                if(_playerGoals.Count == 0)
+                if (_playerGoals.Count == 0)
                 {
                     Debug.Log("Player has achieved all of it's goals");
                     var warResult = ScriptableObject.CreateInstance<WarResult>();
@@ -144,9 +160,12 @@ public class BattleManager : MonoBehaviour
                         remainingPlayerWarriorsCount: _playerArmy.WarriorsCount,
                         remainingEnemyWarriorsCount: _enemyArmy.WarriorsCount
                     );
-                    _dataHolder.CurrentWarResult = warResult;
+                    if (_dataHolder != null)
+                    {
+                        _dataHolder.CurrentWarResult = warResult;
+                    }
 
-                    SceneManager.LoadScene("Map");
+                    StartCoroutine(EndBattle());
                 }
 
                 break;
@@ -173,5 +192,12 @@ public class BattleManager : MonoBehaviour
 
                 break;
         }
+    }
+
+    private IEnumerator EndBattle()
+    {
+        yield return new WaitForSeconds(2f);
+
+        SceneManager.LoadScene("Map");
     }
 }

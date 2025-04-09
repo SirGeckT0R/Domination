@@ -39,28 +39,6 @@ namespace Assets.Scripts.Map.Players
             _countyManager = countyManager;
         }
 
-        private void Update()
-        {
-            if (!IsHisTurn)
-            {
-                return;
-            }
-
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-
-                Debug.Log("Ended turn for human");
-                IsHisTurn = false;
-                OnTurnEnded?.Invoke();
-            }
-
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                Debug.Log("Removed economic command for human");
-                OnCommandRemoved?.Invoke();
-            }
-        }
-
         public override IEnumerator ProduceCommand(Context data)
         {
             IsHisTurn = true;
@@ -102,7 +80,7 @@ namespace Assets.Scripts.Map.Players
         public void AcceptPact(CreatePactEvent pactEvent)
         {
             var acceptPact = reactions[0] as AcceptPactCommand;
-            acceptPact.UpdateContext(pactEvent, _context.RelationEvents);
+            acceptPact.UpdateContext(Name, pactEvent, _context.RelationEvents);
             acceptPact.Execute();
 
             PactCommands.Remove(pactEvent);
@@ -111,7 +89,7 @@ namespace Assets.Scripts.Map.Players
         public void DeclinePact(CreatePactEvent pactEvent)
         {
             var declinePact = reactions[1] as DeclinePactCommand;
-            declinePact.UpdateContext(pactEvent, _context.RelationEvents);
+            declinePact.UpdateContext(Name, pactEvent, _context.RelationEvents);
             declinePact.Execute();
 
             PactCommands.Remove(pactEvent);
@@ -154,6 +132,29 @@ namespace Assets.Scripts.Map.Players
             command.UpdateContext(county, this, _countyManager, attackTarget);
 
             OnCommandAdded?.Invoke(command);
+        }
+
+        public void UndoAction()
+        {
+            if (!IsHisTurn)
+            {
+                return;
+            }
+
+            Debug.Log("Removed economic command for human");
+            OnCommandRemoved?.Invoke();
+        }
+
+        public void EndTurn()
+        {
+            if (!IsHisTurn)
+            {
+                return;
+            }
+
+            Debug.Log("Ended turn for human");
+            IsHisTurn = false;
+            OnTurnEnded?.Invoke();
         }
     }
 }

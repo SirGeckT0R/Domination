@@ -46,11 +46,6 @@ namespace Assets.Scripts.Map.Counties
             (Name, EconomicLevel, MilitaryLevel, BelongsTo) = _dataHolder.CountyInfos[Id];
         }
 
-        protected virtual void OnDestroy()
-        {
-            _dataHolder.CountyInfos[Id].Initialize(EconomicLevel, MilitaryLevel, BelongsTo);
-        }
-
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;

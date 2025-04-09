@@ -13,7 +13,7 @@ namespace Assets.Scripts.Battleground
 
         public UnityEvent OnArmyDefeated;
 
-        public void AddUnit(Unit unit)
+        public virtual void AddUnit(Unit unit)
         {
             Units.Add(unit);
             WarriorsCount++;

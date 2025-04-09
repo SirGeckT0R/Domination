@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9b3d27034b88943bc41f7255cf155f, type: 3}
   m_Name: WarInfo 1
   m_EditorClassIdentifier: 
-  <BattleType>k__BackingField: 2
-  <PlayerWarriorsCount>k__BackingField: 3
-  <EnemyWarriorsCount>k__BackingField: 10
+  <BattleType>k__BackingField: 1
+  <PlayerWarriorsCount>k__BackingField: 2
+  <EnemyWarriorsCount>k__BackingField: 20

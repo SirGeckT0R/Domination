@@ -6,10 +6,12 @@ public class Unit : MonoBehaviour
     protected IStateMachine _stateMachine;
     protected UnitSelectionManager _selectionManager;
     protected Health _health;
+    protected Animator _animator;
 
     public UnitIdleState IdleState { get; protected set; }
     public UnitAttackingState AttackingState { get; protected set; }
 
+    public bool IsDead { get; set; }
     public bool IsSelected { get; set; }
     public int OrderOfSelection { get; set; }
 
@@ -17,6 +19,9 @@ public class Unit : MonoBehaviour
     {
         _stateMachine = stateMachine;
         _selectionManager = unitSelectionManager;
+
+        _animator = GetComponent<Animator>();
+
         _health = GetComponent<Health>();
         _health.OnDeath.AddListener(HandleDeath);
     }
@@ -41,6 +46,16 @@ public class Unit : MonoBehaviour
     private void HandleDeath()
     {
         _stateMachine.CurrentState.Exit();
+        
         _selectionManager.RemoveUnit(gameObject);
+
+        IsSelected = false;
+        IsDead = true;
+        _animator.SetBool("IsDead", true);
+    }
+
+    private void DestroyUnit()
+    {
+        Destroy(gameObject);
     }
 }

@@ -29,6 +29,7 @@ public class PlayerIcon : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        _createPactButton.gameObject.SetActive(true);
+        var gameObject = _createPactButton.gameObject;
+        gameObject.SetActive(!gameObject.activeSelf);
     }
 }

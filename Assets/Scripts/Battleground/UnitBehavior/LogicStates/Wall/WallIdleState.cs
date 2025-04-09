@@ -14,7 +14,7 @@ namespace Assets.Scripts.Battleground.UnitBehavior.LogicStates
 
         public override void Update()
         {
-            if (_attackController.Target != null)
+            if (_attackController.Target != null && !unit.IsDead)
             {
                 stateMachine.ChangeState(unit.AttackingState);
             }

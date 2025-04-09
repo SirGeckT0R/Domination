@@ -53,16 +53,18 @@ public class AttackController : MonoBehaviour
         switch (triggerType)
         {
             case TriggerType.Enter:
-                var shouldSwitchTargets = Target == null || IsNewTargetCloser(unit.transform);
+                var shouldSwitchTargets = Target == null || Target.IsDead || IsNewTargetCloser(unit.transform);
                 var newTarget = shouldSwitchTargets ? unit : Target;
-                SetTarget(newTarget);
+
+                SetTarget(!newTarget.IsDead ? newTarget : null);
 
                 break;
 
             case TriggerType.Stay:
-                shouldSwitchTargets = Target == null || IsNewTargetCloser(unit.transform);
+                shouldSwitchTargets = Target == null || Target.IsDead || IsNewTargetCloser(unit.transform);
                 newTarget = shouldSwitchTargets ? unit : Target;
-                SetTarget(newTarget);
+
+                SetTarget(!newTarget.IsDead ? newTarget : null);
 
                 break;
 
@@ -83,12 +85,18 @@ public class AttackController : MonoBehaviour
 
     public void PlayEffects()
     {
-        VisualEffect.SetActive(true);
+        if (VisualEffect != null)
+        {
+            VisualEffect.SetActive(true);
+        }
     }
 
     public void StopEffects()
     {
-        VisualEffect.SetActive(false);
+        if (VisualEffect != null)
+        {
+            VisualEffect.SetActive(false);
+        }
     }
 
     private void OnDrawGizmos()

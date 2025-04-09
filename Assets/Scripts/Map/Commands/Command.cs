@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Map.AI.Considerations;
 using Assets.Scripts.Map.AI.Contexts;
+using Assets.Scripts.Map.UI.GameLog;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
@@ -11,7 +12,7 @@ namespace Assets.Scripts.Map.Commands
         public float CalculateUtility(Context context) => consideration.Evaluate(context);
 
         public abstract void UpdateContext(Context context);
-        public abstract void Execute();
+        public abstract MessageDto Execute();
         public abstract void Undo();
     }
 }

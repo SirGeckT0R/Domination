@@ -80,5 +80,4 @@ public class HealthTracker : MonoBehaviour
             sliderFill.material = redEmission;
         }
     }
-
 }

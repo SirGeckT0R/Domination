@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Players;
+using Assets.Scripts.Map.UI.GameLog;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
@@ -28,11 +29,11 @@ namespace Assets.Scripts.Map.Commands
             County = county;
         }
 
-        public override void Execute()
+        public override MessageDto Execute()
         {
             if (!IsValidForUpgrade())
             {
-                return;
+                return null;
             }
 
             _prevMilitaryLevel = County.MilitaryLevel;
@@ -41,7 +42,10 @@ namespace Assets.Scripts.Map.Commands
             County.MilitaryLevel++;
             Player.Money -= militaryUpgradePrice;
 
+            var message = new MessageDto { Player = Player.Name, Message = $"Upgraded economic building in {County.Name} to level {County.EconomicLevel}" };
             Debug.Log($"Executing military upgrade action");
+
+            return message;
         }
 
         public override void Undo()

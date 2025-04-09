@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.AI.Events;
+using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Players;
+using Assets.Scripts.Map.UI.GameLog;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,13 +19,15 @@ namespace Assets.Scripts.Map.Commands
         private List<RelationEvent> _prevRelationEvents;
         private List<CreatePactEvent> _prevTargetPactCommands;
 
-        public override void Execute()
+        public override MessageDto Execute()
         {
             var isTargetNull = PactTarget == null;
             var arePlayersInvolved = RelationEvents.Any(relEvent => relEvent.ArePlayersInvolved(Player.Id, PactTarget.Id));
             if (isTargetNull || arePlayersInvolved)
             {
                 Debug.Log("Not a valid pact target");
+
+                return null;
             }
 
             _prevRelationEvents = new List<RelationEvent>(RelationEvents);
@@ -33,7 +37,10 @@ namespace Assets.Scripts.Map.Commands
             PactTarget.PactCommands.Add(pactEvent);
             RelationEvents.Add(pactEvent);
 
+            var message = new MessageDto { Player = Player.Name, Message = $"Sent pact to {PactTarget.Name}" };
             Debug.Log("Creating a pact with this player: " + PactTarget.Name);
+
+            return message;
         }
 
         public override void Undo()

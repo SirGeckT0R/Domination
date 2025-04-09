@@ -3,6 +3,7 @@ using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Managers;
 using Assets.Scripts.Map.Players;
+using Assets.Scripts.Map.UI.GameLog;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Commands
@@ -23,14 +24,17 @@ namespace Assets.Scripts.Map.Commands
         private CountyManager _countyManager;
         private WarResult _warResult;
 
-        public override void Execute()
+        public override MessageDto Execute()
         {
             if (AttackTarget == null)
             {
                 Debug.Log("Not a valid attack target");
+
+                return null;
             }
 
             Debug.Log("Attacking this player: " + AttackTarget);
+            var message = new MessageDto{ Player = Player.Name, Message = string.Empty };
 
             if (_warResult == null)
             {
@@ -42,7 +46,7 @@ namespace Assets.Scripts.Map.Commands
 
                     AttackTarget.Warriors -= 10;
                     AttackTarget.Money += 10;
-
+                    message.Message = $"Lost the war against {AttackTarget.Name}";
                     Debug.Log("Fight was lost");
                 }
                 else
@@ -59,10 +63,11 @@ namespace Assets.Scripts.Map.Commands
                     AttackTarget.Money -= 10;
 
                     Debug.Log("Fight was won");
+                    message.Message = $"Won the war against {AttackTarget.Name}, conquered {County.Name} county";
                     _countyManager.TryChangeOwners(Player.Id, County);
                 }
 
-                return;
+                return message;
             }
 
             if (HasWon && BattleType == BattleType.Attack)
@@ -75,6 +80,7 @@ namespace Assets.Scripts.Map.Commands
                 AttackTarget.Money -= 10;
 
                 Debug.Log("Fight was won");
+                message.Message = $"Won the war against {AttackTarget.Name}, conquered {County.Name} county";
                 _countyManager.TryChangeOwners(Player.Id, County);
             }
             else if (HasWon && BattleType == BattleType.Defend)
@@ -87,6 +93,7 @@ namespace Assets.Scripts.Map.Commands
                 AttackTarget.Money += 10;
 
                 Debug.Log("Fight was won");
+                message.Message = $"Lost the war against {AttackTarget.Name}";
             }
             else if (!HasWon && BattleType == BattleType.Attack)
             {
@@ -98,6 +105,7 @@ namespace Assets.Scripts.Map.Commands
                 AttackTarget.Money += 10;
 
                 Debug.Log("Fight was lost");
+                message.Message = $"Lost the war against {AttackTarget.Name}";
             }
             else if (!HasWon && BattleType == BattleType.Defend)
             {
@@ -111,9 +119,12 @@ namespace Assets.Scripts.Map.Commands
                 AttackTarget.Money -= 10;
 
                 Debug.Log("Fight was lost");
+                message.Message = $"Won the war against {AttackTarget.Name}, conquered {County.Name} county";
                 _countyManager.TryChangeOwners(Player.Id, County);
 
             }
+
+            return message;
         }
 
         //private void HandleCountySwap()

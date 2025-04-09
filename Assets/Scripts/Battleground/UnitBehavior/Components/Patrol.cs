@@ -12,7 +12,15 @@ public class Patrol : MonoBehaviour
     private void Start()
     {
         _unitMovement = GetComponent<UnitMovement>();
-        _points = _route.Nodes;
+        SetPatrolRoute(_route);
+    }
+
+    public void SetPatrolRoute(PatrolRoute patrolRoute)
+    {
+        if (patrolRoute != null)
+        {
+            _points = patrolRoute.Nodes;
+        }
     }
 
     void GotoNextPoint()
@@ -29,7 +37,7 @@ public class Patrol : MonoBehaviour
 
     void Update()
     {
-        if (!_unitMovement.IsMoving())
+        if (!_unitMovement.IsMoving() && _points != null)
         {
             GotoNextPoint();
         }

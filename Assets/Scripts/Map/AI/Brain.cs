@@ -68,13 +68,13 @@ namespace Assets.Scripts.Map.AI
                 if (utility > 0.5)
                 {
                     var acceptPact = reactions[0] as AcceptPactCommand;
-                    acceptPact.UpdateContext(createPact, context.RelationEvents);
+                    acceptPact.UpdateContext(context.CurrentPlayer.Name, createPact, context.RelationEvents);
                     acceptPact.Execute();
                 }
                 else
                 {
                     var declinePact = reactions[1] as DeclinePactCommand;
-                    declinePact.UpdateContext(createPact, context.RelationEvents);
+                    declinePact.UpdateContext(context.CurrentPlayer.Name, createPact, context.RelationEvents);
                     declinePact.Execute();
                 }
 

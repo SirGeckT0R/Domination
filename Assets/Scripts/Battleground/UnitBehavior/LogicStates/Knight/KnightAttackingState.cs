@@ -36,7 +36,10 @@ namespace Assets.Scripts.Battleground.UnitBehavior.LogicStates
                     _unitMovement.StopMovement();
                     var target = hit.transform.GetComponent<Unit>();
 
-                    _attackController.SetTarget(target);
+                    if (!target.IsDead)
+                    {
+                        _attackController.SetTarget(target);
+                    }
                 }
                 else if (Physics.Raycast(ray, out hit, Mathf.Infinity, _unitMovement.Ground))
                 {

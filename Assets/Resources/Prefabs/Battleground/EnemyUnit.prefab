@@ -846,6 +846,7 @@ GameObject:
   - component: {fileID: 1621751110097595253}
   - component: {fileID: 6126861734253431830}
   - component: {fileID: 1336428755269368959}
+  - component: {fileID: 1365182952527997642}
   m_Layer: 8
   m_Name: EnemyUnit
   m_TagString: Enemy
@@ -1038,6 +1039,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   <VisualEffect>k__BackingField: {fileID: 7272450891042172374}
+--- !u!114 &1365182952527997642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5695898062517251063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd2ebf1797fd6646a9e6c3c08db000c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _route: {fileID: 0}
 --- !u!1 &6140447535979384987
 GameObject:
   m_ObjectHideFlags: 0
