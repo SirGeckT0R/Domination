@@ -29,7 +29,6 @@ public class UnitSelectionBox : MonoBehaviour
 
     private void Update()
     {
-        // When Clicked
         if (Input.GetMouseButtonDown(0))        
         {
             _startPosition = Input.mousePosition;
@@ -37,7 +36,6 @@ public class UnitSelectionBox : MonoBehaviour
             _selectionBox = new Rect();
         }
 
-        // When Dragging
         if (Input.GetMouseButton(0))
         {
             if(_boxVisual.rect.width > 0 || _boxVisual.rect.height > 0)
@@ -51,7 +49,6 @@ public class UnitSelectionBox : MonoBehaviour
             DrawSelection();
         }
 
-        // When Releasing
         if (Input.GetMouseButtonUp(0))
         {
             SelectUnits();
@@ -64,20 +61,15 @@ public class UnitSelectionBox : MonoBehaviour
 
     void DrawVisual()
     {
-        // Calculate the starting and ending positions of the selection box.
         Vector2 boxStart = _startPosition;
         Vector2 boxEnd = _endPosition;
 
-        // Calculate the center of the selection box.
         Vector2 boxCenter = (boxStart + boxEnd) / 2;
 
-        // Set the position of the visual selection box based on its center.
         _boxVisual.position = boxCenter;
 
-        // Calculate the size of the selection box in both width and height.
         Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
 
-        // Set the size of the visual selection box based on its calculated size.
         _boxVisual.sizeDelta = boxSize;
     }
 

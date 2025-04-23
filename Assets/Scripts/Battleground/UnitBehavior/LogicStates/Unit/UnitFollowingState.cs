@@ -62,6 +62,11 @@ namespace Assets.Scripts.Battleground.UnitBehavior.LogicStates
 
         public override void Update()
         {
+            if (unit.IsDead)
+            {
+                return;
+            }
+
             var attackTarget = _attackController.Target;
 
             if (attackTarget == null)

@@ -10,7 +10,6 @@ namespace Assets.Scripts.Map.Commands
         public string targetTag;
         public Consideration consideration;
         public float CalculateUtility(Context context) => consideration.Evaluate(context);
-
         public abstract void UpdateContext(Context context);
         public abstract MessageDto Execute();
         public abstract void Undo();

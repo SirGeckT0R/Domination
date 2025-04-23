@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackController : MonoBehaviour
@@ -16,11 +17,15 @@ public class AttackController : MonoBehaviour
 
     [field: Header("Effects")]
     [field: SerializeField] public GameObject VisualEffect { get; private set; }
+    [field: SerializeField] private List<AudioClip> AttackClips { get; set; } = new List<AudioClip>();
 
+    private SoundManager _soundManager;
     private DetectionZone _detectionZone;
 
     private void Start()
     {
+        _soundManager = SoundManager.Instance;
+
         _detectionZone = transform.Find("DetectionZone").GetComponent<DetectionZone>();
 
         _detectionZone.OnDetected += HandleDetection;
@@ -45,7 +50,8 @@ public class AttackController : MonoBehaviour
             _attackTargetHealth.TakeDamage(damage);
         }
 
-        SoundManager.Instance.PlayInfantryAttackSound();
+        var randomClipIndex = Random.Range(0, AttackClips.Count);
+        _soundManager.PlaySound(AttackClips[randomClipIndex]);
     }
 
     public void HandleDetection(Unit unit, TriggerType triggerType)

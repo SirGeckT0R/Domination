@@ -1,4 +1,5 @@
 using Assets.Scripts.Battleground.Enums;
+using Assets.Scripts.MainMenu.UI;
 using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.AI.Enums;
 using Assets.Scripts.Map.AI.Events;
@@ -7,6 +8,7 @@ using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.PlayerInput;
 using Assets.Scripts.Map.Players;
 using Assets.Scripts.Map.UI.GameLog;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -17,31 +19,29 @@ namespace Assets.Scripts.Map.Managers
 {
     public class TurnManager : MonoBehaviour
     {
-        //public static TurnManager Instance { get; private set; }
-        private DataHolder _dataHolder;
-
-        [SerializeField] public List<Player> Players;
-
-        private float maxAmountOfTurns = 20;
-        private int _globalTurnCount = 0;
-        private bool _hasTurnStarted = false;
-        private bool _hasGlobalTurnStarted = false;
-
+        [field: SerializeField] public int MaxAmountOfTurns { get; private set; } = 20;
         [field: SerializeField] public int MaxCommandsPerTurn { get; private set; } = 2;
         [field: SerializeField] public int MoneyPerLevel { get; private set; } = 1;
         [field: SerializeField] public int WarriorsPerLevel { get; private set; } = 1;
 
-        public int CurrentPlayerIndex { get; private set; }
-        public Player CurrentPlayer { get; private set; }
+        [field:SerializeField] public List<Player> Players { get; private set; }
+        [field: SerializeField] public AudioClip _declareWarClip;
 
-        public List<Command> Commands { get; private set; } = new List<Command>();
-        public List<RelationEvent> RelationEvents { get; private set; } = new List<RelationEvent>();
+        private int _currentPlayerIndex;
+        private Player _currentPlayer;
+        private List<Command> _commands= new List<Command>();
+        private List<RelationEvent> _relationEvents = new List<RelationEvent>();
 
+        private int _globalTurnCount = 0;
+        private bool _hasTurnStarted = false;
+        private bool _hasGlobalTurnStarted = false;
+        private DataHolder _dataHolder;
         private Context _context;
 
         private CountyManager _countyManager;
         private PlayerInputManager _inputManager;
         private UIManager _uiManager;
+        [SerializeField] private LoadingScreen _loadingScreen;
 
         [Zenject.Inject]
         public void Construct(CountyManager countyManager, PlayerInputManager inputManager, UIManager uiManager)
@@ -49,25 +49,9 @@ namespace Assets.Scripts.Map.Managers
             _countyManager = countyManager;
             _inputManager = inputManager;
             _uiManager = uiManager;
+
             _dataHolder = DataHolder.Instance;
         }
-
-        //private void Awake()
-        //{
-        //    if (Instance != null && Instance != this)
-        //    {
-        //        Destroy(gameObject);
-        //        _dataHolder = DataHolder.Instance;
-        //        Initialize();
-        //        Instance.StartTurn();
-
-        //        return;
-        //    }
-
-        //    //Instance = this;
-        //    _dataHolder = DataHolder.Instance;
-        //    //DontDestroyOnLoad(gameObject);
-        //}
 
         private void Start()
         {
@@ -77,49 +61,26 @@ namespace Assets.Scripts.Map.Managers
 
         private void Initialize()
         {
-            _globalTurnCount = _dataHolder.TurnManagerState.GlobalTurnCount;
-            CurrentPlayerIndex = _dataHolder.TurnManagerState.CurrentPlayerIndex;
-            _hasGlobalTurnStarted = _dataHolder.TurnManagerState.HasGlobalTurnStarted;
-            _hasTurnStarted = false;
-            Commands = _dataHolder.TurnManagerState.Commands;
-            RelationEvents = _dataHolder.TurnManagerState.RelationEvents;
-            _context = _dataHolder.TurnManagerState.Context ?? new Context();
-
-            foreach (var player in Players)
-            {
-                player.OnCommandAdded.AddListener(AddCommand);
-                player.OnCommandRemoved.AddListener(RemoveLastCommand);
-                player.OnTurnEnded.AddListener(EndTurn);
-            }
-
-            CurrentPlayer = Players[CurrentPlayerIndex];
-            _context.RelationEvents = RelationEvents;
-            _context.CountyManager = _countyManager;
+            SetupFromDataHolder();
 
             if (_dataHolder.CurrentWarResult != null)
             {
-                var realtionEvent = RelationEvents[RelationEvents.Count - 1];
-                var warCommand = Commands[Commands.Count - 1] as AttackCommand;
-                var sender = Players.FirstOrDefault(player => player.Id == warCommand.PlayerId);
-                var receiver = Players.FirstOrDefault(player => player.Id == warCommand.AttackTargetId);
-                var county = _countyManager.AllCounties.FirstOrDefault(county => county.Id == warCommand.CountyId);
-                warCommand.BattleType = _dataHolder.CurrentWarInfo.BattleType;
-                warCommand.UpdateContext(county, sender, _countyManager, receiver, _dataHolder.CurrentWarResult);
+                HandleWarResult();
+            }
 
-                warCommand.HasWon = _dataHolder.CurrentWarResult.Winner == BattleOpponent.Player;
-                var message = warCommand.Execute();
-                _uiManager.AddLogMessage(message);
-                _dataHolder.CurrentWarResult = null;
+            if (_commands.Count == MaxCommandsPerTurn)
+            {
+                EndTurn();
             }
         }
 
         private void StartTurn()
         {
-            if (_globalTurnCount >= maxAmountOfTurns)
+            if (_globalTurnCount >= MaxAmountOfTurns)
             {
                 foreach (var player in Players)
                 {
-                    var message = new MessageDto{ Player = player.Name, Message = $"Ended the game with {player.Warriors} warrors and {player.Money} money" };
+                    var message = new MessageDto{ Player = player.Name, Message = $"Ended the game with {player.Warriors} warriors and {player.Money} money" };
                     Debug.Log(message);
 
                     _uiManager.AddLogMessage(message);
@@ -131,14 +92,13 @@ namespace Assets.Scripts.Map.Managers
 
             if (!_hasGlobalTurnStarted)
             {
-                RelationEvents = RelationEvents.Where(relEvent => !relEvent.UpdateDuration()).ToList();
+                _relationEvents = _relationEvents.Where(relEvent => !relEvent.UpdateDuration()).ToList();
                 _hasGlobalTurnStarted = true;
             }
 
-
             if (!_hasTurnStarted)
             {
-                var isLost = _countyManager.CountyOwners[CurrentPlayer.Id].Count <= 0;
+                var isLost = _countyManager.CountyOwners[_currentPlayer.Id].Count <= 0;
                 if (isLost)
                 {
                     EndTurn();
@@ -147,7 +107,7 @@ namespace Assets.Scripts.Map.Managers
                 }
 
                 _hasTurnStarted = true;
-                if (CurrentPlayer is HumanPlayer humanPlayer)
+                if (_currentPlayer is HumanPlayer humanPlayer)
                 {
                     _inputManager.gameObject.SetActive(true);
                     _uiManager.DisplayPlayerHUD(humanPlayer, GetOtherRemainingPlayers());
@@ -155,43 +115,90 @@ namespace Assets.Scripts.Map.Managers
 
                 UpdateContext();
 
-                StartCoroutine(CurrentPlayer.ProduceCommand(_context));
+                StartCoroutine(_currentPlayer.ProduceCommand(_context));
             }
         }
 
         public void EndTurn()
         {
             _inputManager.gameObject.SetActive(false);
-            Commands.Clear();
+            _commands.Clear();
 
-            var playerCounties = _countyManager.CountyOwners[CurrentPlayer.Id];
+            var playerCounties = _countyManager.CountyOwners[_currentPlayer.Id];
 
-            UpdateStats(CurrentPlayer, playerCounties);
+            UpdateStats(_currentPlayer, playerCounties);
             var message = new MessageDto
             {
-                Player = CurrentPlayer.Name,
-                Message = $"Ended the turn with {CurrentPlayer.Warriors} warrors, {CurrentPlayer.Money} money and {playerCounties.ToCommaSeparatedString()}"
+                Player = _currentPlayer.Name,
+                Message = $"Ended the turn with {_currentPlayer.Warriors} warrors, {_currentPlayer.Money} money"
             };
-            Debug.Log(message);
+
             _uiManager.AddLogMessage(message);
 
             _hasTurnStarted = false;
-            if (CurrentPlayerIndex >= Players.Count - 1)
+            if (_currentPlayerIndex >= Players.Count - 1)
             {
                 RemoveLostPlayers();
 
                 _globalTurnCount++;
-                CurrentPlayerIndex = 0;
-                CurrentPlayer = Players[CurrentPlayerIndex];
+                _currentPlayerIndex = 0;
                 _hasGlobalTurnStarted = false;
             }
             else
             {
-                CurrentPlayerIndex++;
-                CurrentPlayer = Players[CurrentPlayerIndex];
+                _currentPlayerIndex++;
             }
 
+            _currentPlayer = Players[_currentPlayerIndex];
+
             StartTurn();
+        }
+
+        public void AddCommand(Command command)
+        {
+            if (_commands.Count >= MaxCommandsPerTurn)
+            {
+                return;
+            }
+
+            _commands.Add(command);
+
+            if (command is AttackCommand warCommand)
+            {
+                var isLoading = HandleWarCommand(warCommand);
+
+                if (isLoading)
+                {
+                    return;
+                }
+            }
+
+            var message = command.Execute();
+            _uiManager.AddLogMessage(message);
+            UpdateContext();
+
+            if (_currentPlayer is AIPlayer aiPlayer && _commands.Count == MaxCommandsPerTurn)
+            {
+                EndTurn();
+
+                return;
+            }
+
+            StartCoroutine(_currentPlayer.ProduceCommand(_context));
+        }
+
+        private bool HandleWarCommand(AttackCommand command)
+        {
+            var warEvent = new RelationEvent(command.Player.Id, command.AttackTarget.Id, RelationEventType.War, 3);
+            _relationEvents.Add(warEvent);
+            if (command.Player is HumanPlayer || command.AttackTarget is HumanPlayer)
+            {
+                StartWar(command);
+
+                return true;
+            }
+
+            return false;
         }
 
         private void UpdateStats(Player currentPlayer, List<County> playerCounties)
@@ -206,6 +213,11 @@ namespace Assets.Scripts.Map.Managers
 
             currentPlayer.Money += MoneyPerLevel * totalEconomicLevel;
             currentPlayer.Warriors += WarriorsPerLevel * totalMilitaryLevel;
+
+            if(currentPlayer is HumanPlayer humanPlayer)
+            {
+                _uiManager.UpdatePlayerStats(humanPlayer);
+            }
         }
 
         private void RemoveLostPlayers()
@@ -217,82 +229,36 @@ namespace Assets.Scripts.Map.Managers
             }
         }
 
-        public void AddCommand(Command command)
-        {
-            if (Commands.Count >= MaxCommandsPerTurn)
-            {
-                return;
-            }
-
-            Commands.Add(command);
-
-            if (command is not AttackCommand)
-            {
-                var message = command.Execute();
-                _uiManager.AddLogMessage(message);
-            }
-
-            CreateRelationEvent(command);
-            UpdateContext();
-
-            if (CurrentPlayer is AIPlayer aiPlayer && Commands.Count == MaxCommandsPerTurn)
-            {
-                EndTurn();
-
-                return;
-            }
-
-            StartCoroutine(CurrentPlayer.ProduceCommand(_context));
-        }
-
-        public void CreateRelationEvent(Command command)
-        {
-            switch (command)
-            {
-                case AttackCommand warCommand:
-                    var warEvent = new RelationEvent(warCommand.Player.Id, warCommand.AttackTarget.Id, RelationEventType.War, 3);
-                    RelationEvents.Add(warEvent);
-                    if (warCommand.Player is HumanPlayer || warCommand.AttackTarget is HumanPlayer)
-                    {
-                        HandleWar(warCommand);
-                    }
-
-                    break;
-            }
-        }
-
         private void UpdateContext()
         {
             var remaining = GetOtherRemainingPlayers();
 
-            _context.CurrentPlayer = CurrentPlayer;
-            _context.SetData("Warriors", CurrentPlayer.Warriors);
-            _context.SetData("Money", CurrentPlayer.Money);
+            _context.CurrentPlayer = _currentPlayer;
             _context.OtherPlayers = remaining;
-            _context.RelationEvents = RelationEvents;
+            _context.RelationEvents = _relationEvents;
         }
 
         private List<Player> GetOtherRemainingPlayers()
         {
             return Players.Where(
-                player => player != CurrentPlayer
+                player => player != _currentPlayer
                 && _countyManager.CountyOwners[player.Id].Count > 0
                 ).ToList();
         }
 
         public void RemoveLastCommand()
         {
-            var last = Commands.Count - 1;
-            if (Commands.Count < 1 || Commands[last] is IUndoable)
+            var last = _commands.Count - 1;
+            if (_commands.Count < 1 || _commands[last] is IUndoable)
             {
                 return;
             }
 
-            Commands[last].Undo();
-            Commands.RemoveAt(last);
+            _commands[last].Undo();
+            _commands.RemoveAt(last);
         }
 
-        public void HandleWar(AttackCommand warCommand)
+        public void StartWar(AttackCommand warCommand)
         {
             WarInfo warInfo = ScriptableObject.CreateInstance<WarInfo>();
             switch (warCommand.Player)
@@ -303,6 +269,8 @@ namespace Assets.Scripts.Map.Managers
                         playerWarriorsCount: warCommand.AttackTarget.Warriors,
                         enemyWarriorsCount: warCommand.Player.Warriors
                     );
+
+                    _uiManager.DisplayAttackedScreen(warCommand.Player.Name);
 
                     break;
                 case HumanPlayer:
@@ -317,9 +285,56 @@ namespace Assets.Scripts.Map.Managers
 
             _dataHolder.CurrentWarInfo = warInfo;
 
-            _dataHolder.TurnManagerState.Initialize(_globalTurnCount, _hasTurnStarted, _hasGlobalTurnStarted, CurrentPlayerIndex, Commands, RelationEvents, _context);
+            _dataHolder.TurnManagerState.Initialize(_globalTurnCount, _hasTurnStarted, _hasGlobalTurnStarted, _currentPlayerIndex, _commands, _relationEvents, _context);
+            StartCoroutine(LoadBattle());
+        }
 
-            SceneManager.LoadScene("Battleground");
+        private IEnumerator LoadBattle()
+        {
+            SoundManager.Instance.PlaySound(_declareWarClip);
+            yield return new WaitForSeconds(5f);
+
+            _loadingScreen.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
+        private void HandleWarResult()
+        {
+            var relationEvent = _relationEvents[_relationEvents.Count - 1];
+            var warCommand = _commands[_commands.Count - 1] as AttackCommand;
+            var sender = Players.FirstOrDefault(player => player.Id == warCommand.PlayerId);
+            var receiver = Players.FirstOrDefault(player => player.Id == warCommand.AttackTargetId);
+            var county = _countyManager.AllCounties.FirstOrDefault(county => county.Id == warCommand.CountyId);
+
+            warCommand.BattleType = _dataHolder.CurrentWarInfo.BattleType;
+            warCommand.HasWon = _dataHolder.CurrentWarResult.Winner == BattleOpponent.Player;
+            warCommand.UpdateContext(county, sender, _countyManager, receiver, _dataHolder.CurrentWarResult);
+
+            var message = warCommand.Execute();
+
+            _uiManager.AddLogMessage(message);
+            _dataHolder.CurrentWarResult = null;
+        }
+
+        private void SetupFromDataHolder()
+        {
+            _globalTurnCount = _dataHolder.TurnManagerState.GlobalTurnCount;
+            _currentPlayerIndex = _dataHolder.TurnManagerState.CurrentPlayerIndex;
+            _hasGlobalTurnStarted = _dataHolder.TurnManagerState.HasGlobalTurnStarted;
+            _hasTurnStarted = false;
+            _commands = _dataHolder.TurnManagerState.Commands;
+            _relationEvents = _dataHolder.TurnManagerState.RelationEvents;
+            _context = _dataHolder.TurnManagerState.Context ?? new Context();
+            _currentPlayer = Players[_currentPlayerIndex];
+
+            foreach (var player in Players)
+            {
+                player.OnCommandAdded.AddListener(AddCommand);
+                player.OnCommandRemoved.AddListener(RemoveLastCommand);
+                player.OnTurnEnded.AddListener(EndTurn);
+            }
+
+            _context.RelationEvents = _relationEvents;
+            _context.CountyManager = _countyManager;
         }
     }
 }

@@ -22,6 +22,13 @@ namespace Assets.Scripts.Battleground.UnitBehavior.LogicStates
             _unitMovement = unit.GetComponent<UnitMovement>();
         }
 
+        public override void Exit()
+        {
+            base.Exit();
+
+            _unitMovement.StopMovement();
+        }
+
         public override void HandleInput()
         {
             base.HandleInput();

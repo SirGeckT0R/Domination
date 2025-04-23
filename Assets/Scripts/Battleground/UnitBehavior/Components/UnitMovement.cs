@@ -59,8 +59,8 @@ public class UnitMovement : MonoBehaviour
 
         _animator.SetBool("IsMoving", false);
         _agent.isStopped = true;
-        _isMoving = false;
         _agent.ResetPath();
+        _isMoving = false;
     }
 
     private void Update()

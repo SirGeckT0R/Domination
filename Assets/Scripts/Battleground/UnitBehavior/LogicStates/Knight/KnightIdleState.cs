@@ -57,6 +57,11 @@ namespace Assets.Scripts.Battleground.UnitBehavior.LogicStates
 
         public override void Update()
         {
+            if (unit.IsDead)
+            {
+                return;
+            }
+
             if (_attackController.Target != null)
             {
                 var knightUnit = unit as Knight;

@@ -10,7 +10,7 @@ namespace Assets.Scripts.Map.Commands
     public class MilitaryUpgradeCommand : Command
     {
         //Change to ScriptableObject
-        public int militaryUpgradePrice = 15;
+        public int militaryUpgradePrice = 20;
         public Player Player { get; private set; }
         public County County { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Assets.Scripts.Map.Commands
             _prevMilitaryLevel = County.MilitaryLevel;
             _prevMoney = Player.Money;
 
-            County.MilitaryLevel++;
+            County.SetBuildingLevel(false, (byte)(County.MilitaryLevel + 1));
             Player.Money -= militaryUpgradePrice;
 
             var message = new MessageDto { Player = Player.Name, Message = $"Upgraded economic building in {County.Name} to level {County.EconomicLevel}" };
@@ -55,7 +55,7 @@ namespace Assets.Scripts.Map.Commands
                 return;
             }
 
-            County.MilitaryLevel = _prevMilitaryLevel;
+            County.SetBuildingLevel(false, _prevMilitaryLevel);
             Player.Money = _prevMoney;
 
             _prevMilitaryLevel = 0;

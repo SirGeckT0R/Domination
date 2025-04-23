@@ -2,10 +2,9 @@ using Assets.Scripts;
 using Assets.Scripts.Battleground;
 using Assets.Scripts.Battleground.BattleGoals;
 using Assets.Scripts.Battleground.Enums;
-using System;
+using Assets.Scripts.MainMenu.UI;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,6 +26,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private EnemyArmy _enemyArmy;
 
     [field: SerializeField] private DataHolder _dataHolder;
+    [field: SerializeField] private BattleUIManager _battleUIManager;
     [field: SerializeField] private WarInfo _warInfo;
 
     private List<BattleGoal> _playerGoals = new List<BattleGoal>();
@@ -35,8 +35,9 @@ public class BattleManager : MonoBehaviour
     private DiContainer _diContainer;
 
     [Inject]
-    public void Construct(DiContainer diContainer)
+    public void Construct(DiContainer diContainer, BattleUIManager battleUIManager)
     {
+        _battleUIManager = battleUIManager;
         _diContainer = diContainer;
         _dataHolder = DataHolder.Instance;
 
@@ -187,7 +188,7 @@ public class BattleManager : MonoBehaviour
 
                     }
 
-                    SceneManager.LoadScene("Map");
+                    StartCoroutine(EndBattle());
                 }
 
                 break;
@@ -196,8 +197,8 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator EndBattle()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(5f);
 
-        SceneManager.LoadScene("Map");
+        _battleUIManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 }

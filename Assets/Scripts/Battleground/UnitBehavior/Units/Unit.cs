@@ -40,12 +40,13 @@ public class Unit : MonoBehaviour
             _stateMachine.CurrentState.HandleInput();
         }
 
-        _stateMachine.CurrentState.Update();
+        _stateMachine.CurrentState?.Update();
     }
 
     private void HandleDeath()
     {
         _stateMachine.CurrentState.Exit();
+        _stateMachine.Exit();
         
         _selectionManager.RemoveUnit(gameObject);
 

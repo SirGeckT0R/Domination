@@ -5,41 +5,27 @@ using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Managers;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 namespace Assets.Scripts.Map.AI
 {
     public class Brain : MonoBehaviour
     {
-        public List<Command> actions;
-        public CompositePactConsideration pactConsideration;
-        public List<Command> reactions;
+        [field: SerializeField] public List<Command> Actions { get; private set; }
+        [field: SerializeField] public List<Command> Reactions { get; private set; }
+        [field: SerializeField] public CompositePactConsideration PactConsideration { get; private set; }
+        [field: SerializeField] public Context Context { get; private set; }
 
-        private CountyManager _countyManager;
-
-        [Inject]
-        public void Construct(CountyManager countyManager)
+        public Command FindAndProduceTheBestAction(Context context)
         {
-            _countyManager = countyManager;
-        }
-
-        void Awake()
-        {
-            foreach (var action in actions)
-            {
-                //action.Initialize(Context);
-            }
-        }
-
-        public Command FindAndProduceTheBestAction(Contexts.Context context)
-        {
-            ConsiderPacts(context);
+            Context = context;
+            //better make it so AIPlayer calls ConsiderPacts itself, beacuse in current way it considers pacts twice during the turn
+            ConsiderPacts();
 
             Command bestAction = null;
             float highestUtility = float.MinValue;
 
             float utility = 0;
-            foreach (var action in actions)
+            foreach (var action in Actions)
             {
                 utility = action.CalculateUtility(context);
                 if (utility > highestUtility)
@@ -56,30 +42,31 @@ namespace Assets.Scripts.Map.AI
             return bestAction;
         }
 
-        private void ConsiderPacts(Contexts.Context context)
+        private void ConsiderPacts()
         {
-            List<CreatePactEvent> pacts = context.CurrentPlayer.PactCommands;
+            List<CreatePactEvent> pacts = Context.CurrentPlayer.PactCommands;
             float utility = 0;
             foreach (var createPact in pacts)
             {
-                context.CurrentPact = createPact;
-                utility = pactConsideration.Evaluate(context);
+                Context.CurrentPact = createPact;
+                utility = PactConsideration.Evaluate(Context);
 
                 if (utility > 0.5)
                 {
-                    var acceptPact = reactions[0] as AcceptPactCommand;
-                    acceptPact.UpdateContext(context.CurrentPlayer.Name, createPact, context.RelationEvents);
+                    //Just create ia scriptable object
+                    var acceptPact = Reactions[0] as AcceptPactCommand;
+                    acceptPact.UpdateContext(Context.CurrentPlayer.Name, createPact, Context.RelationEvents);
                     acceptPact.Execute();
                 }
                 else
                 {
-                    var declinePact = reactions[1] as DeclinePactCommand;
-                    declinePact.UpdateContext(context.CurrentPlayer.Name, createPact, context.RelationEvents);
+                    var declinePact = Reactions[1] as DeclinePactCommand;
+                    declinePact.UpdateContext(Context.CurrentPlayer.Name, createPact, Context.RelationEvents);
                     declinePact.Execute();
                 }
 
-                context.WarTargetInfo = null;
-                context.PactTarget = null;
+                Context.WarTargetInfo = null;
+                Context.PactTarget = null;
             }
 
             pacts.Clear();

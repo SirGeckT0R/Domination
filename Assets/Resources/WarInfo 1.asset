@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: WarInfo 1
   m_EditorClassIdentifier: 
   <BattleType>k__BackingField: 1
-  <PlayerWarriorsCount>k__BackingField: 2
+  <PlayerWarriorsCount>k__BackingField: 20
   <EnemyWarriorsCount>k__BackingField: 20

@@ -3,6 +3,7 @@ using Assets.Scripts.Map.Players;
 using Assets.Scripts.Map.UI;
 using Assets.Scripts.Map.UI.GameLog;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -16,6 +17,11 @@ namespace Assets.Scripts.Map.Managers
         [SerializeField] private PactView _pactView;
         [SerializeField] private GameLogView _gameLogView;
         [SerializeField] private GameObject _gameEndView;
+        [SerializeField] private GameObject _attackedScreenView;
+
+        [SerializeField] private TextMeshProUGUI _moneyText;
+        [SerializeField] private TextMeshProUGUI _warriorsText;
+
         public HumanPlayer CurrentPlayer { get; private set; }
         public CreatePactEvent CurrentPact { get; private set; }
         public List<Player> OtherPlayers { get; private set; }
@@ -52,6 +58,14 @@ namespace Assets.Scripts.Map.Managers
                 _pactView.gameObject.SetActive(true);
                 _pactView.UpdateCurrentPact();
             }
+
+            UpdatePlayerStats(currentPlayer);
+        }
+
+        public void UpdatePlayerStats(HumanPlayer player)
+        {
+            _moneyText.text = player.Money.ToString();
+            _warriorsText.text = player.Warriors.ToString();
         }
 
         public void AddLogMessage(MessageDto message) => _gameLogView.AddLogMessage(message);
@@ -68,7 +82,6 @@ namespace Assets.Scripts.Map.Managers
             {
                 CurrentPlayer.DeclinePact(CurrentPact);
             }
-
 
             var pactCommands = CurrentPlayer.PactCommands;
             if (pactCommands.Count > 0)
@@ -88,6 +101,12 @@ namespace Assets.Scripts.Map.Managers
         public void DisplayGameEndScreen()
         {
             _gameEndView.SetActive(true);
+        }
+
+        public void DisplayAttackedScreen(string attackerName)
+        {
+            _attackedScreenView.SetActive(true);
+            _attackedScreenView.GetComponentInChildren<TextMeshProUGUI>().text = $"You have been attacked by {attackerName}, prepare for war!";
         }
     }
 }

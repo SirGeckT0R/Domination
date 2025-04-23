@@ -18,9 +18,13 @@ public class UnitSelectionManager : MonoBehaviour
     [Header("Visual Effects")]
     [SerializeField] private GameObject _groundMarker;
 
+    [SerializeField] private AudioClip _commandClip;
+    private SoundManager _soundManager;
+
     private void Start()
     {
         _camera = Camera.main;
+        _soundManager = SoundManager.Instance;
     }
 
     private void Update()
@@ -49,6 +53,7 @@ public class UnitSelectionManager : MonoBehaviour
         
         if (Input.GetMouseButtonDown(1) && _selectedUnits.Count > 0)
         {
+            _soundManager.PlaySound(_commandClip);
             RaycastHit hit;
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
 

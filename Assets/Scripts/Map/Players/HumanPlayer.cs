@@ -4,6 +4,7 @@ using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Managers;
+using Assets.Scripts.Map.PlayerInput;
 using Assets.Scripts.Map.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,19 +14,18 @@ using UnityEngine;
 namespace Assets.Scripts.Map.Players
 {
     public class HumanPlayer : Player
-        //, IInteractable
     {
-        //rework
-        public List<Command> reactions;
-        public List<RelationEventType> ignoreEvents;
         public bool IsHisTurn { get; private set; } = false;
+        [field: SerializeField] private List<RelationEventType> _ignoreEvents;
 
         private Context _context;
         private CountyManager _countyManager;
+        private PlayerAudioComponent _playerAudioComponent;
 
         protected override void Awake()
         {
             base.Awake();
+            _playerAudioComponent = GetComponent<PlayerAudioComponent>();
         }
 
         protected override void OnDestroy()
@@ -79,7 +79,7 @@ namespace Assets.Scripts.Map.Players
 
         public void AcceptPact(CreatePactEvent pactEvent)
         {
-            var acceptPact = reactions[0] as AcceptPactCommand;
+            var acceptPact = ScriptableObject.CreateInstance<AcceptPactCommand>();
             acceptPact.UpdateContext(Name, pactEvent, _context.RelationEvents);
             acceptPact.Execute();
 
@@ -88,7 +88,7 @@ namespace Assets.Scripts.Map.Players
 
         public void DeclinePact(CreatePactEvent pactEvent)
         {
-            var declinePact = reactions[1] as DeclinePactCommand;
+            var declinePact = ScriptableObject.CreateInstance<DeclinePactCommand>();
             declinePact.UpdateContext(Name, pactEvent, _context.RelationEvents);
             declinePact.Execute();
 
@@ -97,6 +97,8 @@ namespace Assets.Scripts.Map.Players
 
         private void AddEconomicUpgrade(County county)
         {
+            _playerAudioComponent.PlayEconomicUpgradeSound();
+
             var command = ScriptableObject.CreateInstance<EconomicUpgradeCommand>();
             command.UpdateContext(county, this);
 
@@ -111,6 +113,8 @@ namespace Assets.Scripts.Map.Players
                 return;
             }
 
+            _playerAudioComponent.PlayMilitaryUpgradeSound();
+
             var command = ScriptableObject.CreateInstance<MilitaryUpgradeCommand>();
             command.UpdateContext(county, this);
 
@@ -121,7 +125,7 @@ namespace Assets.Scripts.Map.Players
         {
             var attackTarget = turnManager.Players.FirstOrDefault(player => player.Id == county.BelongsTo);
             var wereInvolvedInRelations = _context.RelationEvents.Any(relEvent => relEvent.ArePlayersInvolved(Id, attackTarget.Id)
-                && !ignoreEvents.Contains(relEvent.EventType));
+                && !_ignoreEvents.Contains(relEvent.EventType));
             if (wereInvolvedInRelations)
             {
                 Debug.Log("Can't declare war");
@@ -151,6 +155,9 @@ namespace Assets.Scripts.Map.Players
             {
                 return;
             }
+
+
+            _playerAudioComponent.PlayEndTurnSound();
 
             Debug.Log("Ended turn for human");
             IsHisTurn = false;

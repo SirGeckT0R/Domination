@@ -85,8 +85,8 @@ namespace Assets.Scripts.Map.Commands
             }
             else if (HasWon && BattleType == BattleType.Defend)
             {
-                Player.Warriors = _warResult.RemainingPlayerWarriorsCount;
-                AttackTarget.Warriors = _warResult.RemainingEnemyWarriorsCount;
+                Player.Warriors = _warResult.RemainingEnemyWarriorsCount;
+                AttackTarget.Warriors = _warResult.RemainingPlayerWarriorsCount;
 
                 Player.Money -= 10;
 

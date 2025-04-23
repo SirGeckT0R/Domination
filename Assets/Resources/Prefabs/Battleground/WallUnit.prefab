@@ -167,6 +167,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   <VisualEffect>k__BackingField: {fileID: 0}
+  <AttackClips>k__BackingField:
+  - {fileID: 8300000, guid: 0805de7e4fb0f4d03a30ae90e7c64311, type: 3}
+  - {fileID: 8300000, guid: 34aca9e3f1ade4802b9062b1380aa523, type: 3}
+  - {fileID: 8300000, guid: 2bc8225a23eb945578cfd49d8ba0dd67, type: 3}
+  - {fileID: 8300000, guid: c0ac0614aa7b64de7ba2f569a0793a16, type: 3}
+  - {fileID: 8300000, guid: 5318c0c653ad54db7be081c1a391547e, type: 3}
+  - {fileID: 8300000, guid: e83e7bcb4f4fb4a79a977d9b03628b87, type: 3}
+  - {fileID: 8300000, guid: 8a9c4bdf3bf8148b1818aef628ff4f1f, type: 3}
+  - {fileID: 8300000, guid: e7137d1ca4f544808a2a0f60cd7c3ec8, type: 3}
 --- !u!114 &-522632898051101974
 MonoBehaviour:
   m_ObjectHideFlags: 0

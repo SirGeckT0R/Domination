@@ -5,11 +5,6 @@ public class CameraController : MonoBehaviour
 {
     public static CameraController Instance;
 
-    // If we want to select an item to follow, inside the item script add:
-    // public void OnMouseDown(){
-    //   CameraController.instance.followTransform = transform;
-    // }
-
     [Header("General")]
     [SerializeField] private Transform _cameraTransform;
     public Transform followTransform;
@@ -25,7 +20,7 @@ public class CameraController : MonoBehaviour
     [Header("Keyboard Movement")]
     [SerializeField] private float _fastSpeed = 0.05f;
     [SerializeField] private float _normalSpeed = 0.01f;
-    [SerializeField] private float _movementSensitivity = 1f; // Hardcoded Sensitivity
+    [SerializeField] private float _movementSensitivity = 1f;
     private float movementSpeed;
 
     [Header("Edge Scrolling Movement")]
@@ -57,12 +52,11 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        // Allow Camera to follow Target
         if (followTransform != null)
         {
             transform.position = followTransform.position;
         }
-        // Let us control Camera
+
         else
         {
             HandleCameraMovement();
@@ -84,13 +78,11 @@ public class CameraController : MonoBehaviour
 
     private void HandleCameraMovement()
     {
-        // Mouse Drag
         if (_moveWithMouseDrag)
         {
             HandleMouseDragInput();
         }
 
-        // Keyboard Control
         if (_moveWithKeyboard)
         {
             if (Input.GetKey(KeyCode.LeftCommand))
@@ -120,11 +112,8 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        // Edge Scrolling
         if (_moveWithEdgeScrolling)
         {
-
-            // Move Right
             if (Input.mousePosition.x > Screen.width - _edgeSize)
             {
                 _newPosition += (transform.right * movementSpeed);
@@ -132,7 +121,6 @@ public class CameraController : MonoBehaviour
                 _isCursorSet = true;
             }
 
-            // Move Left
             else if (Input.mousePosition.x < _edgeSize)
             {
                 _newPosition += (transform.right * -movementSpeed);
@@ -140,7 +128,6 @@ public class CameraController : MonoBehaviour
                 _isCursorSet = true;
             }
 
-            // Move Up
             else if (Input.mousePosition.y > Screen.height - _edgeSize)
             {
                 _newPosition += (transform.forward * movementSpeed);
@@ -148,7 +135,6 @@ public class CameraController : MonoBehaviour
                 _isCursorSet = true;
             }
 
-            // Move Down
             else if (Input.mousePosition.y < _edgeSize)
             {
                 _newPosition += (transform.forward * -movementSpeed);
@@ -167,12 +153,11 @@ public class CameraController : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, _newPosition, Time.deltaTime * _movementSensitivity);
 
-        Cursor.lockState = CursorLockMode.Confined; // If we have an extra monitor we don't want to exit screen bounds
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     private void ChangeCursor(CursorArrow newCursor)
     {
-        // Only change cursor if its not the same cursor
         if (currentCursor != newCursor)
         {
             switch (newCursor)

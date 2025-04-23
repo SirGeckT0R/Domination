@@ -34,7 +34,8 @@ namespace Assets.Scripts.Map.Commands
             }
 
             _prevEconomicLevel = County.EconomicLevel;
-            County.EconomicLevel++;
+            County.SetBuildingLevel(true, (byte)(County.EconomicLevel + 1));
+            
 
             var message = new MessageDto { Player = Player.Name, Message = $"Upgraded economic building in {County.Name} to level {County.EconomicLevel}" };
             Debug.Log("Executing an economic upgrade action");
@@ -49,7 +50,7 @@ namespace Assets.Scripts.Map.Commands
                 return;
             }
 
-            County.EconomicLevel = _prevEconomicLevel;
+            County.SetBuildingLevel(true, _prevEconomicLevel);
             _prevEconomicLevel = 0;
             Debug.Log("Undoing an economic action");
         }

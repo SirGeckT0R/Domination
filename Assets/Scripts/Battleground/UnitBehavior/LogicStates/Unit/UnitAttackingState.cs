@@ -38,6 +38,11 @@ namespace Assets.Scripts.Battleground.UnitBehavior.LogicStates
 
         public override void Update()
         {
+            if (unit.IsDead)
+            {
+                return;
+            }
+
             if (ShouldStopAttacking())
             {
                 stateMachine.ChangeState(unit.IdleState);

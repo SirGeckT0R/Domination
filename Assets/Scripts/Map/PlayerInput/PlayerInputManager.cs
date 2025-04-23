@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.MainMenu.UI;
+using UnityEngine;
 
 namespace Assets.Scripts.Map.PlayerInput
 {
@@ -6,6 +7,7 @@ namespace Assets.Scripts.Map.PlayerInput
     {
         private Camera _camera;
         private CountyUI _currentlyActiveCountyUI;
+        private PauseMenu _pauseMenu;
 
         [SerializeField] private LayerMask _countyMask;
         [SerializeField] private LayerMask _uiMask;
@@ -17,6 +19,20 @@ namespace Assets.Scripts.Map.PlayerInput
 
         private void Update()
         {
+            //if (Input.GetKeyDown(KeyCode.Escape))
+            //{
+            //    if (GameIsPaused)
+            //    {
+            //        Resume();
+            //    }
+            //    else
+            //    {
+            //        Pause();
+            //    }
+
+            //    return;
+            //}
+
             if (Input.GetMouseButtonDown(0))
             {
                 HandleCountyUIInteraction();

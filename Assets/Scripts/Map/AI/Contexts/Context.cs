@@ -10,15 +10,9 @@ namespace Assets.Scripts.Map.AI.Contexts
         public Player CurrentPlayer { get; set; }
         public List<Player> OtherPlayers { get; set; }
         public WarTargetInfo WarTargetInfo { get; set; }
-        //public AIPlayer AttackTarget { get; set; }
         public Player PactTarget { get; set; }
-        public CreatePactEvent CurrentPact{ get; set; }
-
-        readonly Dictionary<string, object> data = new();
+        public CreatePactEvent CurrentPact { get; set; }
         public List<RelationEvent> RelationEvents { get; set; }
         public CountyManager CountyManager { get;  set; }
-
-        public T GetData<T>(string key) => data.TryGetValue(key, out var value) ? (T)value : default;
-        public void SetData(string key, object value) => data[key] = value;
     }
 }

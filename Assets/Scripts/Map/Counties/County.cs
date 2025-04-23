@@ -15,12 +15,12 @@ namespace Assets.Scripts.Map.Counties
         [field: SerializeField] public string Name { get; set; }
         public byte EconomicLevel { 
             get => _economicLevel; 
-            set { _economicLevel = (byte)Mathf.Clamp(value, 0, _maxEconomicLevel); } 
+            private set { _economicLevel = (byte)Mathf.Clamp(value, 0, _maxEconomicLevel); } 
         }
         public byte MilitaryLevel
         {
             get => _militaryLevel;
-            set { _militaryLevel = (byte)Mathf.Clamp(value, 0, _maxMilitaryLevel); }
+            private set { _militaryLevel = (byte)Mathf.Clamp(value, 0, _maxMilitaryLevel); }
         }
 
         [field: SerializeField] public ushort BelongsTo { get; set; }
@@ -29,8 +29,7 @@ namespace Assets.Scripts.Map.Counties
         private byte _maxMilitaryLevel;
 
         private DataHolder _dataHolder;
-
-        public UnityEvent<CountyInteractionInfo> OnCountyInteraction;
+        private BuildingVisualization _buildingVisualization;
 
         [Inject]
         public void Construct(CountyManager countyManager)
@@ -44,12 +43,35 @@ namespace Assets.Scripts.Map.Counties
         {
             _dataHolder = DataHolder.Instance;
             (Name, EconomicLevel, MilitaryLevel, BelongsTo) = _dataHolder.CountyInfos[Id];
+
+            _buildingVisualization = GetComponent<BuildingVisualization>();
+            _buildingVisualization.SetEconomicBuildingLevel(EconomicLevel);
+            _buildingVisualization.SetMilitaryBuildingLevel(MilitaryLevel);
         }
 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawMesh(GetComponent<MeshFilter>().sharedMesh, transform.position, transform.rotation, transform.localScale);
+        }
+
+        public void SetBuildingLevel(bool isEconomic, byte level)
+        {
+            if (isEconomic)
+            {
+                EconomicLevel = level;
+                _buildingVisualization.SetEconomicBuildingLevel(EconomicLevel);
+            }
+            else
+            {
+                MilitaryLevel = level;
+                _buildingVisualization.SetMilitaryBuildingLevel(MilitaryLevel);
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            _dataHolder.CountyInfos[Id].Initialize(EconomicLevel, MilitaryLevel, BelongsTo);
         }
     }
 }

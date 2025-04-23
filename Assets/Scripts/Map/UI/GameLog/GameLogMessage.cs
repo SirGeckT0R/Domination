@@ -10,7 +10,7 @@ namespace Assets.Scripts.Map.UI
 
         public void SetText(MessageDto message)
         {
-            _textElement.text = $"{message.Player}: {message.Message}";
+            _textElement.text = $"{message?.Player}: {message?.Message}";
         }
     }
 }

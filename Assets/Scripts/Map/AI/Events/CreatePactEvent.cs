@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.Map.AI.Enums;
-using Assets.Scripts.Map.Players;
 
 namespace Assets.Scripts.Map.AI.Events
 {
