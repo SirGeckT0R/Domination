@@ -62,6 +62,9 @@ namespace Assets.Scripts.Map.Managers
 
         private void Initialize()
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
             SetupFromDataHolder();
 
             if (_dataHolder.CurrentWarResult != null)
@@ -264,8 +267,6 @@ namespace Assets.Scripts.Map.Managers
                         enemyWarriorsCount: warCommand.Player.Warriors
                     );
 
-                    _uiManager.DisplayAttackedScreen(warCommand.Player.Name);
-
                     break;
                 case HumanPlayer:
                     warInfo.Initialize(
@@ -277,6 +278,7 @@ namespace Assets.Scripts.Map.Managers
                     break;
             }
 
+            _uiManager.DisplayAttackedScreen(warCommand.Player.Name, warCommand.AttackTarget.Name);
             _dataHolder.CurrentWarInfo = warInfo;
 
             _dataHolder.TurnManagerState.Initialize(_globalTurnCount, _hasTurnStarted, _hasGlobalTurnStarted, _currentPlayerIndex, _commands, _relationEvents, _context);

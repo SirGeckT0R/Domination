@@ -42,7 +42,7 @@ namespace Assets.Scripts.Map.Commands
             County.SetBuildingLevel(false, (byte)(County.MilitaryLevel + 1));
             Player.Money -= militaryUpgradePrice;
 
-            var message = new MessageDto { Player = Player.Name, Message = $"Улучшил военное здание в {County.Name} до уровня {County.EconomicLevel}" };
+            var message = new MessageDto { Player = Player.Name, Message = $"Улучшил военное здание в {County.Name} до уровня {County.MilitaryLevel}" };
             Debug.Log($"Executing military upgrade action");
 
             return message;

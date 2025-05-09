@@ -100,10 +100,10 @@ namespace Assets.Scripts.Map.Managers
 
         public void DisplayGameEndScreen(IEnumerable<Player> players) => _gameEndView.DisplayStats(players);
 
-        public void DisplayAttackedScreen(string attackerName)
+        public void DisplayAttackedScreen(string attackerName, string defenderName)
         {
             _attackedScreenView.SetActive(true);
-            _attackedScreenView.GetComponentInChildren<TextMeshProUGUI>().text = $"На тебя напал {attackerName}, готовься к войне!";
+            _attackedScreenView.GetComponentInChildren<TextMeshProUGUI>().text = $"{attackerName} объявил(а) войну {defenderName}, готовься!";
         }
     }
 }

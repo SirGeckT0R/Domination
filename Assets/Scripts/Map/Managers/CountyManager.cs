@@ -16,7 +16,7 @@ namespace Assets.Scripts.Map.Managers
 
         [field: SerializeField] public byte MaxEconomicLevel { get; } = 5;
         [field: SerializeField] public byte MaxMilitaryLevel { get; } = 5;
-        [field: SerializeField] public int PriceForMilitaryUpgrade { get; } = 15;
+        [field: SerializeField] public int PriceForMilitaryUpgrade { get; } = 20;
 
         private void Awake()
         {
