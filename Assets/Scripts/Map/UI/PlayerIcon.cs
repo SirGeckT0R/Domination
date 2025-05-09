@@ -10,6 +10,7 @@ public class PlayerIcon : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private GameObject _uiPanel;
     [SerializeField] private LayerMask _playerIcon;
+    [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _warriorsText;
     [SerializeField] private TextMeshProUGUI _moneyText;
 
@@ -27,6 +28,14 @@ public class PlayerIcon : MonoBehaviour, IPointerClickHandler
     {
         var pactButton = _uiPanel.GetComponentInChildren<Button>(includeInactive: true);
         pactButton.onClick.AddListener(HandleHUDInteraction);
+    }
+
+    private void Update()
+    {
+        if(Player != null && _image.sprite == null)
+        {
+            _image.sprite = Player.Icon;
+        }
     }
 
     private void HandleHUDInteraction() => _uiManager.HandleSendPactInteraction(Player);

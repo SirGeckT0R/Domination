@@ -23,7 +23,7 @@ namespace Assets.Scripts.Map.Commands
                 return null;
             }
 
-            var message = new MessageDto { Player = RecieverName, Message = $"Accepted the pact" };
+            var message = new MessageDto { Player = RecieverName, Message = $"Принял пакт" };
             RelationEvents.Remove(PactEvent);
             var acceptPact = new RelationEvent(PactEvent.SenderId, PactEvent.RecieverId, RelationEventType.AcceptedPact, 3);
             RelationEvents.Add(acceptPact);

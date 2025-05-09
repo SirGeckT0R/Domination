@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LesterCountyInfo
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 10
-  <Name>k__BackingField: Lester
+  <Name>k__BackingField: "\u041D\u0430\u0442\u0430\u043D\u0430\u0442\u0430\u043D"
   <EconomicLevel>k__BackingField: 1
   <MilitaryLevel>k__BackingField: 1
   <BelongsTo>k__BackingField: 3

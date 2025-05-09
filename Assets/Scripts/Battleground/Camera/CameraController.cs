@@ -56,7 +56,6 @@ public class CameraController : MonoBehaviour
         {
             transform.position = followTransform.position;
         }
-
         else
         {
             HandleCameraMovement();
@@ -85,75 +84,82 @@ public class CameraController : MonoBehaviour
 
         if (_moveWithKeyboard)
         {
-            if (Input.GetKey(KeyCode.LeftCommand))
-            {
-                movementSpeed = _fastSpeed;
-            }
-            else
-            {
-                movementSpeed = _normalSpeed;
-            }
-
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-            {
-                _newPosition += (transform.forward * movementSpeed);
-            }
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-            {
-                _newPosition += (transform.forward * -movementSpeed);
-            }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            {
-                _newPosition += (transform.right * movementSpeed);
-            }
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            {
-                _newPosition += (transform.right * -movementSpeed);
-            }
+            HandleMoveWithKeyboard();
         }
 
         if (_moveWithEdgeScrolling)
         {
-            if (Input.mousePosition.x > Screen.width - _edgeSize)
-            {
-                _newPosition += (transform.right * movementSpeed);
-                ChangeCursor(CursorArrow.RIGHT);
-                _isCursorSet = true;
-            }
-
-            else if (Input.mousePosition.x < _edgeSize)
-            {
-                _newPosition += (transform.right * -movementSpeed);
-                ChangeCursor(CursorArrow.LEFT);
-                _isCursorSet = true;
-            }
-
-            else if (Input.mousePosition.y > Screen.height - _edgeSize)
-            {
-                _newPosition += (transform.forward * movementSpeed);
-                ChangeCursor(CursorArrow.UP);
-                _isCursorSet = true;
-            }
-
-            else if (Input.mousePosition.y < _edgeSize)
-            {
-                _newPosition += (transform.forward * -movementSpeed);
-                ChangeCursor(CursorArrow.DOWN);
-                _isCursorSet = true;
-            }
-            else
-            {
-                if (_isCursorSet)
-                {
-                    ChangeCursor(CursorArrow.DEFAULT);
-                    _isCursorSet = false;
-                }
-            }
+            HandleMoveWithEdgeScrolling();
         }
 
         transform.position = Vector3.Lerp(transform.position, _newPosition, Time.deltaTime * _movementSensitivity);
 
         Cursor.lockState = CursorLockMode.Confined;
+    }
+
+    private void HandleMoveWithEdgeScrolling()
+    {
+        if (Input.mousePosition.x > Screen.width - _edgeSize)
+        {
+            _newPosition += (transform.right * movementSpeed);
+            ChangeCursor(CursorArrow.RIGHT);
+            _isCursorSet = true;
+        }
+        else if (Input.mousePosition.x < _edgeSize)
+        {
+            _newPosition += (transform.right * -movementSpeed);
+            ChangeCursor(CursorArrow.LEFT);
+            _isCursorSet = true;
+        }
+        else if (Input.mousePosition.y > Screen.height - _edgeSize)
+        {
+            _newPosition += (transform.forward * movementSpeed);
+            ChangeCursor(CursorArrow.UP);
+            _isCursorSet = true;
+        }
+        else if (Input.mousePosition.y < _edgeSize)
+        {
+            _newPosition += (transform.forward * -movementSpeed);
+            ChangeCursor(CursorArrow.DOWN);
+            _isCursorSet = true;
+        }
+        else
+        {
+            if (_isCursorSet)
+            {
+                ChangeCursor(CursorArrow.DEFAULT);
+                _isCursorSet = false;
+            }
+        }
+    }
+
+    private void HandleMoveWithKeyboard()
+    {
+        if (Input.GetKey(KeyCode.LeftCommand))
+        {
+            movementSpeed = _fastSpeed;
+        }
+        else
+        {
+            movementSpeed = _normalSpeed;
+        }
+
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            _newPosition += (transform.forward * movementSpeed);
+        }
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            _newPosition += (transform.forward * -movementSpeed);
+        }
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            _newPosition += (transform.right * movementSpeed);
+        }
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            _newPosition += (transform.right * -movementSpeed);
+        }
     }
 
     private void ChangeCursor(CursorArrow newCursor)

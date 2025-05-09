@@ -7,7 +7,6 @@ namespace Assets.Scripts.Map.Commands
 {
     public abstract class Command : ScriptableObject
     {
-        public string targetTag;
         public Consideration consideration;
         public float CalculateUtility(Context context) => consideration.Evaluate(context);
         public abstract void UpdateContext(Context context);

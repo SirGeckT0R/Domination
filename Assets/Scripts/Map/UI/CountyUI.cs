@@ -1,12 +1,14 @@
 using Assets.Scripts.Map.Counties;
 using Assets.Scripts.Map.Managers;
 using Assets.Scripts.Map.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
 public class CountyUI : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI _countyName;
     [SerializeField] private GameObject _ownerUI;
     [SerializeField] private GameObject _otherUI;
 
@@ -51,5 +53,7 @@ public class CountyUI : MonoBehaviour
             _ownerUI.SetActive(false);
             _otherUI.SetActive(shouldActivate);
         }
+
+        _countyName.text = shouldActivate ? _county.Name : string.Empty;
     }
 }

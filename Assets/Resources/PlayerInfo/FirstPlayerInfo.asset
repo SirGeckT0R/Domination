@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: FirstPlayerInfo
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 1
-  <Name>k__BackingField: Human
+  <Name>k__BackingField: "\u0423\u0438\u043B\u044C\u044F\u043C"
   <Money>k__BackingField: 10
   <Warriors>k__BackingField: 3
+  <Icon>k__BackingField: {fileID: 0}

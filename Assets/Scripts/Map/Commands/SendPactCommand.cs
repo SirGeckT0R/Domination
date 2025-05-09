@@ -32,11 +32,11 @@ namespace Assets.Scripts.Map.Commands
             _prevRelationEvents = new List<RelationEvent>(RelationEvents);
             _prevTargetPactCommands = new List<CreatePactEvent>(PactTarget.PactCommands);
 
-            var pactEvent = new CreatePactEvent(Player.Id, PactTarget.Id, 3);
+            var pactEvent = new CreatePactEvent(Player.Id, PactTarget.Id, 3, Player.Name);
             PactTarget.PactCommands.Add(pactEvent);
             RelationEvents.Add(pactEvent);
 
-            var message = new MessageDto { Player = Player.Name, Message = $"Sent pact to {PactTarget.Name}" };
+            var message = new MessageDto { Player = Player.Name, Message = $"Отправил пакт {PactTarget.Name}" };
             Debug.Log("Creating a pact with this player: " + PactTarget.Name);
 
             return message;

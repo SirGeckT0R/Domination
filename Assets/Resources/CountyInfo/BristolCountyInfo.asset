@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BristolCountyInfo
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 10
-  <Name>k__BackingField: Bristol
+  <Name>k__BackingField: "\u0418\u0440\u0438"
   <EconomicLevel>k__BackingField: 1
   <MilitaryLevel>k__BackingField: 1
   <BelongsTo>k__BackingField: 2

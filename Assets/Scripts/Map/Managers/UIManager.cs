@@ -16,7 +16,7 @@ namespace Assets.Scripts.Map.Managers
         [SerializeField] private GameObject _iconsView;
         [SerializeField] private PactView _pactView;
         [SerializeField] private GameLogView _gameLogView;
-        [SerializeField] private GameObject _gameEndView;
+        [SerializeField] private GameEndUI _gameEndView;
         [SerializeField] private GameObject _attackedScreenView;
 
         [SerializeField] private TextMeshProUGUI _moneyText;
@@ -98,15 +98,12 @@ namespace Assets.Scripts.Map.Managers
         public void HandleEndTurn() => CurrentPlayer?.EndTurn();
         public void HandleUndoAction() => CurrentPlayer?.UndoAction();
 
-        public void DisplayGameEndScreen()
-        {
-            _gameEndView.SetActive(true);
-        }
+        public void DisplayGameEndScreen(IEnumerable<Player> players) => _gameEndView.DisplayStats(players);
 
         public void DisplayAttackedScreen(string attackerName)
         {
             _attackedScreenView.SetActive(true);
-            _attackedScreenView.GetComponentInChildren<TextMeshProUGUI>().text = $"You have been attacked by {attackerName}, prepare for war!";
+            _attackedScreenView.GetComponentInChildren<TextMeshProUGUI>().text = $"На тебя напал {attackerName}, готовься к войне!";
         }
     }
 }

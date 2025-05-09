@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DublinCountyInfo
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 3
-  <Name>k__BackingField: Dublin
+  <Name>k__BackingField: "\u0413\u0435\u0440\u0434\u0430\u0437"
   <EconomicLevel>k__BackingField: 1
   <MilitaryLevel>k__BackingField: 2
   <BelongsTo>k__BackingField: 1

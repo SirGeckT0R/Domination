@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ThirdPlayerInfo
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 3
-  <Name>k__BackingField: Third
+  <Name>k__BackingField: "\u0412\u0438\u043A\u0442\u043E\u0440\u0438\u044F"
   <Money>k__BackingField: 11
   <Warriors>k__BackingField: 3
+  <Icon>k__BackingField: {fileID: 21300000, guid: fb2addf0279002e40b7b8dc4c865536a, type: 3}

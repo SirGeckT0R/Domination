@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -78,14 +79,7 @@ namespace Assets.Scripts.Map.Managers
         {
             if (_globalTurnCount >= MaxAmountOfTurns)
             {
-                foreach (var player in Players)
-                {
-                    var message = new MessageDto{ Player = player.Name, Message = $"Ended the game with {player.Warriors} warriors and {player.Money} money" };
-                    Debug.Log(message);
-
-                    _uiManager.AddLogMessage(message);
-                    _uiManager.DisplayGameEndScreen();
-                }
+                _uiManager.DisplayGameEndScreen(Players);
 
                 return;
             }
@@ -130,7 +124,7 @@ namespace Assets.Scripts.Map.Managers
             var message = new MessageDto
             {
                 Player = _currentPlayer.Name,
-                Message = $"Ended the turn with {_currentPlayer.Warriors} warrors, {_currentPlayer.Money} money"
+                Message = $"«авершил ход с {_currentPlayer.Warriors} воинами, {_currentPlayer.Money} единицами денег"
             };
 
             _uiManager.AddLogMessage(message);

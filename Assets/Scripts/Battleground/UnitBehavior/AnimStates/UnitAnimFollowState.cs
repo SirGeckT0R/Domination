@@ -11,7 +11,7 @@ public class UnitAnimFollowState : StateMachineBehaviour
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(_attackController.Target == null)
+        if(_attackController.Target == null || animator.GetBool("IsFollowing"))
         {
             return;
         }

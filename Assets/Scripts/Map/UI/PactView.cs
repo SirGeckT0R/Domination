@@ -30,7 +30,7 @@ public class PactView : MonoBehaviour
     public void UpdateCurrentPact()
     {
         _pactEvent = _uiManager.CurrentPact;
-        _textElement.text = $"{_pactEvent.SenderId} have sent you a pact. Do you accept?";
+        _textElement.text = $"{_pactEvent.SenderName} отправил(а) тебе пакт. Какое твое решение?";
     }
 
     private void HandleButtonClick(bool isAccepted) => _uiManager.HandlePactResolved(isAccepted);

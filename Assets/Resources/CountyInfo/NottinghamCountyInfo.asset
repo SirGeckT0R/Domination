@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NottinghamCountyInfo
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 9
-  <Name>k__BackingField: Nottingham
+  <Name>k__BackingField: "\u0422\u0430\u0439\u043B\u0435\u043D\u0430"
   <EconomicLevel>k__BackingField: 1
   <MilitaryLevel>k__BackingField: 1
   <BelongsTo>k__BackingField: 2

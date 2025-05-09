@@ -22,7 +22,7 @@ namespace Assets.Scripts.Map.Managers
                 Debug.Log("Not a valid pact event");
             }
 
-            var message = new MessageDto { Player = RecieverName, Message = $"Declining the pact" };
+            var message = new MessageDto { Player = RecieverName, Message = $"Отказал в заключении пакта" };
             RelationEvents.Remove(PactEvent);
             var acceptPact = new RelationEvent(PactEvent.SenderId, PactEvent.RecieverId, RelationEventType.DeniedPact, 3);
             RelationEvents.Add(acceptPact);

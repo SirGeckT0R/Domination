@@ -14,6 +14,7 @@ namespace Assets.Scripts.Map.Players
         [field: SerializeField] public ushort Id { get; set; }
         [field: SerializeField] public string Name { get; set; }
         [field: SerializeField] public int Money { get; set; } = 10;
+        [field: SerializeField] public Sprite Icon { get; set; }
 
         [SerializeField] private int warriors = 15;
         public int Warriors
@@ -43,7 +44,7 @@ namespace Assets.Scripts.Map.Players
         protected virtual void Awake()
         {
             _dataHolder = DataHolder.Instance;
-            (Name, Money, Warriors, PactCommands) = _dataHolder.PlayerInfos[Id];
+            (Name, Money, Warriors, PactCommands, Icon) = _dataHolder.PlayerInfos[Id];
         }
 
         protected virtual void OnDestroy()
