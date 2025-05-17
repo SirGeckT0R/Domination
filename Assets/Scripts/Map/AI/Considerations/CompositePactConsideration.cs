@@ -24,7 +24,7 @@ namespace Assets.Scripts.Map.AI.Considerations
 
             float value = attackConsideration.Evaluate(context);
 
-            if (context.WarTargetInfo.AttackTarget.Equals(context.PactTarget))
+            if (context.PactTarget != null && context.WarTargetInfo.AttackTarget.Equals(context.PactTarget))
             {
                 result -= value;
             }

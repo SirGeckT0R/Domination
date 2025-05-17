@@ -25,23 +25,14 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.43990391
-      value: 0.41091922
-      inSlope: -0.7309254
-      outSlope: -0.7309254
+      time: 0.4999153
+      value: 0.49762416
+      inSlope: -1.3507593
+      outSlope: -1.3507593
       tangentMode: 0
       weightedMode: 0
       inWeight: 1
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.73143923
-      value: 0.12565619
-      inSlope: -0.41025382
-      outSlope: -0.41025382
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.85767996
-      outWeight: 0.064449504
+      outWeight: 0.121360846
     - serializedVersion: 3
       time: 1
       value: 0
@@ -54,6 +45,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  contextKey: 
   keyImportance: 2
   priceForMilitaryUpgrade: 20

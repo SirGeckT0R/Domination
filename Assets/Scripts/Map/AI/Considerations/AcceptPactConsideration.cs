@@ -5,9 +5,8 @@ using UnityEngine;
 namespace Assets.Scripts.Map.AI.Considerations
 {
     [CreateAssetMenu(menuName = "UtilityAI/Considerations/AcceptPactConsideration")]
-    public class AcceptPactConsideration : Consideration
+    public class AcceptPactConsideration : CurveConsideration
     {
-        public AnimationCurve curve;
         public float pactAcceptance;
 
         public override float Evaluate(Context context)
@@ -24,14 +23,6 @@ namespace Assets.Scripts.Map.AI.Considerations
             context.PactTarget = sender;
 
             return curve.Evaluate(clamped);
-        }
-
-        void Reset()
-        {
-            curve = new AnimationCurve(
-                new Keyframe(0f, 1f), // At normalized distance 0, utility is 1
-                new Keyframe(1f, 0f)  // At normalized distance 1, utility is 0
-            );
         }
     }
 }

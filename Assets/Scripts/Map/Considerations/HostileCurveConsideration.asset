@@ -37,5 +37,3 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   ignoreEvents: 03000000
-  keyImportance: 30
-  warriorRatioThreshold: 0

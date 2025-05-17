@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.AI.Enums;
+using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Players;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,9 @@ using UnityEngine;
 namespace Assets.Scripts.Map.AI.Considerations
 {
     [CreateAssetMenu(menuName = "UtilityAI/Considerations/HostileCurveConsideration")]
-    public class HostileCurveConsideration : Consideration
+    public class HostileCurveConsideration : CurveConsideration
     {
-        public AnimationCurve curve;
         public List<RelationEventType> ignoreEvents;
-        public float keyImportance;
-        public float warriorRatioThreshold;
 
         public override float Evaluate(Context context)
         {
@@ -28,7 +26,7 @@ namespace Assets.Scripts.Map.AI.Considerations
                 var commonEvent = context.RelationEvents
                     .FirstOrDefault(
                                     relEvent => relEvent.ArePlayersInvolved(current.Id, player.Id)
-                                    && !ignoreEvents.Contains(relEvent.EventType)
+                                    && !ShouldIgnore(relEvent, current)
                                     );
 
                 if (commonEvent != null)
@@ -36,7 +34,6 @@ namespace Assets.Scripts.Map.AI.Considerations
                     continue;
                 }
 
-                
                 var warriorsRatio = (float)player.Warriors / current.Warriors;
 
                 var clamped = Mathf.Clamp01(warriorsRatio);
@@ -54,12 +51,9 @@ namespace Assets.Scripts.Map.AI.Considerations
             return maxUtility;
         }
 
-        void Reset()
+        private bool ShouldIgnore(RelationEvent relEvent, Player current)
         {
-            curve = new AnimationCurve(
-                new Keyframe(1f, 0f),
-                new Keyframe(0f, 1f)
-            );
+            return ignoreEvents.Contains(relEvent.EventType) || (relEvent.EventType == RelationEventType.SentPact && relEvent.SenderId != current.Id);
         }
     }
 }

@@ -6,10 +6,8 @@ using UnityEngine;
 namespace Assets.Scripts.Map.AI.Considerations
 {
     [CreateAssetMenu(menuName = "UtilityAI/Considerations/PactCurveConsideration")]
-    public class PactCurveConsideration : Consideration
+    public class PactCurveConsideration : CurveConsideration
     {
-        public AnimationCurve curve;
-        public string contextKey;
         public float keyImportance;
 
         public override float Evaluate(Context context)
@@ -27,7 +25,7 @@ namespace Assets.Scripts.Map.AI.Considerations
 
                 if (commonEvent != null)
                 {
-                    return 0f;
+                    continue;
                 }
 
                 var inputValue = player.Warriors * keyImportance / current.Warriors;
@@ -44,14 +42,6 @@ namespace Assets.Scripts.Map.AI.Considerations
             context.PactTarget = pactTarget;
 
             return maxUtility;
-        }
-
-        void Reset()
-        {
-            curve = new AnimationCurve(
-                new Keyframe(0f, 1f), // At normalized distance 0, utility is 1
-                new Keyframe(1f, 0f)  // At normalized distance 1, utility is 0
-            );
         }
     }
 }

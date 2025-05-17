@@ -3,6 +3,7 @@ using Assets.Scripts.Map.AI.Contexts;
 using Assets.Scripts.Map.AI.Events;
 using Assets.Scripts.Map.Commands;
 using Assets.Scripts.Map.Managers;
+using Assets.Scripts.Map.UI.GameLog;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,14 @@ namespace Assets.Scripts.Map.AI
         [field: SerializeField] public List<Command> Reactions { get; private set; }
         [field: SerializeField] public CompositePactConsideration PactConsideration { get; private set; }
         [field: SerializeField] public Context Context { get; private set; }
+
+        private UIManager _uiManager;
+
+        [Zenject.Inject]
+        public void Construct(UIManager uIManager)
+        {
+            _uiManager = uIManager;
+        }
 
         public Command FindAndProduceTheBestAction(Context context)
         {
@@ -50,25 +59,27 @@ namespace Assets.Scripts.Map.AI
             {
                 Context.CurrentPact = createPact;
                 utility = PactConsideration.Evaluate(Context);
+                MessageDto resultMessage;
 
                 if (utility > 0.5)
                 {
-                    //Just create ia scriptable object
+                    //Just create via scriptable object
                     var acceptPact = Reactions[0] as AcceptPactCommand;
                     acceptPact.UpdateContext(Context.CurrentPlayer.Name, createPact, Context.RelationEvents);
-                    acceptPact.Execute();
+                    resultMessage = acceptPact.Execute();
                 }
                 else
                 {
                     var declinePact = Reactions[1] as DeclinePactCommand;
                     declinePact.UpdateContext(Context.CurrentPlayer.Name, createPact, Context.RelationEvents);
-                    declinePact.Execute();
+                    resultMessage = declinePact.Execute();
                 }
+
+                _uiManager.AddLogMessage(resultMessage);
 
                 Context.WarTargetInfo = null;
                 Context.PactTarget = null;
             }
-
             pacts.Clear();
         }
     }
