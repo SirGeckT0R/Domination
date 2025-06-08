@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Assets.Scripts.Map.Managers
 {
     [CreateAssetMenu(menuName = "UtilityAI/Actions/DeclinePactCommand")]
-    public class DeclinePactCommand : Command, IUndoable
+    public class DeclinePactCommand : Command, IIrreversible
     {
         public string RecieverName { get; private set; }
         public CreatePactEvent PactEvent { get; private set; }

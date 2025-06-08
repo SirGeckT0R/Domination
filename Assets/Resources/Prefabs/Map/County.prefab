@@ -444,7 +444,8 @@ LineRenderer:
   m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials: []
+  m_Materials:
+  - {fileID: 2100000, guid: f5ec9c7cd07ae2f41b06c6fed45b71f6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -462,8 +463,8 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1606003619
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
@@ -551,6 +552,7 @@ MonoBehaviour:
   _lineMaterial: {fileID: 2100000, guid: f5ec9c7cd07ae2f41b06c6fed45b71f6, type: 2}
   _dashSize: 0.001
   _gapSize: 0.01
+  savedPoints: []
 --- !u!114 &1457439443224897728
 MonoBehaviour:
   m_ObjectHideFlags: 0

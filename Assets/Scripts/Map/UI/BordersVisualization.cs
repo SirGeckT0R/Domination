@@ -15,12 +15,17 @@ public class BordersVisualization : MonoBehaviour
 
     private LineRenderer _lineRenderer;
     private County _county;
-    private PolyShape _polyshape;
+    private PolyShape _polyshape; 
+    [SerializeField] private Vector3[] savedPoints;
 
     void Start()
     {
         _county = GetComponent<County>();
         _polyshape = GetComponent<PolyShape>();
+        if (_polyshape != null)
+        {
+            savedPoints = _polyshape.controlPoints.ToArray();
+        }
         _lineRenderer = GetComponent<LineRenderer>();
 
         ConfigureLineRenderer();
@@ -42,8 +47,8 @@ public class BordersVisualization : MonoBehaviour
 
     void UpdateBoundsVisual()
     {
-        _lineRenderer.positionCount = _polyshape.controlPoints.Count;
-        _lineRenderer.SetPositions(_polyshape.controlPoints.ToArray());
+        _lineRenderer.positionCount = savedPoints.Length;
+        _lineRenderer.SetPositions(savedPoints);
         _lineRenderer.material.mainTextureScale = new Vector2(1f / (_dashSize + _gapSize), 1);
         _lineRenderer.material.color = BorderColors.colors[_county.BelongsTo - 1];
     }

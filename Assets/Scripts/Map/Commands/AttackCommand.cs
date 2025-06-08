@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Assets.Scripts.Map.Commands
 {
     [CreateAssetMenu(menuName = "UtilityAI/Actions/AttackCommand")]
-    public class AttackCommand : Command, IUndoable
+    public class AttackCommand : Command, IIrreversible
     {
         public bool HasWon { get; set; }
         public BattleOpponent Winner { get; set; }

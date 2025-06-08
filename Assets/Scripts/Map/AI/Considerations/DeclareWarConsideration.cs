@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Assets.Scripts.Map.AI.Considerations
 {
     [CreateAssetMenu(menuName = "UtilityAI/Considerations/HostileCurveConsideration")]
-    public class HostileCurveConsideration : CurveConsideration
+    public class DeclareWarConsideration : CurveConsideration
     {
         public List<RelationEventType> ignoreEvents;
 

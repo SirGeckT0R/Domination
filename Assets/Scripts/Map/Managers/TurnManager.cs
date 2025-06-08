@@ -11,8 +11,6 @@ using Assets.Scripts.Map.UI.GameLog;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -246,7 +244,7 @@ namespace Assets.Scripts.Map.Managers
         public void RemoveLastCommand()
         {
             var last = _commands.Count - 1;
-            if (_commands.Count < 1 || _commands[last] is IUndoable)
+            if (_commands.Count < 1 || _commands[last] is IIrreversible)
             {
                 return;
             }

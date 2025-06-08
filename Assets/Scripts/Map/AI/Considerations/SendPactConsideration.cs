@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Assets.Scripts.Map.AI.Considerations
 {
     [CreateAssetMenu(menuName = "UtilityAI/Considerations/PactCurveConsideration")]
-    public class PactCurveConsideration : CurveConsideration
+    public class SendPactConsideration : CurveConsideration
     {
         public float keyImportance;
 

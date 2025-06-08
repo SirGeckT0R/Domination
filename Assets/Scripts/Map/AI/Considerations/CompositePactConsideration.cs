@@ -8,7 +8,7 @@ namespace Assets.Scripts.Map.AI.Considerations
     public class CompositePactConsideration : Consideration
     {
         [field:SerializeField] public AcceptPactConsideration pactConsideration { get; set; }
-        [field: SerializeField] public HostileCurveConsideration attackConsideration { get; set; }
+        [field: SerializeField] public DeclareWarConsideration attackConsideration { get; set; }
 
         public override float Evaluate(Context context)
         {

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Scripts.Map.Commands
 {
     [CreateAssetMenu(menuName = "UtilityAI/Actions/AcceptPactCommand")]
-    public class AcceptPactCommand : Command, IUndoable
+    public class AcceptPactCommand : Command, IIrreversible
     {
         public string RecieverName { get; private set; }
         public CreatePactEvent PactEvent { get; private set; }

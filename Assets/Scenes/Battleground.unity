@@ -911,8 +911,8 @@ MonoBehaviour:
   _cameraTransform: {fileID: 330585546}
   followTransform: {fileID: 0}
   _moveWithKeyboard: 1
-  _moveWithEdgeScrolling: 0
-  _moveWithMouseDrag: 0
+  _moveWithEdgeScrolling: 1
+  _moveWithMouseDrag: 1
   _fastSpeed: 0.1
   _normalSpeed: 0.1
   _movementSensitivity: 1
